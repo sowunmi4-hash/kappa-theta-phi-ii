@@ -75,6 +75,7 @@ export default function LoginPage() {
           <li><a href="/">Home</a></li>
           <li><a href="/about">About</a></li>
           <li><a href="/brothers">Brothers</a></li>
+          <li><a href="/gallery">Gallery</a></li>
         </ul>
       </nav>
 
