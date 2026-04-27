@@ -208,22 +208,22 @@ export default function AboutPage() {
 
           <div className="pillars">
             <div className="pillar">
-              <div className="pillar-kanji">⚔</div>
+              <div className="pillar-kanji">冒</div>
               <h3>Adventure</h3>
               <p>We embrace risk, movement, and the pursuit of new horizons</p>
             </div>
             <div className="pillar">
-              <div className="pillar-kanji">🌊</div>
+              <div className="pillar-kanji">継</div>
               <h3>Heritage</h3>
               <p>We merge history, mythology, and modern identity into one unified brotherhood</p>
             </div>
             <div className="pillar">
-              <div className="pillar-kanji">👑</div>
+              <div className="pillar-kanji">導</div>
               <h3>Leadership</h3>
               <p>We lead with presence and intention, creating experiences that inspire</p>
             </div>
             <div className="pillar">
-              <div className="pillar-kanji">🐙</div>
+              <div className="pillar-kanji">志</div>
               <h3>Purpose</h3>
               <p>Every move is strategic. Every action builds legacy</p>
             </div>
