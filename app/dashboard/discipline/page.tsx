@@ -50,7 +50,7 @@ export default function DisciplinePage() {
     setCanManage(manage);
     if (manage) {
       loadAll();
-      fetch('/api/dashboard/phire/leaderboard').then(r=>r.json()).then(d=>setRoster(d.leaderboard||[]));
+      fetch('/api/dashboard/roster').then(r=>r.json()).then(d=>setRoster(d.members||[]));
     }
     fetch('/api/dashboard/discipline/my-record').then(r=>r.json()).then(d=>setMyRecord(d.violations||[]));
     setLoading(false);

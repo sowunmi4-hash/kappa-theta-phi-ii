@@ -66,8 +66,8 @@ export default function PhireManage() {
 
   async function loadRoster() {
     if (roster.length) return;
-    const res = await fetch('/api/dashboard/phire/leaderboard').then(r=>r.json());
-    setRoster(res.leaderboard||[]);
+    const res = await fetch('/api/dashboard/roster').then(r=>r.json());
+    setRoster(res.members||[]);
   }
 
   async function review(submission_id: string, action: 'approve'|'deny', note='') {
