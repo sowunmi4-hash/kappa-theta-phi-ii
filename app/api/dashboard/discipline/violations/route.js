@@ -52,8 +52,16 @@ export async function POST(req) {
 
   // Auto-create SSP record (offered) for non-repeat violations on grey/navy_blue/gold
   if (!is_repeat && ['grey','navy_blue','gold'].includes(offense_color)) {
-    await fetch(`${S}/rest/v1/discipline_ssp`, { method: 'POST', headers: ch(),
-      body: JSON.stringify({ violation_id: v.id, member_id, status: 'offered' }) });
+    // Count how many times this member has been offered SSP (lifetime)
+    const prevSSPs = await fetch(`${S}/rest/v1/discipline_ssp?member_id=eq.${member_id}&select=id`, { headers: h() }).then(r => r.json());
+    const offerNumber = prevSSPs.length + 1;
+
+    if (offerNumber > 3) {
+      // SSP limit reached — no more offers, fine + penalty apply directly
+    } else {
+      await fetch(`${S}/rest/v1/discipline_ssp`, { method: 'POST', headers: ch(),
+        body: JSON.stringify({ violation_id: v.id, member_id, status: 'offered', offer_number: offerNumber }) });
+    }
   }
 
   // Auto-create fine for navy_blue (1500L) and gold (3000L) if repeat

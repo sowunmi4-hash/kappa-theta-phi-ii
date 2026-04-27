@@ -156,3 +156,34 @@
   .track-grid { grid-template-columns:1fr; }
   .disc-content { padding:1.5rem; }
 }
+
+/* ─── SSP LESSON TRACKING ─── */
+.ssp-block { background: rgba(13,15,37,0.8); }
+
+.ssp-lesson {
+  display: flex; align-items: flex-start; gap: 10px;
+  padding: 0.6rem 0.8rem; border-radius: 6px;
+  border: 1px solid var(--border); background: var(--raised);
+  cursor: pointer; transition: all 0.15s;
+}
+.ssp-lesson:hover { border-color: rgba(198,147,10,0.2); }
+.ssp-lesson.done { background: rgba(74,222,128,0.05); border-color: rgba(74,222,128,0.25); }
+.ssp-lesson-check {
+  width: 24px; height: 24px; border-radius: 50%; flex-shrink: 0;
+  border: 1px solid var(--border); display: flex; align-items: center; justify-content: center;
+  font-size: 0.7rem; font-weight: 700; color: var(--muted);
+  background: var(--surface);
+}
+.ssp-lesson.done .ssp-lesson-check { background: rgba(74,222,128,0.15); border-color: rgba(74,222,128,0.4); color: #4ade80; }
+.ssp-lesson-title { font-size: 0.82rem; color: var(--bone); font-weight: 600; }
+.ssp-lesson.done .ssp-lesson-title { color: rgba(240,232,208,0.5); text-decoration: line-through; }
+.ssp-lesson-desc { font-size: 0.72rem; color: var(--muted); margin-top: 3px; line-height: 1.5; }
+
+/* Cleared violation overlay */
+.violation-card.cleared { opacity: 0.65; }
+.violation-card.cleared .violation-header::after {
+  content: '✓ CLEARED';
+  font-size: 0.58rem; letter-spacing: 2px; color: #4ade80;
+  background: rgba(74,222,128,0.1); border: 1px solid rgba(74,222,128,0.25);
+  padding: 2px 7px; border-radius: 3px;
+}
