@@ -365,10 +365,23 @@ export default function EventsPage() {
               {/* Flyer upload */}
               <div className="field-group">
                 <label className="field-label">Event Flyer</label>
-                <label className="upload-zone" style={{ cursor:'pointer' }}>
+                <label className={`flyer-upload-zone ${flyerPreview ? 'has-image' : ''}`}>
                   <input ref={flyerRef} type="file" accept="image/*" style={{ display:'none' }} onChange={uploadFlyer} />
-                  {uploading ? '⏳ Uploading...' : flyerPreview ? '' : '🖼 Upload flyer image'}
-                  {flyerPreview && <img src={flyerPreview} className="upload-thumb" alt="flyer" style={{ maxHeight:'140px', width:'100%', objectFit:'cover', borderRadius:'6px', marginTop:'8px' }} />}
+                  {flyerPreview ? (
+                    <>
+                      <img src={flyerPreview} alt="flyer" />
+                      <div className="flyer-overlay">
+                        <div className="flyer-upload-icon">🖼</div>
+                        <div className="flyer-upload-text">{uploading ? 'Uploading...' : 'Click to replace'}</div>
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <div className="flyer-upload-icon">{uploading ? '⏳' : '🖼'}</div>
+                      <div className="flyer-upload-text">{uploading ? 'Uploading...' : 'Upload Event Flyer'}</div>
+                      <div className="flyer-upload-hint">JPG, PNG, WebP</div>
+                    </>
+                  )}
                 </label>
               </div>
 
@@ -422,12 +435,23 @@ export default function EventsPage() {
               <div className="modal-title" style={{ fontSize:'1.1rem', marginBottom:'1.5rem' }}>Edit Event</div>
               <div className="field-group">
                 <label className="field-label">Event Flyer</label>
-                <label className="upload-zone" style={{ cursor:'pointer' }}>
+                <label className={`flyer-upload-zone ${editForm.flyer_url ? 'has-image' : ''}`}>
                   <input ref={editFlyerRef} type="file" accept="image/*" style={{ display:'none' }} onChange={uploadEditFlyer} />
-                  {editForm.flyer_url
-                    ? <img src={editForm.flyer_url} className="upload-thumb" alt="flyer" style={{ maxHeight:'120px', width:'100%', objectFit:'cover', borderRadius:'6px', marginBottom:'6px' }} />
-                    : '🖼 Upload new flyer'}
-                  <div style={{ fontSize:'0.65rem', color:'var(--muted)', marginTop:'4px' }}>Click to replace flyer</div>
+                  {editForm.flyer_url ? (
+                    <>
+                      <img src={editForm.flyer_url} alt="flyer" />
+                      <div className="flyer-overlay">
+                        <div className="flyer-upload-icon">🖼</div>
+                        <div className="flyer-upload-text">Click to replace</div>
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <div className="flyer-upload-icon">🖼</div>
+                      <div className="flyer-upload-text">Upload Event Flyer</div>
+                      <div className="flyer-upload-hint">JPG, PNG, WebP</div>
+                    </>
+                  )}
                 </label>
               </div>
               <div className="field-group">
