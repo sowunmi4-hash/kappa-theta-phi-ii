@@ -81,13 +81,13 @@ nav.scrolled { background: rgba(15,27,51,0.97); backdrop-filter: blur(12px); }
 .side-label.right { right: 3.8rem; }
 
 /* Footer inside hero */
-footer {
+.hero footer {
   position: absolute; bottom: 0; left: 0; width: 100%;
   padding: 1.5rem 2rem; text-align: center; z-index: 10;
   border-top: 1px solid rgba(198,147,10,0.1);
 }
 .footer-brand { font-family: 'Noto Serif JP', serif; font-size: 1rem; font-weight: 700; color: var(--gold); letter-spacing: 3px; margin-bottom: 0.8rem; }
-footer p { font-size: 0.8rem; color: var(--grey-light); letter-spacing: 2px; }
+.hero footer p { font-size: 0.8rem; color: var(--grey-light); letter-spacing: 2px; }
 
 /* ===== ANIMATIONS ===== */
 @keyframes emblemFade { from { opacity: 0; transform: scale(0.8); } to { opacity: 1; transform: scale(1); } }

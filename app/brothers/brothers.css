@@ -116,6 +116,7 @@
 
 /* Footer */
 .brothers-footer {
+  position: relative !important;
   padding: 2rem; text-align: center; border-top: 1px solid rgba(198,147,10,0.08); margin-top: 2rem;
 }
 .brothers-footer .footer-brand {
