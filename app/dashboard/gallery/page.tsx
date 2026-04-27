@@ -5,6 +5,7 @@ import '../dash.css';
 const NAV = [
   { href: '/dashboard', label: 'Home' },
   { href: '/dashboard/news', label: 'Wokou News' },
+  { href: '/dashboard/events', label: 'Events' },
   { href: '/dashboard/gallery', label: 'My Gallery' },
   { href: '/dashboard/edit', label: 'Edit Profile' },
 ];
