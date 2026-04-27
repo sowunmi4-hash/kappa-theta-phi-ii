@@ -33,7 +33,7 @@ export default function GalleryPage() {
   const [file, setFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
   const [status, setStatus] = useState<{ msg: string; type: 'error' | 'success' } | null>(null);
-  const [lightbox, setLightbox] = useState<string | null>(null);
+  const [lightbox, setLightbox] = useState<{ url: string; type: 'image' | 'youtube' } | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => { loadGallery(); }, []);
@@ -132,15 +132,18 @@ export default function GalleryPage() {
             <div className="gallery-empty">No posts yet. Be the first to share a moment.</div>
           )}
           {filtered.map(post => (
-            <div className="gallery-item" key={post.id} onClick={() => !isYouTube(post.file_url) && post.file_type === 'image' && setLightbox(post.file_url)}>
+            <div className="gallery-item" key={post.id} onClick={() => {
+              if (isYouTube(post.file_url)) setLightbox({ url: post.file_url, type: 'youtube' });
+              else if (post.file_type === 'image') setLightbox({ url: post.file_url, type: 'image' });
+            }}>
               {isYouTube(post.file_url) ? (
-                <div className="gallery-yt-wrap" onClick={e => e.stopPropagation()}>
-                  <iframe
-                    src={`https://www.youtube.com/embed/${getYouTubeId(post.file_url)}`}
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowFullScreen
+                <div className="gallery-yt-wrap">
+                  <img
+                    src={`https://img.youtube.com/vi/${getYouTubeId(post.file_url)}/hqdefault.jpg`}
+                    alt={post.caption || 'Video'}
                     loading="lazy"
                   />
+                  <div className="gallery-yt-play">▶</div>
                 </div>
               ) : post.file_type === 'video' ? (
                 <video src={post.file_url} controls preload="metadata" />
@@ -161,8 +164,18 @@ export default function GalleryPage() {
         {/* Lightbox */}
         {lightbox && (
           <div className="lightbox" onClick={() => setLightbox(null)}>
-            <img src={lightbox} alt="Full size" />
-            <div className="lightbox-close">✕</div>
+            {lightbox.type === 'youtube' ? (
+              <div className="lightbox-yt" onClick={e => e.stopPropagation()}>
+                <iframe
+                  src={`https://www.youtube.com/embed/${getYouTubeId(lightbox.url)}?autoplay=1`}
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                />
+              </div>
+            ) : (
+              <img src={lightbox.url} alt="Full size" />
+            )}
+            <div className="lightbox-close" onClick={() => setLightbox(null)}>✕</div>
           </div>
         )}
 
