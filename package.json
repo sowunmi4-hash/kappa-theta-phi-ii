@@ -2,8 +2,17 @@
   "name": "kappa-theta-phi-ii",
   "version": "1.0.0",
   "description": "Kappa Theta Phi II Fraternity - Wokou-Corsairs",
+  "private": true,
   "scripts": {
-    "start": "npx serve .",
-    "build": "echo 'Static site - no build needed'"
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start"
+  },
+  "dependencies": {
+    "next": "^15.3.2",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "@supabase/supabase-js": "^2.49.4",
+    "bcryptjs": "^3.0.2"
   }
 }

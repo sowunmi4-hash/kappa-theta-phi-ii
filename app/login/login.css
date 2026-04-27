@@ -1,0 +1,64 @@
+@import '../globals.css';
+
+.login-page { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 6rem 2rem 2rem; background: linear-gradient(180deg, var(--navy-deep) 0%, var(--ink) 100%); position: relative; overflow: hidden; }
+
+.login-page::before { content: '門'; position: absolute; font-family: 'Noto Serif JP', serif; font-size: 30vw; font-weight: 900; color: rgba(198,147,10,0.02); top: 50%; left: 50%; transform: translate(-50%, -50%); pointer-events: none; }
+
+.gate-card { position: relative; z-index: 2; width: 100%; max-width: 480px; background: rgba(27,42,74,0.25); border: 1px solid rgba(198,147,10,0.15); border-radius: 2px; padding: 3rem 2.5rem; }
+
+.gate-logo { width: 100px; height: auto; display: block; margin: 0 auto 1.5rem; filter: drop-shadow(0 0 20px rgba(198,147,10,0.2)); }
+
+.gate-label { font-family: 'Rajdhani', sans-serif; font-size: 0.75rem; font-weight: 600; letter-spacing: 6px; text-transform: uppercase; color: var(--crimson); text-align: center; margin-bottom: 0.5rem; }
+
+.gate-title { font-family: 'Noto Serif JP', serif; font-size: 1.8rem; font-weight: 900; color: var(--gold); text-align: center; margin-bottom: 1.2rem; }
+
+.gate-copy { font-size: 0.9rem; color: rgba(245,240,232,0.55); text-align: center; line-height: 1.7; margin-bottom: 1.5rem; }
+
+.gate-divider { width: 60px; height: 1px; background: linear-gradient(90deg, transparent, var(--gold), transparent); margin: 0 auto 1.5rem; }
+
+.gate-form { display: flex; flex-direction: column; gap: 1.2rem; }
+
+.form-group { display: flex; flex-direction: column; gap: 0.4rem; }
+.form-group label { font-family: 'Noto Serif JP', serif; font-size: 0.75rem; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; color: rgba(198,147,10,0.6); }
+.form-group input {
+  background: rgba(15,27,51,0.6); border: 1px solid rgba(198,147,10,0.2); border-radius: 2px;
+  padding: 0.85rem 1rem; color: var(--bone); font-family: 'Rajdhani', sans-serif; font-size: 1rem;
+  letter-spacing: 1px; outline: none; transition: border-color 0.3s;
+}
+.form-group input:focus { border-color: var(--gold); }
+.form-group input::placeholder { color: rgba(245,240,232,0.25); }
+
+.gate-submit {
+  background: linear-gradient(135deg, var(--crimson-dark), var(--crimson)); border: 1px solid rgba(198,147,10,0.3);
+  color: var(--bone); font-family: 'Noto Serif JP', serif; font-size: 0.9rem; font-weight: 700;
+  letter-spacing: 4px; text-transform: uppercase; padding: 0.9rem; cursor: pointer;
+  transition: all 0.3s; border-radius: 2px; margin-top: 0.5rem;
+}
+.gate-submit:hover { background: linear-gradient(135deg, var(--crimson), #D4263E); border-color: var(--gold); }
+.gate-submit:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.gate-note { font-size: 0.75rem; color: rgba(245,240,232,0.3); text-align: center; margin-top: 1rem; letter-spacing: 1px; }
+
+.login-error { background: rgba(178,34,52,0.15); border: 1px solid rgba(178,34,52,0.4); color: #ff6b6b; padding: 0.8rem 1rem; font-size: 0.85rem; border-radius: 2px; text-align: center; margin-bottom: 1rem; }
+
+.login-success { background: rgba(74,155,111,0.15); border: 1px solid rgba(74,155,111,0.4); color: #6bffaa; padding: 0.8rem 1rem; font-size: 0.85rem; border-radius: 2px; text-align: center; margin-bottom: 1rem; }
+
+/* Password creation state */
+.password-section { display: flex; flex-direction: column; gap: 1.2rem; }
+.welcome-name { font-family: 'Noto Serif JP', serif; font-size: 1.1rem; color: var(--gold-light); text-align: center; margin-bottom: 0.5rem; }
+
+/* Logged in state */
+.session-panel { display: flex; flex-direction: column; align-items: center; gap: 1.2rem; text-align: center; }
+.session-name { font-family: 'Noto Serif JP', serif; font-size: 1.2rem; color: var(--gold); }
+.session-role { font-size: 0.8rem; letter-spacing: 4px; text-transform: uppercase; color: var(--crimson); }
+.session-links { display: flex; gap: 1.5rem; margin-top: 1rem; }
+.session-links a {
+  font-family: 'Noto Serif JP', serif; font-size: 0.85rem; font-weight: 700;
+  letter-spacing: 3px; text-transform: uppercase; color: var(--gold);
+  text-decoration: none; padding: 0.6rem 1.5rem;
+  border: 1px solid rgba(198,147,10,0.3); border-radius: 2px;
+  transition: all 0.3s;
+}
+.session-links a:hover { background: rgba(198,147,10,0.1); border-color: var(--gold); }
+.session-logout { font-size: 0.75rem; color: rgba(245,240,232,0.35); cursor: pointer; text-decoration: underline; margin-top: 0.5rem; border: none; background: none; }
+.session-logout:hover { color: var(--crimson); }

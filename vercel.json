@@ -1,6 +1,3 @@
 {
-  "buildCommand": "",
-  "outputDirectory": ".",
-  "framework": null,
-  "cleanUrls": true
+  "framework": "nextjs"
 }
