@@ -12,17 +12,17 @@ type Member = {
 };
 
 const FOUNDERS: Member[] = [
-  { frat: 'Big Bro Tactician', role: 'Head Founder', fraction: 'Kuro Kanda', title: 'Shogun', iron: true },
-  { frat: 'Big Brother Boss Sauce', role: 'Senior Founder', fraction: 'Ishi No', title: 'Shogun', iron: true },
-  { frat: 'Big Brother Energy', role: 'Senior Founder', fraction: 'Kurofune', title: 'Shogun', iron: true },
-  { frat: 'Big Brother Cool Breeze', role: 'Senior Founder', iron: true },
+  { frat: 'Big Bro Tactician', role: 'Head Founder', fraction: 'Kuro Kanda', title: 'Shogun', iron: true, image: '/brothers/tactician.png' },
+  { frat: 'Big Brother Boss Sauce', role: 'Senior Founder', fraction: 'Ishi No', title: 'Shogun', iron: true, image: '/brothers/boss-sauce.png' },
+  { frat: 'Big Brother Energy', role: 'Senior Founder', fraction: 'Kurofune', title: 'Shogun', iron: true, image: '/brothers/energy.png' },
+  { frat: 'Big Brother Cool Breeze', role: 'Senior Founder', iron: true, image: '/brothers/cool-breeze.png' },
   { frat: 'Big Brother Violator', role: 'Senior Founder' },
 ];
 
 const IRON_FLEET: Member[] = [
-  { frat: 'Big Brother Substance', role: 'Iron Fleet', fraction: 'Taidō', title: 'Daimyo', iron: true },
-  { frat: 'Big Brother Noles', role: 'Iron Fleet', fraction: 'Ishi No', title: 'Daimyo', iron: true },
-  { frat: 'Big Brother Wildwon', role: 'Iron Fleet', fraction: 'Kuro Kanda', title: 'Daimyo', iron: true },
+  { frat: 'Big Brother Substance', role: 'Iron Fleet', fraction: 'Taidō', title: 'Daimyo', iron: true, image: '/brothers/substance.png' },
+  { frat: 'Big Brother Noles', role: 'Iron Fleet', fraction: 'Ishi No', title: 'Daimyo', iron: true, image: '/brothers/noles.png' },
+  { frat: 'Big Brother Wildwon', role: 'Iron Fleet', fraction: 'Kuro Kanda', title: 'Daimyo', iron: true, image: '/brothers/wildwon.png' },
   { frat: 'Big Brother CATALYST', role: 'Iron Fleet', fraction: 'Kuro Kanda', title: 'KyōKishi — Chief Officer', iron: true, image: '/brothers/catalyst.png' },
   { frat: 'Big Brother Trench', role: 'Iron Fleet', fraction: 'Ishi No', title: 'Kaizoku Kansatsu — Chief Officer', iron: true, image: '/brothers/trench.png' },
 ];
@@ -32,14 +32,14 @@ const BROTHERS: Member[] = [
   { frat: 'Big Brother Fathom', fraction: 'Kuro Kanda', title: 'Member' },
   { frat: 'Big Brother Khaos', fraction: 'Kuro Kanda', title: 'Member', image: '/brothers/khaos.png' },
   { frat: 'Big Brother Limitless', image: '/brothers/limitless.png' },
-  { frat: 'Big Brother 5 Star General' },
-  { frat: 'Big Brother Pristine' },
+  { frat: 'Big Brother 5 Star General', image: '/brothers/five-star-general.png' },
+  { frat: 'Big Brother Pristine', image: '/brothers/pristine.png' },
   { frat: 'Big Brother Deep Dive', image: '/brothers/deep-dive.png' },
   { frat: 'Big Brother Surge' },
-  { frat: 'Big Brother Reasonable' },
+  { frat: 'Big Brother Reasonable', image: '/brothers/reasonable.png' },
   { frat: 'Big Brother Nexus', image: '/brothers/nexus.png' },
   { frat: 'Big Brother Sentinel', image: '/brothers/sentinel.png' },
-  { frat: 'Big Brother Wildcard' },
+  { frat: 'Big Brother Wildcard', image: '/brothers/wildcard.png' },
 ];
 
 function getInitials(name: string) {
