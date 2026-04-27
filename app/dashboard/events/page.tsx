@@ -32,7 +32,11 @@ export default function EventsPage() {
   const [flyerPreview, setFlyerPreview] = useState('');
   const [form, setForm] = useState({ title:'', event_date:'', event_time:'', location:'', sl_url:'', dress_code:'', description:'', flyer_url:'' });
   const [saving, setSaving] = useState(false);
+  const [editing, setEditing] = useState<Event|null>(null);
+  const [editForm, setEditForm] = useState({ title:'', event_date:'', event_time:'', location:'', sl_url:'', dress_code:'', description:'', flyer_url:'' });
+  const [editSaving, setEditSaving] = useState(false);
   const flyerRef = useRef<HTMLInputElement>(null);
+  const editFlyerRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     fetch('/api/dashboard/profile').then(r=>r.json()).then(d => {
@@ -84,6 +88,30 @@ export default function EventsPage() {
     await fetch('/api/dashboard/events', { method:'DELETE', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ event_id }) });
     setSelected(null);
     await loadEvents();
+  }
+
+  function openEdit(ev: Event) {
+    setEditForm({ title: ev.title, event_date: ev.event_date, event_time: ev.event_time||'', location: ev.location||'', sl_url: ev.sl_url||'', dress_code: ev.dress_code||'', description: ev.description||'', flyer_url: ev.flyer_url||'' });
+    setEditing(ev);
+    setSelected(null);
+  }
+
+  async function saveEdit() {
+    if (!editing) return;
+    setEditSaving(true);
+    await fetch('/api/dashboard/events', { method:'PATCH', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ action:'edit', event_id: editing.id, ...editForm }) });
+    setEditing(null);
+    await loadEvents();
+    setEditSaving(false);
+  }
+
+  async function uploadEditFlyer(e: any) {
+    const file = e.target.files[0];
+    if (!file) return;
+    const fd = new FormData();
+    fd.append('file', file);
+    const res = await fetch('/api/dashboard/events', { method:'POST', body: fd }).then(r=>r.json());
+    if (res.file_url) setEditForm(f => ({ ...f, flyer_url: res.file_url }));
   }
 
   // Calendar helpers
@@ -314,9 +342,12 @@ export default function EventsPage() {
                 {selected.attending ? "✕ Can't Make It" : "✓ I'm Attending"}
               </button>
 
-              {/* Delete (own events or founders) */}
+              {/* Edit / Delete (own events or founders) */}
               {(selected.created_by_name === member.frat_name || ['Head Founder','Co-Founder','Iron Fleet'].includes(member.role)) && (
-                <button className="delete-btn" onClick={()=>deleteEvent(selected.id)}>Delete Event</button>
+                <div style={{ display:'flex', gap:'8px', marginTop:'0.5rem' }}>
+                  <button className="btn btn-ghost" style={{ flex:1, justifyContent:'center' }} onClick={()=>openEdit(selected)}>✏️ Edit Event</button>
+                  <button className="delete-btn" style={{ flex:'none', width:'auto', padding:'0.5rem 1rem', marginTop:0 }} onClick={()=>deleteEvent(selected.id)}>Delete</button>
+                </div>
               )}
             </div>
           </div>
@@ -376,6 +407,64 @@ export default function EventsPage() {
                   {saving ? 'Saving...' : 'Create Event'}
                 </button>
                 <button className="btn btn-ghost" onClick={()=>setCreating(false)}>Cancel</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ── EDIT EVENT MODAL ── */}
+      {editing && (
+        <div className="modal-overlay" onClick={()=>setEditing(null)}>
+          <div className="modal modal-create" onClick={e=>e.stopPropagation()}>
+            <button className="modal-close" onClick={()=>setEditing(null)}>✕</button>
+            <div className="modal-body">
+              <div className="modal-title" style={{ fontSize:'1.1rem', marginBottom:'1.5rem' }}>Edit Event</div>
+              <div className="field-group">
+                <label className="field-label">Event Flyer</label>
+                <label className="upload-zone" style={{ cursor:'pointer' }}>
+                  <input ref={editFlyerRef} type="file" accept="image/*" style={{ display:'none' }} onChange={uploadEditFlyer} />
+                  {editForm.flyer_url
+                    ? <img src={editForm.flyer_url} className="upload-thumb" alt="flyer" style={{ maxHeight:'120px', width:'100%', objectFit:'cover', borderRadius:'6px', marginBottom:'6px' }} />
+                    : '🖼 Upload new flyer'}
+                  <div style={{ fontSize:'0.65rem', color:'var(--muted)', marginTop:'4px' }}>Click to replace flyer</div>
+                </label>
+              </div>
+              <div className="field-group">
+                <label className="field-label">Event Title *</label>
+                <input className="field-input" value={editForm.title} onChange={e=>setEditForm(f=>({...f,title:e.target.value}))} />
+              </div>
+              <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:'10px' }}>
+                <div className="field-group">
+                  <label className="field-label">Date *</label>
+                  <input className="field-input" type="date" value={editForm.event_date} onChange={e=>setEditForm(f=>({...f,event_date:e.target.value}))} />
+                </div>
+                <div className="field-group">
+                  <label className="field-label">Time <span style={{ color:'var(--gold-dim)', fontWeight:'normal' }}>(SLT)</span></label>
+                  <input className="field-input" type="time" value={editForm.event_time} onChange={e=>setEditForm(f=>({...f,event_time:e.target.value}))} />
+                </div>
+              </div>
+              <div className="field-group">
+                <label className="field-label">SL Location / Sim Name</label>
+                <input className="field-input" value={editForm.location} onChange={e=>setEditForm(f=>({...f,location:e.target.value}))} />
+              </div>
+              <div className="field-group">
+                <label className="field-label">SL URL</label>
+                <input className="field-input" value={editForm.sl_url} onChange={e=>setEditForm(f=>({...f,sl_url:e.target.value}))} />
+              </div>
+              <div className="field-group">
+                <label className="field-label">Dress Code</label>
+                <input className="field-input" value={editForm.dress_code} onChange={e=>setEditForm(f=>({...f,dress_code:e.target.value}))} />
+              </div>
+              <div className="field-group">
+                <label className="field-label">Description</label>
+                <textarea className="field-textarea" style={{ minHeight:'80px' }} value={editForm.description} onChange={e=>setEditForm(f=>({...f,description:e.target.value}))} />
+              </div>
+              <div className="save-bar">
+                <button className="btn btn-gold" onClick={saveEdit} disabled={editSaving || !editForm.title || !editForm.event_date}>
+                  {editSaving ? 'Saving...' : 'Save Changes'}
+                </button>
+                <button className="btn btn-ghost" onClick={()=>setEditing(null)}>Cancel</button>
               </div>
             </div>
           </div>
