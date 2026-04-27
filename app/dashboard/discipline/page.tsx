@@ -138,7 +138,7 @@ export default function DisciplinePage() {
         <main className="dash-main">
           <div className="disc-hero"><div className="disc-hero-title">My Discipline Record</div><div className="disc-hero-sub">Your personal record — private and visible only to you</div></div>
           <div className="disc-content">
-            <MemberRecord violations={myRecord} />
+            <MemberRecord violations={myRecord} onReload={async()=>{ const d=await fetch('/api/dashboard/discipline/my-record').then(r=>r.json()); setMyRecord(d.violations||[]); }} />
           </div>
         </main>
       </div>
@@ -264,7 +264,7 @@ export default function DisciplinePage() {
           )}
 
           {/* MY RECORD */}
-          {tab==='my' && <MemberRecord violations={myRecord} />}
+          {tab==='my' && <MemberRecord violations={myRecord} onReload={async()=>{ const d=await fetch('/api/dashboard/discipline/my-record').then(r=>r.json()); setMyRecord(d.violations||[]); }} />}
         </div>
       </main>
 
@@ -276,7 +276,7 @@ export default function DisciplinePage() {
   );
 }
 
-function ViolationCard({ v, open, onToggle, canManage, onSSP, onFine, onLiftSusp, onCourtMarshall, onReload }:any) {
+function ViolationCard({ v, open, onToggle, canManage, isBrother, onSSP, onFine, onLiftSusp, onCourtMarshall, onReload }:any) {
   const [fineModal, setFineModal] = useState(false);
   const [planAmt, setPlanAmt]     = useState('');
   const [planNote, setPlanNote]   = useState('');
@@ -315,7 +315,7 @@ function ViolationCard({ v, open, onToggle, canManage, onSSP, onFine, onLiftSusp
         <div className="track-grid">
 
           {/* SSP */}
-          {v.ssp && <SSPBlock ssp={v.ssp} violationId={v.id} memberId={v.member_id} canManage={canManage} onSSP={onSSP} onReload={onReload} cleared={v.cleared} />}
+          {v.ssp && <SSPBlock ssp={v.ssp} violationId={v.id} memberId={v.member_id} canManage={canManage} isBrother={!!isBrother} onSSP={onSSP} onReload={onReload} cleared={v.cleared} />}
 
           {/* Fines */}
           {v.fines?.map((fine:any)=>(
@@ -394,7 +394,7 @@ function ViolationCard({ v, open, onToggle, canManage, onSSP, onFine, onLiftSusp
   );
 }
 
-function MemberRecord({ violations }:{ violations:any[] }) {
+function MemberRecord({ violations, onReload }:{ violations:any[], onReload?:()=>void }) {
   const [openCards, setOpenCards] = useState<Set<string>>(new Set());
   function toggle(id:string){ setOpenCards(p=>{const n=new Set(p);n.has(id)?n.delete(id):n.add(id);return n;}); }
 
@@ -415,7 +415,7 @@ function MemberRecord({ violations }:{ violations:any[] }) {
       </div>
       {violations.map(v=>(
         <ViolationCard key={v.id} v={v} open={openCards.has(v.id)} onToggle={()=>toggle(v.id)}
-          canManage={false} onSSP={()=>{}} onFine={()=>{}} onLiftSusp={()=>{}} onCourtMarshall={()=>{}} onReload={()=>{}} />
+          canManage={false} isBrother={true} onSSP={()=>{}} onFine={()=>{}} onLiftSusp={()=>{}} onCourtMarshall={()=>{}} onReload={onReload} />
       ))}
     </div>
   );
