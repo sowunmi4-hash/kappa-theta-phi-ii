@@ -9,7 +9,6 @@ export default function LoginPage() {
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
   const [loading, setLoading] = useState(false);
   const [member, setMember] = useState<any>(null);
 
@@ -24,7 +23,7 @@ export default function LoginPage() {
   }
 
   async function handleLogin(e: React.FormEvent) {
-    e.preventDefault(); setError(''); setSuccess(''); setLoading(true);
+    e.preventDefault(); setError(''); setLoading(true);
     try {
       const r = await fetch('/api/verify-login', {
         method: 'POST', credentials: 'include',
@@ -33,9 +32,11 @@ export default function LoginPage() {
       });
       const d = await r.json();
       if (d.needs_password) {
-        setMember(d.member); setStep('create-password'); setSuccess(`Welcome, ${d.member.frat_name}! Create your password to continue.`);
+        setMember(d.member);
+        setStep('create-password');
       } else if (d.success) {
-        setMember(d.member); setStep('logged-in');
+        setMember(d.member);
+        setStep('logged-in');
       } else {
         setError(d.message || 'Login failed. Please try again.');
       }
@@ -63,7 +64,7 @@ export default function LoginPage() {
   async function handleLogout() {
     await fetch('/api/logout', { method: 'POST', credentials: 'include' });
     setMember(null); setStep('login'); setFratName(''); setPassword('');
-    setNewPassword(''); setConfirmPassword(''); setError(''); setSuccess('');
+    setNewPassword(''); setConfirmPassword(''); setError('');
   }
 
   return (
@@ -85,7 +86,10 @@ export default function LoginPage() {
             <>
               <p className="gate-label">Brotherhood Access</p>
               <h2 className="gate-title">Enter the Gate</h2>
-              <p className="gate-copy">Access is granted through your Big Brother name. First time? Enter your name to set up your password.</p>
+              <p className="gate-copy">
+                Enter your Big Brother name and password to access the brotherhood.
+                First time logging in? Use the one-time password: <strong>KTF2026</strong>
+              </p>
               <div className="gate-divider" />
               {error && <div className="login-error">{error}</div>}
               <form className="gate-form" onSubmit={handleLogin}>
@@ -99,19 +103,21 @@ export default function LoginPage() {
                 </div>
                 <button type="submit" className="gate-submit" disabled={loading}>{loading ? 'Verifying...' : 'Enter'}</button>
               </form>
-              <p className="gate-note">First time? Enter your Big Brother name with any password to begin setup.</p>
+              <p className="gate-note">Access is granted only to verified brothers of KΘΦ II.</p>
             </>
           )}
 
           {step === 'create-password' && member && (
             <>
               <p className="gate-label">First Time Setup</p>
-              <h2 className="gate-title">Create Password</h2>
+              <h2 className="gate-title">Create Your Password</h2>
               <div className="welcome-name">{member.frat_name}</div>
-              <p className="gate-copy">Welcome, brother. Set your password to secure your access to the brotherhood.</p>
+              <p className="gate-copy">
+                Welcome, brother. The one-time password has been verified. 
+                Now create your personal password to secure your access going forward.
+              </p>
               <div className="gate-divider" />
               {error && <div className="login-error">{error}</div>}
-              {success && <div className="login-success">{success}</div>}
               <form className="gate-form" onSubmit={handleCreatePassword}>
                 <div className="form-group">
                   <label>New Password</label>
@@ -121,7 +127,7 @@ export default function LoginPage() {
                   <label>Confirm Password</label>
                   <input type="password" value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)} placeholder="Confirm your password" required />
                 </div>
-                <button type="submit" className="gate-submit" disabled={loading}>{loading ? 'Setting up...' : 'Set Password'}</button>
+                <button type="submit" className="gate-submit" disabled={loading}>{loading ? 'Setting up...' : 'Set Password & Enter'}</button>
               </form>
             </>
           )}
