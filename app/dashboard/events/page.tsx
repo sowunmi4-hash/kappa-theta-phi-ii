@@ -47,6 +47,12 @@ export default function EventsPage() {
     });
     loadEvents();
   }, []);
+  // POLLING: silent background refresh every 30s
+  useEffect(() => {
+    const poll = setInterval(() => { loadEvents(); }, 30000);
+    return () => clearInterval(poll);
+  }, []);
+
 
   async function loadEvents() {
     const d = await fetch('/api/dashboard/events').then(r=>r.json());

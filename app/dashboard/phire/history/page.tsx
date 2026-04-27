@@ -42,6 +42,15 @@ export default function PhireHistory() {
     fetch('/api/dashboard/phire/balance').then(r=>r.json()).then(d=>setTransactions(d.recent_transactions||[]));
   }, []);
 
+  // POLLING
+  useEffect(() => {
+    const poll = setInterval(() => {
+      fetch('/api/dashboard/phire/submissions?view=own').then(r=>r.json()).then(d=>setSubmissions(d.submissions||[]));
+      fetch('/api/dashboard/phire/balance').then(r=>r.json()).then(d=>setTransactions(d.recent_transactions||[]));
+    }, 30000);
+    return () => clearInterval(poll);
+  }, []);
+
   function timeAgo(d:string){ const s=Math.floor((Date.now()-new Date(d).getTime())/1000); if(s<60) return 'just now'; if(s<3600) return `${Math.floor(s/60)}m ago`; if(s<86400) return `${Math.floor(s/3600)}h ago`; return `${Math.floor(s/86400)}d ago`; }
 
   if (!member) return <div className="dash-loading">LOADING...</div>;

@@ -25,6 +25,16 @@ export default function DashHome() {
     });
   }, []);
 
+  // POLLING: refresh unread count and recent data every 30s
+  useEffect(() => {
+    const poll = setInterval(() => {
+      fetch('/api/dashboard/profile').then(r=>r.json()).then(d => {
+        if (!d.error) setData(d);
+      });
+    }, 30000);
+    return () => clearInterval(poll);
+  }, []);
+
   useEffect(() => {
     if (!drawerOpen) return;
     fetch('/api/dashboard/notifications').then(r => r.json()).then(d => setNotifs(d.notifications || []));

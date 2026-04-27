@@ -52,6 +52,12 @@ export default function PhireManage() {
     loadAll();
   }, []);
 
+  // POLLING: refresh approval queue every 20s
+  useEffect(() => {
+    const poll = setInterval(() => { loadAll(); }, 20000);
+    return () => clearInterval(poll);
+  }, []);
+
   async function loadAll() {
     const [q, a, reds] = await Promise.all([
       fetch('/api/dashboard/phire/submissions?view=pending').then(r=>r.json()),

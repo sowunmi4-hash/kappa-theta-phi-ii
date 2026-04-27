@@ -10,12 +10,20 @@ export default function PhireHome() {
   const [data, setData] = useState<any>(null);
   const [tiers, setTiers] = useState<any[]>([]);
 
-  useEffect(() => {
+  function loadData() {
     fetch('/api/dashboard/phire/balance').then(r=>r.json()).then(d => {
       if (d.error) { window.location.href='/login'; return; }
       setData(d);
     });
     fetch('/api/dashboard/phire/rewards').then(r=>r.json()).then(d => setTiers(d.tiers||[]));
+  }
+
+  useEffect(() => { loadData(); }, []);
+
+  // POLLING: silent background refresh every 30s
+  useEffect(() => {
+    const poll = setInterval(() => { loadData(); }, 30000);
+    return () => clearInterval(poll);
   }, []);
 
   if (!data) return <div className="dash-loading">LOADING...</div>;

@@ -30,6 +30,14 @@ export default function NewsPage() {
       setNews(d.news || []);
       setRole(d.role || '');
     });
+  // POLLING
+  useEffect(() => {
+    const poll = setInterval(() => {
+      fetch('/api/dashboard/news').then(r => r.json()).then(d => { setNews(d.news||[]); setRole(d.role||''); });
+    }, 30000);
+    return () => clearInterval(poll);
+  }, []);
+
   }, []);
 
   async function post() {
