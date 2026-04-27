@@ -5,7 +5,7 @@ const S = process.env.SUPABASE_URL;
 const K = process.env.SUPABASE_SECRET_KEY;
 const C = process.env.SESSION_COOKIE_NAME || 'ktf_session';
 const h = (x={}) => ({ apikey: K, Authorization: `Bearer ${K}`, 'Accept-Profile': 'members', ...x });
-const LEADERS = ['Head Founder','Co-Founder','Iron Fleet'];
+const LEADERS = ['Head Founder','Co-Founder','Senior Founder','Iron Fleet'];
 
 async function getMember(token) {
   const s = await fetch(`${S}/rest/v1/website_sessions?session_token=eq.${token}&is_active=eq.true&select=member_id`, { headers: h() }).then(r => r.json());
