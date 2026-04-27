@@ -8,18 +8,23 @@ type GalleryPost = {
   file_type: string;
   caption: string;
   uploaded_by: string;
+  event_tag: string | null;
   created_at: string;
 };
 
 const SUPABASE_URL = 'https://uamhroebetbacvxdvzxo.supabase.co';
+const ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVhbWhyb2ViZXRiYWN2eGR2enhvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY2ODY0MTEsImV4cCI6MjA5MjI2MjQxMX0.F_So-6St7sCFYPYksjrBeo_xJQ0B0Y-Lv5mAsj4ViJg';
 
 export default function GalleryPage() {
   const [posts, setPosts] = useState<GalleryPost[]>([]);
+  const [activeTab, setActiveTab] = useState('all');
+  const [tabs, setTabs] = useState<string[]>([]);
   const [caption, setCaption] = useState('');
   const [name, setName] = useState('');
   const [file, setFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
   const [status, setStatus] = useState<{ msg: string; type: 'error' | 'success' } | null>(null);
+  const [lightbox, setLightbox] = useState<string | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => { loadGallery(); }, []);
@@ -27,15 +32,18 @@ export default function GalleryPage() {
   async function loadGallery() {
     try {
       const r = await fetch(`${SUPABASE_URL}/rest/v1/gallery_posts?select=*&order=created_at.desc`, {
-        headers: {
-          'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVhbWhyb2ViZXRiYWN2eGR2enhvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY2ODY0MTEsImV4cCI6MjA5MjI2MjQxMX0.F_So-6St7sCFYPYksjrBeo_xJQ0B0Y-Lv5mAsj4ViJg',
-          'Accept-Profile': 'members'
-        }
+        headers: { 'apikey': ANON_KEY, 'Accept-Profile': 'members' }
       });
       const d = await r.json();
-      if (Array.isArray(d)) setPosts(d);
+      if (Array.isArray(d)) {
+        setPosts(d);
+        const eventTags = [...new Set(d.map((p: GalleryPost) => p.event_tag).filter(Boolean))] as string[];
+        setTabs(eventTags);
+      }
     } catch {}
   }
+
+  const filtered = activeTab === 'all' ? posts : posts.filter(p => p.event_tag === activeTab);
 
   async function handleUpload() {
     if (!file) { setStatus({ msg: 'Please select a file.', type: 'error' }); return; }
@@ -45,7 +53,6 @@ export default function GalleryPage() {
       form.append('file', file);
       form.append('caption', caption);
       form.append('uploaded_by', name || 'Anonymous');
-
       const r = await fetch('/api/gallery-upload', { method: 'POST', body: form });
       const d = await r.json();
       if (d.success) {
@@ -53,9 +60,7 @@ export default function GalleryPage() {
         setFile(null); setCaption(''); setName('');
         if (fileRef.current) fileRef.current.value = '';
         loadGallery();
-      } else {
-        setStatus({ msg: d.message || 'Upload failed.', type: 'error' });
-      }
+      } else { setStatus({ msg: d.message || 'Upload failed.', type: 'error' }); }
     } catch { setStatus({ msg: 'Connection error.', type: 'error' }); }
     finally { setUploading(false); }
   }
@@ -91,6 +96,15 @@ export default function GalleryPage() {
           </div>
         </section>
 
+        {/* Tabs */}
+        <div className="gallery-tabs">
+          <button className={`gallery-tab ${activeTab === 'all' ? 'active' : ''}`} onClick={() => setActiveTab('all')}>All</button>
+          {tabs.map(t => (
+            <button key={t} className={`gallery-tab ${activeTab === t ? 'active' : ''}`} onClick={() => setActiveTab(t)}>{t}</button>
+          ))}
+        </div>
+
+        {/* Upload bar */}
         <div className="upload-bar">
           <input type="text" placeholder="Your name" value={name} onChange={e => setName(e.target.value)} />
           <input type="text" placeholder="Add a caption..." value={caption} onChange={e => setCaption(e.target.value)} />
@@ -105,11 +119,11 @@ export default function GalleryPage() {
         </div>
 
         <div className="gallery-grid">
-          {posts.length === 0 && (
+          {filtered.length === 0 && (
             <div className="gallery-empty">No posts yet. Be the first to share a moment.</div>
           )}
-          {posts.map(post => (
-            <div className="gallery-item" key={post.id}>
+          {filtered.map(post => (
+            <div className="gallery-item" key={post.id} onClick={() => post.file_type === 'image' && setLightbox(post.file_url)}>
               {post.file_type === 'video' ? (
                 <video src={post.file_url} controls preload="metadata" />
               ) : (
@@ -125,6 +139,14 @@ export default function GalleryPage() {
             </div>
           ))}
         </div>
+
+        {/* Lightbox */}
+        {lightbox && (
+          <div className="lightbox" onClick={() => setLightbox(null)}>
+            <img src={lightbox} alt="Full size" />
+            <div className="lightbox-close">✕</div>
+          </div>
+        )}
 
         <footer className="gallery-footer">
           <div className="footer-brand">KΘΦ II — WOKOU-CORSAIRS</div>
