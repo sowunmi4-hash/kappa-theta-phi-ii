@@ -108,7 +108,9 @@ export default function EventsPage() {
     if (!t) return '';
     const [h,m] = t.split(':');
     const hr = parseInt(h);
-    return `${hr > 12 ? hr-12 : hr || 12}:${m} ${hr >= 12 ? 'PM' : 'AM'}`;
+    const ampm = hr >= 12 ? 'PM' : 'AM';
+    const hr12 = hr > 12 ? hr - 12 : hr === 0 ? 12 : hr;
+    return `${hr12}:${m} ${ampm} SLT`;
   }
 
   const upcomingEvents = events.filter(e => new Date(e.event_date + 'T23:59:59') >= today).slice(0,3);
@@ -349,7 +351,7 @@ export default function EventsPage() {
                   <input className="field-input" type="date" value={form.event_date} onChange={e=>setForm(f=>({...f,event_date:e.target.value}))} />
                 </div>
                 <div className="field-group">
-                  <label className="field-label">Time</label>
+                  <label className="field-label">Time <span style={{ color:'var(--gold-dim)', fontWeight:'normal', letterSpacing:'1px' }}>(SLT — Pacific Time)</span></label>
                   <input className="field-input" type="time" value={form.event_time} onChange={e=>setForm(f=>({...f,event_time:e.target.value}))} />
                 </div>
               </div>
