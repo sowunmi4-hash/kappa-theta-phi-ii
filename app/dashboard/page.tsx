@@ -2,13 +2,6 @@
 import { useState, useEffect, useRef } from 'react';
 import './dash.css';
 
-// Silent state update — only triggers re-render if data actually changed
-function silentSet<T>(setter: React.Dispatch<React.SetStateAction<T>>, newVal: T) {
-  setter(prev => {
-    if (JSON.stringify(prev) === JSON.stringify(newVal)) return prev;
-    return newVal;
-  });
-}
 
 
 const NAV = [
@@ -39,7 +32,7 @@ export default function DashHome() {
   useEffect(() => {
     const poll = setInterval(() => {
       fetch('/api/dashboard/profile').then(r=>r.json()).then(d => {
-        if (!d.error) silentSet(setData, d);
+        if (!d.error) setData(d);
       });
     }, 30000);
     return () => clearInterval(poll);

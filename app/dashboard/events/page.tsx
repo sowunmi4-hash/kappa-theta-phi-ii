@@ -3,13 +3,6 @@ import { useState, useEffect, useRef } from 'react';
 import '../dash.css';
 import './events.css';
 
-// Silent state update — only triggers re-render if data actually changed
-function silentSet<T>(setter: React.Dispatch<React.SetStateAction<T>>, newVal: T) {
-  setter(prev => {
-    if (JSON.stringify(prev) === JSON.stringify(newVal)) return prev;
-    return newVal;
-  });
-}
 
 
 const NAV = [
@@ -66,7 +59,7 @@ export default function EventsPage() {
 
   async function loadEvents() {
     const d = await fetch('/api/dashboard/events').then(r=>r.json());
-    silentSet(setEvents, d.events || []);
+    setEvents(d.events || []);
   }
 
   async function uploadFlyer(e: any) {

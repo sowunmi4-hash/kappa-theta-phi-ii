@@ -4,13 +4,6 @@ import { useState, useEffect } from 'react';
 import '../dash.css';
 import './ssp.css';
 
-// Silent state update — only triggers re-render if data actually changed
-function silentSet<T>(setter: React.Dispatch<React.SetStateAction<T>>, newVal: T) {
-  setter(prev => {
-    if (JSON.stringify(prev) === JSON.stringify(newVal)) return prev;
-    return newVal;
-  });
-}
 
 
 const LESSONS = [
@@ -114,7 +107,7 @@ export default function SSPPage() {
     fetch('/api/dashboard/ssp').then(r => r.json()).then(d => {
       if (d.error) { window.location.href = '/login'; return; }
       setMember(d.member);
-      silentSet(setSsps, d.ssps || []);
+      setSsps(d.ssps || []);
       // Auto-select the first active (enrolled) SSP
       const enrolled = d.ssps?.find((s:any) => s.status === 'enrolled');
       if (enrolled) setActive(enrolled.id);

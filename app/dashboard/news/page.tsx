@@ -2,13 +2,6 @@
 import { useState, useEffect } from 'react';
 import '../dash.css';
 
-// Silent state update — only triggers re-render if data actually changed
-function silentSet<T>(setter: React.Dispatch<React.SetStateAction<T>>, newVal: T) {
-  setter(prev => {
-    if (JSON.stringify(prev) === JSON.stringify(newVal)) return prev;
-    return newVal;
-  });
-}
 
 
 const LEADERS = ['Head Founder','Co-Founder','Co-Founder','Iron Fleet'];
@@ -37,13 +30,13 @@ export default function NewsPage() {
       setMember(d.member);
     });
     fetch('/api/dashboard/news').then(r => r.json()).then(d => {
-      silentSet(setNews, d.news || []);
-      silentSet(setRole, d.role || '');
+      setNews(d.news || []);
+      setRole(d.role || '');
     });
   // POLLING
   useEffect(() => {
     const poll = setInterval(() => {
-      fetch('/api/dashboard/news').then(r => r.json()).then(d => { silentSet(setNews, d.news||[]); silentSet(setRole, d.role||''); });
+      fetch('/api/dashboard/news').then(r => r.json()).then(d => { setNews(d.news||[]); setRole(d.role||''); });
     }, 30000);
     return () => clearInterval(poll);
   }, []);

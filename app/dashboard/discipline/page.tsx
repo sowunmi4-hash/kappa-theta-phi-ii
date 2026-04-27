@@ -4,13 +4,6 @@ import { useState, useEffect, useRef } from 'react';
 import '../dash.css';
 import './discipline.css';
 
-// Silent state update — only triggers re-render if data actually changed
-function silentSet<T>(setter: React.Dispatch<React.SetStateAction<T>>, newVal: T) {
-  setter(prev => {
-    if (JSON.stringify(prev) === JSON.stringify(newVal)) return prev;
-    return newVal;
-  });
-}
 
 
 const COLORS = [
@@ -61,7 +54,7 @@ export default function DisciplinePage() {
       loadAll();
       fetch('/api/dashboard/roster').then(r=>r.json()).then(d=>setRoster(d.members||[]));
     }
-    fetch('/api/dashboard/discipline/my-record').then(r=>r.json()).then(d=>silentSet(setMyRecord, d.violations||[]));
+    fetch('/api/dashboard/discipline/my-record').then(r=>r.json()).then(d=>setMyRecord(d.violations||[]));
     setLoading(false);
   }, [member]);
 
@@ -71,14 +64,14 @@ export default function DisciplinePage() {
     const manage = member.fraction==='Ishi No Fraction' || member.role==='Head Founder' || member.role==='Co-Founder';
     const poll = setInterval(() => {
       if (manage) loadAll();
-      fetch('/api/dashboard/discipline/my-record').then(r=>r.json()).then(d=>silentSet(setMyRecord, d.violations||[]));
+      fetch('/api/dashboard/discipline/my-record').then(r=>r.json()).then(d=>setMyRecord(d.violations||[]));
     }, 30000);
     return () => clearInterval(poll);
   }, [member]);
 
   async function loadAll() {
     const d = await fetch('/api/dashboard/discipline/violations?view=all').then(r=>r.json());
-    silentSet(setViolations, d.violations||[]);
+    setViolations(d.violations||[]);
   }
 
   function toggleCard(id:string) {
