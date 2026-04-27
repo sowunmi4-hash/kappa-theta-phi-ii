@@ -45,7 +45,7 @@ export async function PATCH(req) {
       method: 'POST', headers: ch(),
       body: JSON.stringify({
         member_id,
-        title: '✅ Cleared — SSP Completed',
+        title: 'Cleared — SSP Completed',
         message: `You have successfully completed the Sage Solution Program and all charges have been cleared. Well done, brother.`,
         created_by: member.id
       })

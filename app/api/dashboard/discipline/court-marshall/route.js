@@ -10,7 +10,7 @@ export async function POST(req) {
 
   // Notify the brother of the verdict
   await fetch(`${S}/rest/v1/notifications`, { method: 'POST', headers: ch(),
-    body: JSON.stringify({ member_id, title: '⚖️ Court Marshall Verdict', message: `Your Court Marshall verdict has been logged. Check the Discipline tab for details.`, created_by: member.id }) });
+    body: JSON.stringify({ member_id, title: 'Court Marshall Verdict', message: `Your Court Marshall verdict has been logged. Check the Discipline tab for details.`, created_by: member.id }) });
 
   return NextResponse.json({ success: true });
 }

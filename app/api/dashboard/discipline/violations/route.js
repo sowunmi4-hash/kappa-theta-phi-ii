@@ -88,7 +88,7 @@ export async function POST(req) {
 
   // Notify the brother
   await fetch(`${S}/rest/v1/notifications`, { method: 'POST', headers: ch(),
-    body: JSON.stringify({ member_id, title: '⚠️ Discipline Notice', message: `A ${offense_color.replace('_',' ').toUpperCase()} offense has been issued against you. Check the Discipline tab for details.`, created_by: member.id }) });
+    body: JSON.stringify({ member_id, title: 'Discipline Notice', message: `A ${offense_color.replace('_',' ').toUpperCase()} offense has been issued against you. Check the Discipline tab for details.`, created_by: member.id }) });
 
   return NextResponse.json({ success: true, violation_id: v.id });
 }

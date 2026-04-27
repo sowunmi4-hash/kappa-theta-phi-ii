@@ -5,10 +5,10 @@ import '../dash.css';
 import './discipline.css';
 
 const COLORS = [
-  { id:'grey',       label:'Grey',        icon:'⚫' },
-  { id:'navy_blue',  label:'Navy Blue',   icon:'🔵' },
-  { id:'gold',       label:'Gold',        icon:'🟡' },
-  { id:'crimson_red',label:'Crimson Red', icon:'🔴' },
+  { id:'grey',       label:'Grey',        icon:'' },
+  { id:'navy_blue',  label:'Navy Blue',   icon:'' },
+  { id:'gold',       label:'Gold',        icon:'' },
+  { id:'crimson_red',label:'Crimson Red', icon:'' },
 ];
 const FINE_AMOUNTS: Record<string,number> = { navy_blue:1500, gold:3000 };
 const SSP_STATUS_LABELS: Record<string,string> = { offered:'Offered', enrolled:'Enrolled', completed:'Completed', opted_out:'Opted Out' };
@@ -75,8 +75,8 @@ export default function DisciplinePage() {
       body: JSON.stringify({ ...form, violations: form.violations.filter(v=>v.trim()),
         member_name: roster.find(r=>r.member_id===form.member_id)?.frat_name||'Unknown' })
     }).then(r=>r.json());
-    if (res.error) { setSubmitMsg(`❌ ${res.error}`); setSubmitting(false); return; }
-    setSubmitMsg('✅ Violation issued successfully.');
+    if (res.error) { setSubmitMsg(`${res.error}`); setSubmitting(false); return; }
+    setSubmitMsg('Violation issued successfully.');
     setForm({ member_id:'', offense_color:'grey', violations:[''], is_repeat:false, notes:'' });
     setSubmitting(false);
     await loadAll();
@@ -162,7 +162,7 @@ export default function DisciplinePage() {
 
       <main className="dash-main">
         <div className="disc-hero">
-          <div className="disc-hero-title">⚖️ Discipline & Enforcement</div>
+          <div className="disc-hero-title">Discipline & Enforcement</div>
           <div className="disc-hero-sub">KΘΦ II Color System — Ishi No Faction Management</div>
         </div>
 
@@ -199,10 +199,10 @@ export default function DisciplinePage() {
           {/* ISSUE VIOLATION */}
           {tab==='issue' && (
             <div className="disc-form-wrap">
-              <div className="disc-form-title">⚠️ Issue New Violation</div>
+              <div className="disc-form-title">Issue New Violation</div>
 
               {submitMsg && (
-                <div style={{padding:'0.7rem 1rem',borderRadius:'6px',marginBottom:'1rem',fontSize:'0.82rem',background:submitMsg.startsWith('✅')?'rgba(74,222,128,0.08)':'rgba(178,34,52,0.08)',border:`1px solid ${submitMsg.startsWith('✅')?'rgba(74,222,128,0.2)':'rgba(178,34,52,0.2)'}`,color:submitMsg.startsWith('✅')?'#4ade80':'#e05070'}}>
+                <div style={{padding:'0.7rem 1rem',borderRadius:'6px',marginBottom:'1rem',fontSize:'0.82rem',background:submitMsg.startsWith('')?'rgba(74,222,128,0.08)':'rgba(178,34,52,0.08)',border:`1px solid ${submitMsg.startsWith('')?'rgba(74,222,128,0.2)':'rgba(178,34,52,0.2)'}`,color:submitMsg.startsWith('')?'#4ade80':'#e05070'}}>
                   {submitMsg}
                 </div>
               )}
@@ -245,7 +245,7 @@ export default function DisciplinePage() {
                   {form.violations.map((v,i)=>(
                     <div key={i} className="disc-violation-row">
                       <input className="disc-violation-input" value={v} onChange={e=>{const a=[...form.violations];a[i]=e.target.value;setForm(f=>({...f,violations:a}));}} placeholder={`Violation ${i+1}...`} />
-                      {form.violations.length>1 && <button className="disc-remove-btn" onClick={()=>setForm(f=>({...f,violations:f.violations.filter((_,j)=>j!==i)}))}>✕</button>}
+                      {form.violations.length>1 && <button className="disc-remove-btn" onClick={()=>setForm(f=>({...f,violations:f.violations.filter((_,j)=>j!==i)}))}></button>}
                     </div>
                   ))}
                   <button className="disc-add-violation" onClick={()=>setForm(f=>({...f,violations:[...f.violations,'']}))}>+ Add another violation</button>
@@ -258,7 +258,7 @@ export default function DisciplinePage() {
               </div>
 
               <button className="btn btn-gold" style={{background:'var(--crimson-c)',borderColor:'var(--crimson-c)',color:'#fff'}} onClick={issueViolation} disabled={submitting}>
-                {submitting ? 'Issuing...' : '⚠️ Issue Violation'}
+                {submitting ? 'Issuing...' : 'Issue Violation'}
               </button>
             </div>
           )}
@@ -348,7 +348,7 @@ function ViolationCard({ v, open, onToggle, canManage, onSSP, onFine, onLiftSusp
           {v.warrants?.map((w:any)=>(
             <div key={w.id} className="track-block">
               <div className="track-label">Warrant #{w.warrant_number}</div>
-              <div className="track-status" style={{color:'var(--crimson-c)'}}>⚠️ Warrant Issued</div>
+              <div className="track-status" style={{color:'var(--crimson-c)'}}>Warrant Issued</div>
               <div className="track-detail">Issued {timeAgo(w.issued_at)}</div>
             </div>
           ))}
@@ -357,7 +357,7 @@ function ViolationCard({ v, open, onToggle, canManage, onSSP, onFine, onLiftSusp
           {v.suspensions?.map((s:any)=>(
             <div key={s.id} className="track-block">
               <div className="track-label">Suspension</div>
-              <div className="track-status" style={{color:s.status==='active'?'var(--crimson-c)':'#4ade80'}}>{s.status==='active'?'🔴 Active':'🟢 Lifted'}</div>
+              <div className="track-status" style={{color:s.status==='active'?'var(--crimson-c)':'#4ade80'}}>{s.status==='active'?' Active':'Lifted'}</div>
               <div className="track-detail">{new Date(s.start_date+'T12:00:00').toLocaleDateString('en-GB',{day:'numeric',month:'short'})} → {new Date(s.end_date+'T12:00:00').toLocaleDateString('en-GB',{day:'numeric',month:'short'})}</div>
               <div className="track-detail" style={{marginTop:'2px'}}>No frat gear. No frat activities.</div>
               {s.status==='lifted' && <div className="track-detail">Lifted by {s.lifted_by_name}</div>}
@@ -371,7 +371,7 @@ function ViolationCard({ v, open, onToggle, canManage, onSSP, onFine, onLiftSusp
               <div className="track-label">Court Marshall</div>
               {v.court_marshall ? (
                 <>
-                  <div className="track-status">⚖️ Verdict Logged</div>
+                  <div className="track-status">️ Verdict Logged</div>
                   {v.court_marshall.held_at && <div className="track-detail">Held: {new Date(v.court_marshall.held_at+'T12:00:00').toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'})}</div>}
                   {v.court_marshall.verdict && <div className="track-detail" style={{marginTop:'4px'}}><strong style={{color:'var(--bone)'}}>Verdict:</strong> {v.court_marshall.verdict}</div>}
                   {v.court_marshall.consequences && <div className="track-detail" style={{marginTop:'4px'}}><strong style={{color:'var(--bone)'}}>Consequences:</strong> {v.court_marshall.consequences}</div>}
@@ -401,7 +401,7 @@ function MemberRecord({ violations }:{ violations:any[] }) {
   if (violations.length===0) return (
     <div className="disc-my-wrap">
       <div className="disc-clean-record">
-        <div className="disc-clean-icon">✅</div>
+        <div className="disc-clean-icon"></div>
         <div style={{fontSize:'1rem',color:'var(--bone)',fontWeight:700,marginBottom:'0.5rem'}}>Clean Record</div>
         <div className="disc-clean-text">You have no violations on record. Keep it that way.</div>
       </div>
@@ -433,8 +433,8 @@ function CourtMarshallModal({ v, onClose, onSave }:any) {
     <div className="disc-modal-overlay" onClick={onClose}>
       <div className="disc-modal" onClick={e=>e.stopPropagation()}>
         <div className="disc-modal-header">
-          <div className="disc-modal-title">⚖️ Log Court Marshall Verdict</div>
-          <button className="disc-modal-close" onClick={onClose}>✕</button>
+          <div className="disc-modal-title">Log Court Marshall Verdict</div>
+          <button className="disc-modal-close" onClick={onClose}></button>
         </div>
         <div className="disc-modal-body">
           <div style={{fontSize:'0.82rem',color:'var(--muted)',marginBottom:'1rem'}}>Brother: <strong style={{color:'var(--bone)'}}>{v.member_name}</strong></div>
@@ -522,7 +522,7 @@ function SSPBlock({ ssp, violationId, memberId, canManage, onSSP, onReload, clea
       <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:'6px'}}>
         <div className="track-label">Sage Solution Program — Offer #{offerNum}/3</div>
         {cleared
-          ? <span style={{fontSize:'0.65rem',color:'#4ade80',background:'rgba(74,222,128,0.1)',border:'1px solid rgba(74,222,128,0.2)',padding:'2px 8px',borderRadius:'3px',letterSpacing:'1px'}}>✓ CLEARED</span>
+          ? <span style={{fontSize:'0.65rem',color:'#4ade80',background:'rgba(74,222,128,0.1)',border:'1px solid rgba(74,222,128,0.2)',padding:'2px 8px',borderRadius:'3px',letterSpacing:'1px'}}>CLEARED</span>
           : <span style={{fontSize:'0.65rem',color:'var(--muted)',letterSpacing:'1px'}}>{localSsp.status?.replace('_',' ').toUpperCase()}</span>
         }
       </div>
@@ -545,7 +545,7 @@ function SSPBlock({ ssp, violationId, memberId, canManage, onSSP, onReload, clea
       {(localSsp.status==='enrolled' || localSsp.status==='completed') && (
         <>
           <button className="disc-add-violation" style={{marginBottom:'8px'}} onClick={()=>setExpanded(v=>!v)}>
-            {expanded ? '▾ Hide Lessons' : `▸ ${canManage ? 'Track' : 'View'} Lessons (${SSP_LESSONS.filter(l=>localSsp[l.key]).length}/6 complete)`}
+            {expanded ? 'Hide Lessons' : `${canManage ? 'Track' : 'View'} Lessons (${SSP_LESSONS.filter(l=>localSsp[l.key]).length}/6 complete)`}
           </button>
 
           {expanded && (
@@ -553,7 +553,7 @@ function SSPBlock({ ssp, violationId, memberId, canManage, onSSP, onReload, clea
               {SSP_LESSONS.map((l,i)=>(
                 <div key={l.key} className={`ssp-lesson ${localSsp[l.key]?'done':''}`}
                   onClick={()=>canManage && !localSsp.cleared && toggleLesson(l.key, localSsp[l.key])}>
-                  <div className="ssp-lesson-check">{localSsp[l.key]?'✓':saving===l.key?'…':`${i+1}`}</div>
+                  <div className="ssp-lesson-check">{localSsp[l.key]?'':saving===l.key?'…':`${i+1}`}</div>
                   <div style={{flex:1}}>
                     <div className="ssp-lesson-title">Lesson {i+1} — {l.title}</div>
                     {localSsp[l.key] && <div className="ssp-lesson-desc">{l.desc}</div>}
@@ -564,7 +564,7 @@ function SSPBlock({ ssp, violationId, memberId, canManage, onSSP, onReload, clea
               {/* Reflections */}
               <div className={`ssp-lesson ${localSsp.reflections_done?'done':''}`}
                 onClick={()=>canManage && !localSsp.cleared && toggleReflections(localSsp.reflections_done)}>
-                <div className="ssp-lesson-check">{localSsp.reflections_done?'✓':saving==='reflect'?'…':'📝'}</div>
+                <div className="ssp-lesson-check">{localSsp.reflections_done?'':saving==='reflect'?'…':'#'}</div>
                 <div style={{flex:1}}>
                   <div className="ssp-lesson-title">Reflection Exercises Completed</div>
                   {!localSsp.reflections_done && <div className="ssp-lesson-desc">Attend all sessions, participate honestly, complete reflection exercises, show improved behavior over time.</div>}
@@ -577,14 +577,14 @@ function SSPBlock({ ssp, violationId, memberId, canManage, onSSP, onReload, clea
           {canManage && !localSsp.cleared && (
             <div style={{fontSize:'0.72rem',color:'var(--muted)',marginBottom:'8px',lineHeight:'1.5'}}>
               <strong style={{color:'var(--bone)'}}>Completion Standard:</strong> Must attend all 6 sessions, participate honestly, complete reflection exercises, and show improved behavior.
-              {allLessonsDone && localSsp.reflections_done && <span style={{color:'#4ade80'}}> ✓ All requirements met — ready to clear.</span>}
+              {allLessonsDone && localSsp.reflections_done && <span style={{color:'#4ade80'}}> All requirements met — ready to clear.</span>}
             </div>
           )}
 
           {/* Clear button */}
           {canManage && canClear && !localSsp.cleared && (
             <button className="track-btn green" style={{fontSize:'0.75rem',padding:'5px 14px'}} onClick={clearBrother} disabled={saving==='clear'}>
-              {saving==='clear' ? 'Clearing...' : '✓ Mark Cleared — All Charges Dismissed'}
+              {saving==='clear' ? 'Clearing...' : 'Mark Cleared — All Charges Dismissed'}
             </button>
           )}
 
