@@ -1,6 +1,6 @@
 export const metadata = {
   title: 'Kappa Theta Phi II Fraternity | Wokou-Corsairs',
-  description: 'Death by Dishonor · Est. 3/14/21',
+  description: 'Death before Dishonor · Est. 3/14/21',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

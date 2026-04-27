@@ -35,7 +35,7 @@ export default function HomePage() {
           </h1>
           <div className="hero-numeral">亗 WOKOU-CORSAIRS 亗</div>
           <div className="hero-divider"></div>
-          <div className="hero-motto">Death by Dishonor · Est. 3/14/21</div>
+          <div className="hero-motto">Death before Dishonor · Est. 3/14/21</div>
         </div>
 
         <a href="#video" className="hero-scroll-hint">
