@@ -21,7 +21,7 @@ export default function PhireManage() {
   const [saving, setSaving] = useState(false);
   const [msg, setMsg] = useState('');
 
-  const slug = member.frat_name?.toLowerCase().replace(/\s+/g,'-').replace('big-brother-','') || '';
+  const slug = member?.frat_name?.toLowerCase().replace(/\s+/g,'-').replace('big-brother-','') || '';
   const portrait = `/brothers/${slug}.png`;
   const NAV = [
     { href: '/dashboard', label: 'Home' },
@@ -36,8 +36,8 @@ export default function PhireManage() {
       <div className="dash-sidebar-logo"><img src="/logo.png" alt="KΘΦ II" /><span className="dash-sidebar-logo-text">KΘΦ II</span></div>
       <div className="dash-sidebar-member">
         <div className="dash-sidebar-portrait"><img src={portrait} alt="" onError={(e:any)=>e.target.src='/logo.png'}/></div>
-        <div className="dash-sidebar-name">{member.frat_name}</div>
-        <div className="dash-sidebar-role">{member.role}</div>
+        <div className="dash-sidebar-name">{member?.frat_name}</div>
+        <div className="dash-sidebar-role">{member?.role}</div>
       </div>
       <nav className="dash-nav">
         {NAV.map(n => <a key={n.href} href={n.href} className={`dash-nav-item ${typeof window !== 'undefined' && window.location.pathname === n.href ? 'active' : ''}`}><span>{n.label}</span></a>)}
