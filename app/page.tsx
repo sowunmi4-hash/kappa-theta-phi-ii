@@ -9,7 +9,6 @@ export default function HomePage() {
         <ul className="nav-links" id="navLinks">
           <li><a href="/">Home</a></li>
           <li><a href="/about">About</a></li>
-          <li><a href="/login">Login</a></li>
         </ul>
         <div className="mobile-toggle" id="mobileToggle" onClick={() => document.getElementById('navLinks')?.classList.toggle('open')}>
           <span></span><span></span><span></span>
@@ -27,7 +26,7 @@ export default function HomePage() {
         <div className="side-label right">Wokou-Corsairs</div>
 
         <div className="hero-content">
-          <img src="/logo.png" alt="KΘΦ II Wokou-Corsairs" className="hero-logo" />
+          <a href="/login"><img src="/logo.png" alt="KΘΦ II Wokou-Corsairs" className="hero-logo" style={{ cursor: 'pointer' }} /></a>
           <div className="hero-subtitle-top">Brotherhood Beyond Borders</div>
           <h1 className="hero-title">
             <span className="gold">Kappa Theta Phi</span><br />
