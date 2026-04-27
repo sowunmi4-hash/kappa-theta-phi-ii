@@ -52,6 +52,16 @@ export default function DashHome() {
   async function markRead(id: string) {
     await fetch('/api/dashboard/notifications', { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id }) });
     setNotifs(p => p.map(n => n.id === id ? { ...n, is_read: true } : n));
+    setData((p: any) => p ? { ...p, unread: Math.max(0, (p.unread || 0) - 1) } : p);
+  }
+
+  async function markAllRead() {
+    const unreadIds = notifs.filter((n:any) => !n.is_read).map((n:any) => n.id);
+    await Promise.all(unreadIds.map((id:string) =>
+      fetch('/api/dashboard/notifications', { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id }) })
+    ));
+    setNotifs((p:any[]) => p.map(n => ({ ...n, is_read: true })));
+    setData((p: any) => p ? { ...p, unread: 0 } : p);
   }
 
   if (!data) return <div className="dash-loading">LOADING...</div>;
@@ -106,7 +116,14 @@ export default function DashHome() {
       <div ref={drawerRef} className={`notif-drawer ${drawerOpen ? 'open' : ''}`}>
         <div className="notif-drawer-header">
           <div className="notif-drawer-title">Notifications</div>
-          <button className="notif-drawer-close" onClick={() => setDrawerOpen(false)}>✕</button>
+          <div style={{display:'flex',alignItems:'center',gap:'8px'}}>
+            {notifs.some((n:any) => !n.is_read) && (
+              <button style={{fontSize:'0.62rem',letterSpacing:'1px',textTransform:'uppercase',color:'var(--gold)',background:'none',border:'none',cursor:'pointer',opacity:0.7}} onClick={markAllRead}>
+                Mark all read
+              </button>
+            )}
+            <button className="notif-drawer-close" onClick={() => setDrawerOpen(false)}>✕</button>
+          </div>
         </div>
         <div className="notif-list">
           {notifs.length === 0 && <div className="notif-empty">No notifications yet</div>}
