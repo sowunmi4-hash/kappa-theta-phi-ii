@@ -13,10 +13,9 @@ type Member = {
 
 const FOUNDERS: Member[] = [
   { frat: 'Big Bro Tactician', role: 'Head Founder', fraction: 'Kuro Kanda', title: 'Shogun', iron: true, image: '/brothers/tactician.png' },
-  { frat: 'Big Brother Boss Sauce', role: 'Senior Founder', fraction: 'Ishi No', title: 'Shogun', iron: true, image: '/brothers/boss-sauce.png' },
-  { frat: 'Big Brother Energy', role: 'Senior Founder', fraction: 'Kurofune', title: 'Shogun', iron: true, image: '/brothers/energy.png' },
-  { frat: 'Big Brother Cool Breeze', role: 'Senior Founder', iron: true, image: '/brothers/cool-breeze.png' },
-  { frat: 'Big Brother Violator', role: 'Senior Founder' },
+  { frat: 'Big Brother Boss Sauce', role: 'Co-Founder', fraction: 'Ishi No', title: 'Shogun', iron: true, image: '/brothers/boss-sauce.png' },
+  { frat: 'Big Brother Energy', role: 'Co-Founder', fraction: 'Kurofune', title: 'Shogun', iron: true, image: '/brothers/energy.png' },
+  { frat: 'Big Brother Cool Breeze', role: 'Co-Founder', iron: true, image: '/brothers/cool-breeze.png' },
 ];
 
 const IRON_FLEET: Member[] = [
@@ -35,7 +34,6 @@ const BROTHERS: Member[] = [
   { frat: 'Big Brother 5 Star General', image: '/brothers/five-star-general.png' },
   { frat: 'Big Brother Pristine', image: '/brothers/pristine.png' },
   { frat: 'Big Brother Deep Dive', image: '/brothers/deep-dive.png' },
-  { frat: 'Big Brother Surge' },
   { frat: 'Big Brother Reasonable', image: '/brothers/reasonable.png' },
   { frat: 'Big Brother Nexus', image: '/brothers/nexus.png' },
   { frat: 'Big Brother Sentinel', image: '/brothers/sentinel.png' },
@@ -49,19 +47,17 @@ function getInitials(name: string) {
 
 function MemberCard({ frat, role, fraction, title, iron, image }: Member) {
   return (
-    <div className={`member-card${iron ? ' iron' : ''}${image ? ' has-image' : ''}`}>
+    <div className={`member-card${iron ? ' iron' : ''}`}>
       {image ? (
         <img src={image} alt={frat} className="member-portrait" />
       ) : (
         <div className="member-avatar">{getInitials(frat)}</div>
       )}
-      <div className="member-info">
-        <div className="member-frat-name">{frat}</div>
-        {role && <div className="member-role">{role}</div>}
-        {fraction && <div className="member-fraction">{fraction} Fraction</div>}
-        {title && <div className="member-fraction-title">{title}</div>}
-        {iron && <div className="iron-badge">Iron Compass</div>}
-      </div>
+      <div className="member-frat-name">{frat}</div>
+      {role && <div className="member-role">{role}</div>}
+      {fraction && <div className="member-fraction">{fraction} Fraction</div>}
+      {title && <div className="member-fraction-title">{title}</div>}
+      {iron && <div className="iron-badge">Iron Compass</div>}
     </div>
   );
 }
@@ -97,13 +93,13 @@ export default function BrothersPage() {
           <div className="brothers-hero-content">
             <div className="brothers-hero-tag">The Brotherhood</div>
             <h1 className="brothers-hero-title">Our Brothers</h1>
-            <p className="brothers-hero-sub">22 brothers. One bloodline. One legacy.</p>
+            <p className="brothers-hero-sub">20 brothers. One bloodline. One legacy.</p>
           </div>
         </section>
 
         <div className="brothers-stats">
           <div className="brothers-stat">
-            <div className="brothers-stat-num">22</div>
+            <div className="brothers-stat-num">20</div>
             <div className="brothers-stat-label">Brothers</div>
           </div>
           <div className="brothers-stat">
@@ -115,7 +111,7 @@ export default function BrothersPage() {
             <div className="brothers-stat-label">Fractions</div>
           </div>
           <div className="brothers-stat">
-            <div className="brothers-stat-num">5</div>
+            <div className="brothers-stat-num">4</div>
             <div className="brothers-stat-label">Founders</div>
           </div>
         </div>
