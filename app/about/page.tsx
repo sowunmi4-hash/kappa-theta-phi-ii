@@ -10,7 +10,7 @@ const SLIDES = [
   { tag: 'Chapter III — The Depths', title: 'The Battle of the Depths', kanji: '淵' },
   { tag: 'Chapter IV — Rebirth', title: 'The Rise of the Next Generation', kanji: '生' },
   { tag: 'Our Principles', title: 'What We Stand For', kanji: '道' },
-  { tag: 'The Legacy', title: 'We Are the Sons of Olokun', kanji: '永' },
+  { tag: 'Our Legacy', title: 'Built on Vision. Proven by Impact.', kanji: '永' },
 ];
 
 export default function AboutPage() {
@@ -55,10 +55,10 @@ export default function AboutPage() {
               <h1 className="slide-title">{SLIDES[0].title}</h1>
               <div className="slide-divider" />
               <p className="slide-text">
-                <strong>Kappa Theta Phi Chapter II</strong> — the Wokou-Corsairs — is a brotherhood forged from tradition, rebellion, and strategic evolution. We are a collective of leaders, creators, and visionaries united by a shared mission: to navigate uncharted waters, build lasting legacies, and uplift our community.
+                <strong>Kappa Theta Phi Chapter II</strong>, known as the Wokou-Corsairs, is a dynamic fraternity rooted in tradition, innovation, and brotherhood. Blending the daring spirit of the legendary Japanese Wokou pirates with the cultural depth of African Yoruba mythology, we are a collective of leaders, creators, and visionaries united by a shared mission: to navigate uncharted waters, build lasting legacies, and uplift our community.
               </p>
               <p className="slide-text">
-                Inspired by the lawless ambition of <strong>Port Royal</strong>, the fearless spirit of the <strong>Wokou</strong>, and the divine depth of <strong>Olokun</strong> — we are a brotherhood built to navigate, conquer, and leave our mark.
+                Our identity is shaped by the strength and resilience of the <strong>Wokou pirates</strong>, who symbolise adaptability and courage. The spiritual wisdom of <strong>Olokun</strong>, the Yoruba Orisha of the deep sea, whose power connects us to legacy, mystery, and the boundless potential of water. And the commanding force of the <strong>Kraken</strong>, embodying control over ocean life and representing our fraternity's strength, unity, and influence.
               </p>
               <div className="slide-quote"><p>We don't follow waves. We create them.</p></div>
             </div>
@@ -182,43 +182,46 @@ export default function AboutPage() {
               <div className="slide-tag">{SLIDES[6].tag}</div>
               <h2 className="slide-title">{SLIDES[6].title}</h2>
               <div className="slide-divider" />
+              <p className="slide-text" style={{ textAlign: 'center', marginBottom: '1.5rem' }}>
+                We are more than a fraternity — we are a brotherhood with a purpose.
+              </p>
               <div className="slide-pillars">
                 <div className="slide-pillar">
                   <div className="slide-pillar-kanji">冒</div>
                   <h3>Adventure</h3>
-                  <p>We embrace risk, movement, and the pursuit of new horizons</p>
+                  <p>Just as the Wokou traversed the seas, we embrace new challenges, opportunities, and creative endeavours</p>
                 </div>
                 <div className="slide-pillar">
                   <div className="slide-pillar-kanji">継</div>
                   <h3>Heritage</h3>
-                  <p>We merge history, mythology, and modern identity into one brotherhood</p>
+                  <p>We honour the rich traditions of our influences, blending diverse cultures into a unified identity</p>
                 </div>
                 <div className="slide-pillar">
                   <div className="slide-pillar-kanji">導</div>
                   <h3>Leadership</h3>
-                  <p>We lead with presence and intention, creating experiences that inspire</p>
+                  <p>We strive to inspire and lead, creating immersive experiences that bring people together</p>
                 </div>
                 <div className="slide-pillar">
                   <div className="slide-pillar-kanji">志</div>
                   <h3>Purpose</h3>
-                  <p>Every move is strategic. Every action builds legacy</p>
+                  <p>Through events and initiatives, we give back, leaving a lasting impact in Second Life and beyond</p>
                 </div>
               </div>
             </div>
           </div>
 
-          {/* SLIDE 7: Closing */}
+          {/* SLIDE 7: Legacy & Closing */}
           <div className={`slide ${current === 7 ? 'active' : ''}`}>
             <div className="slide-content" key={current === 7 ? 'active-7' : 'idle-7'}>
               <div className="slide-tag">{SLIDES[7].tag}</div>
               <h2 className="slide-title">{SLIDES[7].title}</h2>
               <div className="slide-divider" />
               <p className="slide-text" style={{ textAlign: 'center' }}>
-                With newfound power, they returned to rescue their fallen brothers — restoring what was lost and strengthening what could never be broken.
+                Our Chapter II reflects a lineage of innovation, vision, and success. With iconic events like <strong>LOONAPALOOSA</strong> and philanthropic contributions such as raising <strong>L$100,000 for the Save the Music Foundation</strong>, we continue to solidify our place as leaders in the virtual world.
               </p>
-              <div className="slide-quote"><p>Kappa Theta Phi II is more than a fraternity. It is a lineage. A myth reborn. A brotherhood written in waves and carved into eternity.</p></div>
+              <div className="slide-quote"><p>We are adventurers, strategists, and brothers. We embrace the mystery of the ocean, the power of the Kraken, and the wisdom of Olokun. Together, we navigate challenges, celebrate victories, and build a legacy that transcends time.</p></div>
               <p className="slide-text" style={{ textAlign: 'center', color: 'rgba(245,240,232,0.35)', letterSpacing: '4px', textTransform: 'uppercase', fontSize: '0.85rem' }}>
-                From chaos, we built power. From power, we build legacy.
+                Where tradition meets innovation, and the past inspires the future.
               </p>
               <div className="slide-footer">
                 <div className="footer-brand">KΘΦ II — WOKOU-CORSAIRS</div>
