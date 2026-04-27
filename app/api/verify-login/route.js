@@ -1,4 +1,5 @@
 export const dynamic = 'force-dynamic';
+// schema exposed
 const { createClient } = require('@supabase/supabase-js');
 const crypto = require('crypto');
 const bcrypt = require('bcryptjs');
