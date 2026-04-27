@@ -12,7 +12,7 @@ type Member = {
 };
 
 const FOUNDERS: Member[] = [
-  { frat: 'Big Bro Tactician', role: 'Head Founder', fraction: 'Kuro Kanda', title: 'Shogun', iron: true, image: '/brothers/tactician.png' },
+  { frat: 'Big Brother Tactician', role: 'Head Founder', fraction: 'Kuro Kanda', title: 'Shogun', iron: true, image: '/brothers/tactician.png' },
   { frat: 'Big Brother Boss Sauce', role: 'Co-Founder', fraction: 'Ishi No', title: 'Shogun', iron: true, image: '/brothers/boss-sauce.png' },
   { frat: 'Big Brother Energy', role: 'Co-Founder', fraction: 'Kurofune', title: 'Shogun', iron: true, image: '/brothers/energy.png' },
   { frat: 'Big Brother Cool Breeze', role: 'Co-Founder', iron: true, image: '/brothers/cool-breeze.png' },
