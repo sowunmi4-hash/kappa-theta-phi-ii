@@ -11,14 +11,6 @@ const ACCENT_COLOURS = [
   { hex: '#c2410c', label: 'Ember' },
 ];
 
-const LAYOUT_OPTIONS = [
-  { id: 1, icon: '⊙', name: 'Centered' },
-  { id: 2, icon: '⊞', name: 'Split' },
-  { id: 3, icon: '⊟', name: 'Banner Hero' },
-  { id: 4, icon: '⊠', name: 'Card Grid' },
-  { id: 5, icon: '巻', name: 'Samurai Scroll' },
-];
-
 const SOCIAL_FIELDS = ['Instagram', 'Twitter/X', 'TikTok', 'YouTube', 'Discord', 'Second Life'];
 
 export default function EditProfile() {
@@ -35,14 +27,13 @@ export default function EditProfile() {
       .then(d => {
         if (d.error) { window.location.href = '/login'; return; }
         setMember(d.member);
-        setProfile(d.profile || { layout_preference: 1, accent_colour: '#c6930a', social_links: {} });
+        setProfile(d.profile || { accent_colour: '#c6930a', social_links: {} });
       });
   }, []);
 
   function update(key: string, val: any) {
     setProfile((p: any) => ({ ...p, [key]: val }));
   }
-
   function updateSocial(key: string, val: string) {
     setProfile((p: any) => ({ ...p, social_links: { ...(p.social_links || {}), [key]: val } }));
   }
@@ -53,8 +44,7 @@ export default function EditProfile() {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(profile)
     });
-    setSaving(false);
-    setSaved(true);
+    setSaving(false); setSaved(true);
     setTimeout(() => setSaved(false), 2500);
   }
 
@@ -62,11 +52,9 @@ export default function EditProfile() {
     const file = e.target.files[0];
     if (!file) return;
     setUploading(type);
-    const previewUrl = URL.createObjectURL(file);
-    setPreviews((p: any) => ({ ...p, [type]: previewUrl }));
+    setPreviews((p: any) => ({ ...p, [type]: URL.createObjectURL(file) }));
     const fd = new FormData();
-    fd.append('file', file);
-    fd.append('type', type);
+    fd.append('file', file); fd.append('type', type);
     const res = await fetch('/api/dashboard/upload', { method: 'POST', body: fd });
     const data = await res.json();
     if (data.file_url) update(`${type}_url`, data.file_url);
@@ -74,11 +62,13 @@ export default function EditProfile() {
   }
 
   if (!member) return (
-    <div style={{ minHeight: '100vh', background: '#0a0e1a', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#c6930a', fontFamily: 'Rajdhani, sans-serif', letterSpacing: '3px' }}>LOADING...</div>
+    <div style={{ minHeight: '100vh', background: '#050810', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#c6930a', fontFamily: 'Rajdhani,sans-serif', fontSize: '0.7rem', letterSpacing: '6px' }}>LOADING...</div>
   );
 
+  const accent = profile.accent_colour || '#c6930a';
+
   return (
-    <div className="dash-root" style={{ minHeight: '100vh' }}>
+    <div className="dash-root">
       <nav className="dash-nav">
         <div className="dash-nav-brand">KΘΦ II</div>
         <div className="dash-nav-links">
@@ -91,95 +81,91 @@ export default function EditProfile() {
       <div className="dash-edit-wrap">
         <div className="dash-edit-title">Edit Your Profile</div>
 
-        {/* Layout Picker */}
+        {/* Portrait */}
         <div className="dash-field-group">
-          <label className="dash-label">Choose Layout</label>
-          <div className="layout-picker">
-            {LAYOUT_OPTIONS.map(l => (
-              <div key={l.id} className={`layout-option ${profile.layout_preference === l.id ? 'active' : ''}`}
-                   onClick={() => update('layout_preference', l.id)}>
-                <div className="layout-option-icon">{l.icon}</div>
-                <div className="layout-option-name">{l.name}</div>
-              </div>
-            ))}
-          </div>
+          <label className="dash-label">Portrait Photo</label>
+          <label className="upload-zone">
+            <input type="file" accept="image/*" style={{ display: 'none' }} onChange={e => uploadFile(e, 'portrait')} />
+            {uploading === 'portrait' ? '⏳ Uploading...' : '📷 Click to upload portrait'}
+            {(previews.portrait || profile.portrait_url) && (
+              <img src={previews.portrait || profile.portrait_url} className="upload-preview-portrait" alt="portrait" />
+            )}
+            <div style={{ fontSize: '0.7rem', color: 'rgba(240,232,208,0.3)', marginTop: '6px' }}>Square image works best</div>
+          </label>
         </div>
 
-        {/* Accent Colour */}
+        {/* Banner */}
+        <div className="dash-field-group">
+          <label className="dash-label">Banner Image (hero background)</label>
+          <label className="upload-zone">
+            <input type="file" accept="image/*" style={{ display: 'none' }} onChange={e => uploadFile(e, 'banner')} />
+            {uploading === 'banner' ? '⏳ Uploading...' : '🖼 Click to upload banner'}
+            {(previews.banner || profile.banner_url) && (
+              <img src={previews.banner || profile.banner_url} className="upload-preview" alt="banner" />
+            )}
+            <div style={{ fontSize: '0.7rem', color: 'rgba(240,232,208,0.3)', marginTop: '6px' }}>Wide/landscape image recommended</div>
+          </label>
+        </div>
+
+        {/* Background */}
+        <div className="dash-field-group">
+          <label className="dash-label">Page Background</label>
+          <label className="upload-zone">
+            <input type="file" accept="image/*" style={{ display: 'none' }} onChange={e => uploadFile(e, 'background')} />
+            {uploading === 'background' ? '⏳ Uploading...' : '🌄 Click to upload background'}
+            {(previews.background || profile.background_url) && (
+              <img src={previews.background || profile.background_url} className="upload-preview" alt="background" />
+            )}
+            <div style={{ fontSize: '0.7rem', color: 'rgba(240,232,208,0.3)', marginTop: '6px' }}>Shows as a subtle fixed background behind everything</div>
+          </label>
+        </div>
+
+        {/* Accent colour */}
         <div className="dash-field-group">
           <label className="dash-label">Accent Colour</label>
           <div className="colour-picker">
             {ACCENT_COLOURS.map(c => (
               <div key={c.hex} className={`colour-swatch ${profile.accent_colour === c.hex ? 'active' : ''}`}
-                   style={{ background: c.hex }} title={c.label}
-                   onClick={() => update('accent_colour', c.hex)} />
+                style={{ background: c.hex }} title={c.label}
+                onClick={() => update('accent_colour', c.hex)} />
             ))}
           </div>
-        </div>
-
-        {/* Portrait Upload */}
-        <div className="dash-field-group">
-          <label className="dash-label">Profile Portrait</label>
-          <label className="upload-zone">
-            <input type="file" accept="image/*" style={{ display: 'none' }} onChange={e => uploadFile(e, 'portrait')} />
-            {uploading === 'portrait' ? '⏳ Uploading...' : '📷 Click to upload portrait'}
-            {(previews.portrait || profile.portrait_url) && (
-              <img src={previews.portrait || profile.portrait_url} alt="portrait preview" className="upload-preview" style={{ borderRadius: '50%', width: '100px', height: '100px', objectFit: 'cover', margin: '0.8rem auto 0', display: 'block' }} />
-            )}
-            <div className="upload-zone-label">JPG, PNG, WebP · Square image recommended</div>
-          </label>
-        </div>
-
-        {/* Banner Upload */}
-        <div className="dash-field-group">
-          <label className="dash-label">Banner Image</label>
-          <label className="upload-zone">
-            <input type="file" accept="image/*" style={{ display: 'none' }} onChange={e => uploadFile(e, 'banner')} />
-            {uploading === 'banner' ? '⏳ Uploading...' : '🖼 Click to upload banner'}
-            {(previews.banner || profile.banner_url) && (
-              <img src={previews.banner || profile.banner_url} alt="banner preview" className="upload-preview" style={{ width: '100%', height: '100px', objectFit: 'cover' }} />
-            )}
-            <div className="upload-zone-label">Wide image recommended · JPG, PNG, WebP</div>
-          </label>
-        </div>
-
-        {/* Background Upload */}
-        <div className="dash-field-group">
-          <label className="dash-label">Page Background Image</label>
-          <label className="upload-zone">
-            <input type="file" accept="image/*" style={{ display: 'none' }} onChange={e => uploadFile(e, 'background')} />
-            {uploading === 'background' ? '⏳ Uploading...' : '🌄 Click to upload background'}
-            {(previews.background || profile.background_url) && (
-              <img src={previews.background || profile.background_url} alt="bg preview" className="upload-preview" style={{ width: '100%', height: '80px', objectFit: 'cover' }} />
-            )}
-            <div className="upload-zone-label">This shows as a subtle background across your dashboard</div>
-          </label>
+          <div style={{ fontSize: '0.7rem', color: 'rgba(240,232,208,0.3)', marginTop: '8px' }}>
+            Changes your name, badges and accents across your dashboard
+          </div>
         </div>
 
         {/* Bio */}
         <div className="dash-field-group">
           <label className="dash-label">Bio</label>
-          <textarea className="dash-textarea" value={profile.bio || ''} onChange={e => update('bio', e.target.value)} placeholder="Tell your brothers about yourself..." />
+          <textarea className="dash-textarea" value={profile.bio || ''}
+            onChange={e => update('bio', e.target.value)}
+            placeholder="Tell your brothers about yourself..." />
         </div>
 
-        {/* Favourite Quote */}
+        {/* Quote */}
         <div className="dash-field-group">
           <label className="dash-label">Favourite Quote</label>
-          <input className="dash-input" value={profile.favourite_quote || ''} onChange={e => update('favourite_quote', e.target.value)} placeholder="Your motto or a quote that defines you..." />
+          <input className="dash-input" value={profile.favourite_quote || ''}
+            onChange={e => update('favourite_quote', e.target.value)}
+            placeholder="A quote or motto that defines you..." />
         </div>
 
         {/* Hobbies */}
         <div className="dash-field-group">
           <label className="dash-label">Hobbies & Interests</label>
-          <textarea className="dash-textarea" value={profile.hobbies || ''} onChange={e => update('hobbies', e.target.value)} placeholder="What do you do outside of the frat?" style={{ minHeight: '80px' }} />
+          <textarea className="dash-textarea" value={profile.hobbies || ''}
+            onChange={e => update('hobbies', e.target.value)}
+            placeholder="What do you get into outside the frat?"
+            style={{ minHeight: '80px' }} />
         </div>
 
         {/* Social Links */}
         <div className="dash-field-group">
           <label className="dash-label">Social Links</label>
           {SOCIAL_FIELDS.map(field => (
-            <div key={field} style={{ marginBottom: '0.6rem', display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
-              <span style={{ width: '100px', fontSize: '0.8rem', color: 'rgba(245,240,232,0.6)', flexShrink: 0 }}>{field}</span>
+            <div key={field} style={{ display: 'flex', gap: '8px', alignItems: 'center', marginBottom: '8px' }}>
+              <span style={{ width: '90px', fontSize: '0.75rem', color: 'rgba(240,232,208,0.4)', flexShrink: 0 }}>{field}</span>
               <input className="dash-input" style={{ flex: 1 }}
                 value={(profile.social_links || {})[field] || ''}
                 onChange={e => updateSocial(field, e.target.value)}
@@ -188,13 +174,13 @@ export default function EditProfile() {
           ))}
         </div>
 
-        {/* Save Button */}
-        <div style={{ display: 'flex', gap: '1rem', alignItems: 'center', paddingBottom: '3rem' }}>
-          <button className="dash-btn dash-btn-gold" onClick={save} disabled={saving}>
+        {/* Save */}
+        <div style={{ display: 'flex', gap: '1rem', alignItems: 'center', paddingBottom: '4rem' }}>
+          <button className="dash-btn dash-btn-gold" onClick={save} disabled={saving} style={{ background: accent, borderColor: accent }}>
             {saving ? '⏳ Saving...' : '💾 Save Profile'}
           </button>
-          {saved && <span style={{ color: '#4ade80', fontSize: '0.85rem' }}>✓ Saved successfully</span>}
-          <a href="/dashboard" className="dash-btn dash-btn-outline">Cancel</a>
+          {saved && <span style={{ color: '#4ade80', fontSize: '0.8rem', letterSpacing: '1px' }}>✓ Saved</span>}
+          <a href="/dashboard" className="dash-btn dash-btn-outline" style={{ color: accent, borderColor: `${accent}40` }}>Cancel</a>
         </div>
       </div>
     </div>
