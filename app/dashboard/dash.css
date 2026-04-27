@@ -269,3 +269,247 @@
   .profile-identity { flex-direction: column; align-items: flex-start; margin-top: 0; }
   .page-wrap, .edit-wrap { padding: 1.5rem; }
 }
+
+/* ═══════════════════════════════════════
+   ANIMATIONS
+   ═══════════════════════════════════════ */
+
+/* ─── KEYFRAMES ─── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes slideInLeft {
+  from { opacity: 0; transform: translateX(-20px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.9); }
+  to   { opacity: 1; transform: scale(1); }
+}
+@keyframes bannerZoom {
+  from { transform: scale(1.06); }
+  to   { transform: scale(1); }
+}
+@keyframes pulseGold {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(198,147,10,0.0); }
+  50%       { box-shadow: 0 0 0 8px rgba(198,147,10,0.12); }
+}
+@keyframes navStagger {
+  from { opacity: 0; transform: translateX(-14px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+@keyframes drawerSlide {
+  from { transform: translateX(100%); opacity: 0; }
+  to   { transform: translateX(0); opacity: 1; }
+}
+@keyframes badgePop {
+  0%   { transform: scale(0); }
+  70%  { transform: scale(1.2); }
+  100% { transform: scale(1); }
+}
+
+/* ─── SIDEBAR ENTRANCE ─── */
+.dash-sidebar {
+  animation: slideInLeft 0.4s cubic-bezier(0.22,1,0.36,1) both;
+}
+.dash-sidebar-logo {
+  animation: fadeIn 0.5s 0.1s both;
+}
+.dash-sidebar-member {
+  animation: fadeUp 0.5s 0.15s both;
+}
+
+/* Nav items stagger in */
+.dash-nav .dash-nav-item:nth-child(1) { animation: navStagger 0.4s 0.2s both; }
+.dash-nav .dash-nav-item:nth-child(2) { animation: navStagger 0.4s 0.27s both; }
+.dash-nav .dash-nav-item:nth-child(3) { animation: navStagger 0.4s 0.34s both; }
+.dash-nav .dash-nav-item:nth-child(4) { animation: navStagger 0.4s 0.41s both; }
+.dash-nav .dash-nav-item:nth-child(5) { animation: navStagger 0.4s 0.48s both; }
+.dash-nav .dash-nav-item:nth-child(6) { animation: navStagger 0.4s 0.55s both; }
+.dash-sidebar-bottom { animation: fadeIn 0.5s 0.6s both; }
+
+/* Active nav item glows */
+.dash-nav-item.active {
+  position: relative;
+  animation: navStagger 0.4s both;
+}
+.dash-nav-item.active::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 50%;
+  transform: translateY(-50%);
+  width: 2px; height: 60%;
+  background: var(--gold);
+  border-radius: 0 2px 2px 0;
+  animation: fadeIn 0.3s 0.5s both;
+}
+
+/* Portrait in sidebar pulses softly */
+.dash-sidebar-portrait {
+  animation: scaleIn 0.4s 0.2s both;
+  transition: transform 0.2s;
+}
+.dash-sidebar-portrait:hover {
+  animation: pulseGold 2s infinite;
+  transform: scale(1.04);
+}
+
+/* ─── BANNER ─── */
+.profile-banner {
+  animation: bannerZoom 1.2s cubic-bezier(0.22,1,0.36,1) both;
+}
+.profile-banner-placeholder {
+  animation: fadeIn 0.8s both;
+}
+
+/* ─── PROFILE IDENTITY ─── */
+.profile-identity {
+  animation: fadeUp 0.5s 0.15s both;
+}
+.profile-portrait-lg {
+  animation: scaleIn 0.5s 0.2s both;
+  transition: transform 0.25s;
+}
+.profile-portrait-lg:hover {
+  transform: scale(1.05);
+}
+.profile-name   { animation: fadeUp 0.45s 0.25s both; }
+.profile-role   { animation: fadeUp 0.45s 0.32s both; }
+.profile-fraction { animation: fadeUp 0.45s 0.38s both; }
+.profile-iron   { animation: fadeUp 0.45s 0.44s both; }
+
+/* ─── QUOTE ─── */
+.profile-quote {
+  animation: fadeUp 0.5s 0.3s both;
+}
+
+/* ─── PROFILE CARDS ─── */
+.profile-cards {
+  animation: fadeUp 0.5s 0.4s both;
+}
+.profile-card {
+  transition: background 0.2s;
+}
+.profile-card:hover {
+  background: var(--raised);
+}
+
+/* ─── SOCIAL LINKS ─── */
+.profile-social-link {
+  transition: all 0.18s;
+}
+.profile-social-link:hover {
+  transform: translateY(-2px);
+  background: rgba(198,147,10,0.12);
+}
+
+/* ─── NOTIFICATION DRAWER ─── */
+.notif-drawer.open {
+  animation: drawerSlide 0.3s cubic-bezier(0.22,1,0.36,1) both;
+}
+.notif-item {
+  transition: background 0.15s, border-left 0.15s;
+}
+
+/* Unread badge pops in */
+.dash-bell-badge {
+  animation: badgePop 0.4s cubic-bezier(0.34,1.56,0.64,1) both;
+}
+
+/* ─── NEWS ITEMS ─── */
+.news-item {
+  animation: fadeUp 0.4s both;
+  transition: border-color 0.2s, background 0.15s;
+}
+.news-item:nth-child(1) { animation-delay: 0.1s; }
+.news-item:nth-child(2) { animation-delay: 0.17s; }
+.news-item:nth-child(3) { animation-delay: 0.24s; }
+.news-item:nth-child(4) { animation-delay: 0.31s; }
+.news-item:nth-child(5) { animation-delay: 0.38s; }
+.news-item:nth-child(n+6) { animation-delay: 0.45s; }
+.news-item:hover { background: var(--raised); }
+
+/* ─── GALLERY TILES ─── */
+.gallery-tile {
+  animation: scaleIn 0.35s both;
+  transition: transform 0.2s;
+}
+.gallery-tile:nth-child(1) { animation-delay: 0.05s; }
+.gallery-tile:nth-child(2) { animation-delay: 0.1s; }
+.gallery-tile:nth-child(3) { animation-delay: 0.15s; }
+.gallery-tile:nth-child(4) { animation-delay: 0.2s; }
+.gallery-tile:nth-child(5) { animation-delay: 0.25s; }
+.gallery-tile:nth-child(6) { animation-delay: 0.3s; }
+.gallery-tile:nth-child(n+7) { animation-delay: 0.35s; }
+
+/* ─── EDIT PAGE SECTIONS ─── */
+.edit-section {
+  animation: fadeUp 0.4s both;
+}
+.edit-section:nth-child(1) { animation-delay: 0.1s; }
+.edit-section:nth-child(2) { animation-delay: 0.2s; }
+.edit-section:nth-child(3) { animation-delay: 0.3s; }
+
+/* Upload zones */
+.upload-zone {
+  transition: all 0.2s;
+}
+.upload-zone:hover {
+  transform: translateY(-1px);
+}
+
+/* Field inputs */
+.field-input, .field-textarea {
+  transition: border-color 0.2s, background 0.2s;
+}
+
+/* ─── BUTTONS ─── */
+.btn {
+  transition: all 0.18s;
+}
+.btn:hover {
+  transform: translateY(-1px);
+}
+.btn:active {
+  transform: translateY(0) scale(0.97);
+}
+
+/* ─── LOADING SCREEN ─── */
+.dash-loading {
+  animation: fadeIn 0.3s both;
+}
+
+/* ─── LIGHTBOX ─── */
+.lightbox {
+  animation: fadeIn 0.2s both;
+}
+.lightbox img {
+  animation: scaleIn 0.25s cubic-bezier(0.22,1,0.36,1) both;
+}
+
+/* ─── PAGE WRAPPER ENTRANCE ─── */
+.page-wrap {
+  animation: fadeUp 0.4s 0.1s both;
+}
+.edit-wrap {
+  animation: fadeUp 0.4s 0.1s both;
+}
+
+/* ─── MAIN AREA FADE ─── */
+.dash-main {
+  animation: fadeIn 0.35s 0.05s both;
+}
+
+/* Respect reduced motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
