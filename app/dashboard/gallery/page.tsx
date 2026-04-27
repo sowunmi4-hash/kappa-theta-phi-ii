@@ -6,6 +6,7 @@ const NAV = [
   { href: '/dashboard', label: 'Home' },
   { href: '/dashboard/news', label: 'Wokou News' },
   { href: '/dashboard/events', label: 'Events' },
+  { href: '/dashboard/phire', label: 'PHIRE' },
   { href: '/dashboard/gallery', label: 'My Gallery' },
   { href: '/dashboard/edit', label: 'Edit Profile' },
 ];
