@@ -6,19 +6,13 @@
   font-family: 'Rajdhani', sans-serif;
 }
 
-/* Nav override for dashboard */
+/* Nav */
 .dash-nav {
-  position: sticky;
-  top: 0;
-  z-index: 100;
+  position: sticky; top: 0; z-index: 100;
   background: rgba(10,14,26,0.97);
   border-bottom: 1px solid rgba(198,147,10,0.2);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 2rem;
-  height: 60px;
-  gap: 1rem;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 2rem; height: 60px; gap: 1rem;
 }
 .dash-nav-brand { font-size: 1.2rem; font-weight: 700; color: var(--gold); letter-spacing: 2px; }
 .dash-nav-links { display: flex; gap: 1.5rem; align-items: center; }
@@ -26,6 +20,41 @@
 .dash-nav-links a:hover, .dash-nav-links a.active { color: var(--gold); }
 .dash-bell { position: relative; cursor: pointer; font-size: 1.3rem; color: rgba(245,240,232,0.7); background: none; border: none; }
 .dash-bell-badge { position: absolute; top: -4px; right: -6px; background: var(--crimson); color: #fff; font-size: 0.6rem; width: 16px; height: 16px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; }
+
+/* ── SHARED ADAPTIVE BANNER ── */
+.dash-banner-wrap {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  max-height: 55vh;
+  background: linear-gradient(135deg, var(--navy-deep), #1a0514);
+}
+.dash-banner-wrap img {
+  width: 100%;
+  height: auto;
+  max-height: 55vh;
+  display: block;
+  object-fit: cover;
+  object-position: center top;
+}
+/* Readability gradient overlay */
+.dash-banner-wrap::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(10,14,26,0.05) 0%,
+    rgba(10,14,26,0) 35%,
+    rgba(10,14,26,0.6) 80%,
+    rgba(10,14,26,0.9) 100%
+  );
+  pointer-events: none;
+}
+.dash-banner-placeholder {
+  width: 100%; height: 200px;
+  background: linear-gradient(135deg, var(--navy-deep), #1a0514);
+}
 
 /* ── NOTIFICATION PANEL ── */
 .notif-panel { position: fixed; top: 60px; right: 1rem; width: 340px; background: #111827; border: 1px solid rgba(198,147,10,0.3); border-radius: 8px; z-index: 200; box-shadow: 0 8px 32px rgba(0,0,0,0.6); max-height: 400px; overflow-y: auto; }
@@ -38,10 +67,8 @@
 .notif-time { font-size: 0.7rem; color: rgba(245,240,232,0.4); margin-top: 4px; }
 
 /* ── LAYOUT 1: CENTERED ── */
-.layout-1 .dash-banner { width: 100%; height: 220px; object-fit: cover; display: block; }
-.layout-1 .dash-banner-placeholder { width: 100%; height: 220px; background: linear-gradient(135deg, var(--navy-deep), #1a0a0a); }
 .layout-1 .dash-profile-wrap { text-align: center; padding: 0 2rem 2rem; }
-.layout-1 .dash-portrait-wrap { margin: -60px auto 1rem; width: 120px; height: 120px; border-radius: 50%; border: 4px solid var(--gold); overflow: hidden; background: var(--navy-deep); }
+.layout-1 .dash-portrait-wrap { margin: -60px auto 1rem; width: 120px; height: 120px; border-radius: 50%; border: 4px solid var(--gold); overflow: hidden; background: var(--navy-deep); position: relative; z-index: 1; }
 .layout-1 .dash-portrait-wrap img { width: 100%; height: 100%; object-fit: cover; }
 .layout-1 .dash-name { font-size: 1.8rem; font-weight: 700; color: var(--gold); font-family: 'Noto Serif JP', serif; }
 .layout-1 .dash-role { font-size: 0.85rem; letter-spacing: 3px; color: var(--crimson); text-transform: uppercase; margin: 0.3rem 0; }
@@ -56,13 +83,12 @@
 .layout-2 .dash-portrait-wrap img { width: 100%; height: 100%; object-fit: cover; }
 .layout-2 .dash-name { font-size: 1.4rem; font-weight: 700; color: var(--gold); text-align: center; font-family: 'Noto Serif JP', serif; }
 .layout-2 .dash-role { font-size: 0.75rem; letter-spacing: 3px; color: var(--crimson); text-transform: uppercase; text-align: center; }
-.layout-2 .dash-main { padding: 2rem; }
+.layout-2 .dash-main { padding: 0; }
+.layout-2 .dash-main-inner { padding: 2rem; }
 .layout-2 .dash-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px,1fr)); gap: 1.2rem; }
 
 /* ── LAYOUT 3: BANNER HERO ── */
-.layout-3 .dash-hero { position: relative; height: 300px; overflow: hidden; }
-.layout-3 .dash-hero img, .layout-3 .dash-hero .dash-banner-placeholder { width: 100%; height: 100%; object-fit: cover; display: block; }
-.layout-3 .dash-hero-overlay { position: absolute; inset: 0; background: linear-gradient(to bottom, transparent 30%, rgba(10,14,26,0.95)); display: flex; align-items: flex-end; padding: 2rem; gap: 1.5rem; }
+.layout-3 .dash-hero-overlay { display: flex; align-items: flex-end; padding: 2rem; gap: 1.5rem; position: relative; z-index: 1; margin-top: -80px; }
 .layout-3 .dash-portrait-wrap { width: 100px; height: 100px; border-radius: 50%; border: 3px solid var(--gold); overflow: hidden; flex-shrink: 0; }
 .layout-3 .dash-portrait-wrap img { width: 100%; height: 100%; object-fit: cover; }
 .layout-3 .dash-hero-info .dash-name { font-size: 2rem; font-weight: 700; color: var(--gold); font-family: 'Noto Serif JP', serif; }
@@ -71,8 +97,8 @@
 .layout-3 .dash-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px,1fr)); gap: 1.2rem; }
 
 /* ── LAYOUT 4: CARD GRID ── */
-.layout-4 .dash-top { background: linear-gradient(135deg, var(--navy-deep), #1a0514); padding: 2rem; display: flex; align-items: center; gap: 2rem; border-bottom: 2px solid var(--gold); }
-.layout-4 .dash-portrait-wrap { width: 90px; height: 90px; border-radius: 8px; border: 2px solid var(--gold); overflow: hidden; }
+.layout-4 .dash-top { padding: 2rem; display: flex; align-items: center; gap: 2rem; border-bottom: 2px solid var(--gold); }
+.layout-4 .dash-portrait-wrap { width: 90px; height: 90px; border-radius: 8px; border: 2px solid var(--gold); overflow: hidden; flex-shrink: 0; }
 .layout-4 .dash-portrait-wrap img { width: 100%; height: 100%; object-fit: cover; }
 .layout-4 .dash-name { font-size: 1.6rem; font-weight: 700; color: var(--gold); font-family: 'Noto Serif JP', serif; }
 .layout-4 .dash-role { font-size: 0.8rem; letter-spacing: 3px; color: var(--crimson); text-transform: uppercase; }
@@ -93,7 +119,7 @@
 .layout-5 .dash-card { border-left: 3px solid var(--gold); }
 
 /* ── SHARED CARD ── */
-.dash-card { background: rgba(15,27,51,0.7); border: 1px solid rgba(198,147,10,0.15); border-radius: 8px; padding: 1.4rem; }
+.dash-card { background: rgba(15,27,51,0.7); border: 1px solid rgba(198,147,10,0.15); border-radius: 8px; padding: 1.4rem; backdrop-filter: blur(4px); }
 .dash-card-title { font-size: 0.7rem; letter-spacing: 3px; color: var(--gold); text-transform: uppercase; margin-bottom: 0.8rem; border-bottom: 1px solid rgba(198,147,10,0.15); padding-bottom: 0.5rem; }
 .dash-card p { font-size: 0.95rem; color: rgba(245,240,232,0.8); line-height: 1.7; }
 .dash-social-links { display: flex; flex-wrap: wrap; gap: 0.6rem; }
@@ -172,4 +198,5 @@
   .layout-2 .dash-split { grid-template-columns: 1fr; }
   .layout-picker { grid-template-columns: repeat(3,1fr); }
   .dash-nav-links { gap: 0.8rem; }
+  .dash-banner-wrap img { max-height: 35vh; }
 }
