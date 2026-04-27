@@ -1,0 +1,137 @@
+@import '../globals.css';
+
+.about-page { background: var(--ink); min-height: 100vh; padding-top: 80px; }
+
+/* ===== LORE HERO ===== */
+.lore-hero {
+  position: relative; height: 55vh; min-height: 380px;
+  display: flex; align-items: center; justify-content: center;
+  overflow: hidden; text-align: center;
+}
+.lore-hero-bg {
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse at 50% 80%, rgba(178,34,52,0.2) 0%, transparent 60%),
+    radial-gradient(ellipse at 20% 20%, rgba(198,147,10,0.08) 0%, transparent 50%),
+    linear-gradient(180deg, var(--navy-deep) 0%, var(--ink) 100%);
+}
+.lore-hero-kanji {
+  position: absolute; font-family: 'Noto Serif JP', serif; font-size: 30vw; font-weight: 900;
+  color: rgba(198,147,10,0.025); user-select: none; pointer-events: none;
+  top: 50%; left: 50%; transform: translate(-50%, -50%);
+}
+.lore-hero-content { position: relative; z-index: 2; padding: 0 2rem; }
+.lore-hero-tag {
+  font-family: 'Rajdhani', sans-serif; font-size: 0.8rem; font-weight: 600;
+  letter-spacing: 8px; text-transform: uppercase; color: var(--crimson);
+  margin-bottom: 1rem; animation: slideUp 0.8s ease-out forwards; opacity: 0;
+}
+.lore-hero-title {
+  font-family: 'Noto Serif JP', serif; font-size: clamp(2.2rem, 5vw, 3.8rem);
+  font-weight: 900; color: var(--gold); line-height: 1.15; margin-bottom: 1rem;
+  animation: slideUp 0.8s 0.2s ease-out forwards; opacity: 0;
+}
+.lore-hero-sub {
+  font-family: 'Zen Antique Soft', serif; font-size: 1.1rem;
+  color: rgba(245,240,232,0.5); letter-spacing: 2px; max-width: 600px; margin: 0 auto;
+  animation: slideUp 0.8s 0.4s ease-out forwards; opacity: 0;
+}
+
+/* ===== CHAPTERS ===== */
+.chapter { position: relative; padding: 4.5rem 2rem; max-width: 860px; margin: 0 auto; }
+.chapter + .chapter { border-top: 1px solid rgba(198,147,10,0.08); }
+.chapter-tag {
+  font-family: 'Rajdhani', sans-serif; font-size: 0.7rem; font-weight: 600;
+  letter-spacing: 8px; text-transform: uppercase; color: var(--crimson); margin-bottom: 0.8rem;
+}
+.chapter-title {
+  font-family: 'Noto Serif JP', serif; font-size: clamp(1.6rem, 3vw, 2.2rem);
+  font-weight: 900; color: var(--gold); margin-bottom: 1.5rem; line-height: 1.2;
+}
+.chapter p {
+  font-family: 'Rajdhani', sans-serif; font-size: 1.05rem; line-height: 1.85;
+  color: rgba(245,240,232,0.65); margin-bottom: 1.2rem;
+}
+.chapter p strong { color: var(--gold-light); font-weight: 600; }
+.chapter p em { color: var(--crimson); font-style: normal; font-weight: 600; }
+
+.lore-quote {
+  position: relative; padding: 1.8rem 2rem; margin: 2rem 0;
+  border-left: 3px solid var(--crimson); background: rgba(178,34,52,0.06);
+}
+.lore-quote p {
+  font-family: 'Zen Antique Soft', serif; font-size: 1.15rem;
+  color: rgba(245,240,232,0.8); font-style: italic; margin: 0; line-height: 1.7;
+}
+
+/* Character cards */
+.brothers-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 1rem; margin: 1.5rem 0;
+}
+.brother-card {
+  background: rgba(27,42,74,0.2); border: 1px solid rgba(198,147,10,0.1);
+  padding: 1.2rem 1.4rem; border-radius: 2px;
+}
+.brother-card .name {
+  font-family: 'Noto Serif JP', serif; font-size: 0.95rem; font-weight: 700;
+  color: var(--gold); margin-bottom: 0.3rem;
+}
+.brother-card .desc { font-size: 0.8rem; color: rgba(245,240,232,0.45); letter-spacing: 1px; }
+
+/* Pillars */
+.pillars {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1.2rem; margin: 1.5rem 0;
+}
+.pillar {
+  text-align: center; padding: 2rem 1.2rem;
+  background: rgba(27,42,74,0.15); border: 1px solid rgba(198,147,10,0.08);
+}
+.pillar-kanji {
+  font-family: 'Noto Serif JP', serif; font-size: 2.2rem; color: var(--crimson); margin-bottom: 0.6rem;
+}
+.pillar h3 {
+  font-family: 'Noto Serif JP', serif; font-size: 1rem; font-weight: 700;
+  color: var(--gold); letter-spacing: 2px; margin-bottom: 0.5rem;
+}
+.pillar p { font-size: 0.85rem; color: rgba(245,240,232,0.45); margin: 0; line-height: 1.6; }
+
+.section-divider {
+  width: 80px; height: 2px; margin: 0 auto 2rem;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+}
+
+/* Closing banner */
+.closing-banner {
+  position: relative; padding: 5rem 2rem; text-align: center;
+  background: linear-gradient(180deg, var(--ink) 0%, var(--navy-deep) 50%, var(--ink) 100%);
+  border-top: 1px solid rgba(198,147,10,0.1);
+}
+.closing-banner h2 {
+  font-family: 'Noto Serif JP', serif; font-size: clamp(1.8rem, 4vw, 3rem);
+  font-weight: 900; color: var(--gold); margin-bottom: 1rem;
+}
+.closing-banner p {
+  font-family: 'Zen Antique Soft', serif; font-size: 1.1rem;
+  color: rgba(245,240,232,0.5); letter-spacing: 2px; max-width: 500px; margin: 0 auto 0.8rem;
+}
+
+.about-footer {
+  padding: 2rem; text-align: center; border-top: 1px solid rgba(198,147,10,0.08);
+}
+.about-footer .footer-brand {
+  font-family: 'Noto Serif JP', serif; font-size: 0.9rem; font-weight: 700;
+  color: var(--gold); letter-spacing: 3px; margin-bottom: 0.6rem;
+}
+.about-footer p { font-size: 0.75rem; color: var(--grey-light); letter-spacing: 2px; }
+
+/* Reveal */
+.reveal { opacity: 0; transform: translateY(30px); transition: opacity 0.7s ease-out, transform 0.7s ease-out; }
+.reveal.visible { opacity: 1; transform: translateY(0); }
+
+@media (max-width: 768px) {
+  .chapter { padding: 3rem 1.5rem; }
+  .brothers-grid { grid-template-columns: 1fr; }
+  .pillars { grid-template-columns: 1fr 1fr; }
+  .lore-hero { height: 45vh; min-height: 320px; }
+}
