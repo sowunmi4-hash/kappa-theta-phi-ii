@@ -142,6 +142,18 @@
         linear-gradient(180deg, var(--navy-deep) 0%, var(--ink) 100%);
     }
 
+    /* Footer pinned to bottom of hero */
+    footer {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      padding: 1.5rem 2rem;
+      text-align: center;
+      z-index: 10;
+      border-top: 1px solid rgba(198,147,10,0.1);
+    }
+
     /* Japanese pattern overlay */
     .hero-pattern {
       position: absolute;
@@ -500,14 +512,6 @@
       margin-top: 0.3rem;
     }
 
-    /* ===== FOOTER ===== */
-    footer {
-      padding: 3rem 2rem;
-      text-align: center;
-      background: var(--ink);
-      border-top: 1px solid rgba(198,147,10,0.1);
-    }
-
     .footer-brand {
       font-family: 'Noto Serif JP', serif;
       font-size: 1rem;
@@ -612,8 +616,8 @@
   <nav id="navbar">
     <div class="nav-brand">KΘΦ <span>II</span></div>
     <ul class="nav-links" id="navLinks">
-      <li><a href="#home" onclick="closeNav()">Home</a></li>
-      <li><a href="#about" onclick="closeNav()">About</a></li>
+      <li><a href="/" onclick="closeNav()">Home</a></li>
+      <li><a href="/about.html" onclick="closeNav()">About</a></li>
       <li><a href="#" onclick="closeNav()">Roster</a></li>
       <li><a href="#" onclick="closeNav()">Fractions</a></li>
     </ul>
@@ -647,83 +651,13 @@
       <div class="hero-motto">Death by Dishonor · Est. 3/14/21</div>
     </div>
 
-    <a href="#about" class="hero-scroll">
-      <span>Scroll</span>
-      <div class="scroll-line"></div>
-    </a>
+
+    <!-- FOOTER -->
+    <footer>
+      <div class="footer-brand">KΘΦ II — WOKOU-CORSAIRS</div>
+      <p>&copy; 2026 Kappa Theta Phi II Fraternity. All Rights Reserved.</p>
+    </footer>
   </section>
-
-  <!-- ABOUT -->
-  <section class="about" id="about">
-    <div class="about-bg-pattern"></div>
-    <div class="about-container">
-      <div class="section-header reveal">
-        <div class="section-tag">Our Foundation</div>
-        <h2 class="section-title">Who We Are</h2>
-        <div class="section-line"></div>
-      </div>
-
-      <div class="about-grid">
-        <div class="about-text reveal">
-          <p>
-            <strong>Kappa Theta Phi II</strong> — the Wokou-Corsairs — is a brotherhood forged in the fires of loyalty, discipline, and unbreakable bonds. Rooted in the spirit of the samurai and the relentless will of the corsair, we stand as one unit, one family.
-          </p>
-          <p>
-            Our fraternity operates through a structured system of <strong>Fractions</strong>, each led by a Daimyo and Shogun, ensuring every brother has purpose, direction, and a path to greatness. From initiation to legacy, we build men of substance.
-          </p>
-          <p>
-            United under the <strong>Iron Fleet</strong> — our founding compass — we navigate the waters of Second Life with honor, strength, and an unshakeable commitment to each other.
-          </p>
-        </div>
-
-        <div class="about-values reveal">
-          <div class="value-card">
-            <div class="value-card-kanji">忠</div>
-            <h3>Loyalty</h3>
-            <p>A brother's word is his bond. We stand behind those who stand beside us, through every storm and every victory.</p>
-          </div>
-          <div class="value-card">
-            <div class="value-card-kanji">律</div>
-            <h3>Discipline</h3>
-            <p>Structure breeds strength. Through our fractions and ranks, every brother sharpens himself and elevates the whole.</p>
-          </div>
-          <div class="value-card">
-            <div class="value-card-kanji">遺</div>
-            <h3>Legacy</h3>
-            <p>We don't just exist — we build something that outlasts us. Every action writes a chapter in our enduring story.</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- IRON FLEET BANNER -->
-  <section class="fleet-banner reveal">
-    <div class="fleet-content">
-      <h2>The Iron Fleet</h2>
-      <p>The founding compass of Kappa Theta Phi II. Our Iron Fleet members are the architects and guardians of the brotherhood — the first to sail, the last to fall.</p>
-      <div class="fleet-stats">
-        <div class="fleet-stat">
-          <div class="fleet-stat-num">22</div>
-          <div class="fleet-stat-label">Brothers</div>
-        </div>
-        <div class="fleet-stat">
-          <div class="fleet-stat-num">4</div>
-          <div class="fleet-stat-label">Fractions</div>
-        </div>
-        <div class="fleet-stat">
-          <div class="fleet-stat-num">9</div>
-          <div class="fleet-stat-label">Iron Fleet</div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- FOOTER -->
-  <footer>
-    <div class="footer-brand">KΘΦ II — WOKOU-CORSAIRS</div>
-    <p>&copy; 2026 Kappa Theta Phi II Fraternity. All Rights Reserved.</p>
-  </footer>
 
   <script>
     // Navbar scroll effect
