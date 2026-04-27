@@ -38,11 +38,28 @@ export default function HomePage() {
           <div className="hero-motto">Death by Dishonor · Est. 3/14/21</div>
         </div>
 
-        <footer>
-          <div className="footer-brand">KΘΦ II — WOKOU-CORSAIRS</div>
-          <p>&copy; 2026 Kappa Theta Phi II Fraternity. All Rights Reserved.</p>
-        </footer>
+        <a href="#video" className="hero-scroll-hint">
+          <span style={{ fontSize: '0.65rem', letterSpacing: '4px', textTransform: 'uppercase', color: 'rgba(198,147,10,0.4)', fontFamily: "'Rajdhani', sans-serif" }}>Scroll</span>
+          <div style={{ width: '1px', height: '30px', background: 'linear-gradient(180deg, rgba(198,147,10,0.4), transparent)', marginTop: '0.4rem' }}></div>
+        </a>
       </section>
+
+      <section className="video-section" id="video">
+        <div className="video-container">
+          <iframe
+            src="https://www.youtube.com/embed/kQLWXpS1qx8?rel=0&modestbranding=1"
+            title="KΘΦ II Official Video"
+            frameBorder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+          ></iframe>
+        </div>
+      </section>
+
+      <footer className="home-footer">
+        <div className="footer-brand">KΘΦ II — WOKOU-CORSAIRS</div>
+        <p>&copy; 2026 Kappa Theta Phi II Fraternity. All Rights Reserved.</p>
+      </footer>
     </>
   );
 }
