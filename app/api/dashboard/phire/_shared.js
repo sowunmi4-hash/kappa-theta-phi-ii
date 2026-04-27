@@ -20,7 +20,7 @@ export async function getMember(token) {
 export async function ensureBalance(member_id, member_name) {
   const existing = await fetch(`${S}/rest/v1/phire_balances?member_id=eq.${member_id}`, { headers: h() }).then(r => r.json());
   if (!existing.length) {
-    await fetch(`${S}/rest/v1/phire_balances`, { method: 'POST', headers: ch(), body: JSON.stringify({ member_id, member_name, balance: 0, lifetime_earned: 0 }) });
+    await fetch(`${S}/rest/v1/phire_balances`, { method: 'POST', headers: ch(), body: JSON.stringify({ member_id, balance: 0, lifetime_earned: 0 }) });
   }
 }
 
