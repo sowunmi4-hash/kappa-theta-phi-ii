@@ -9,6 +9,7 @@ export default function HomePage() {
         <ul className="nav-links" id="navLinks">
           <li><a href="/">Home</a></li>
           <li><a href="/about">About</a></li>
+          <li><a href="/brothers">Brothers</a></li>
         </ul>
         <div className="mobile-toggle" id="mobileToggle" onClick={() => document.getElementById('navLinks')?.classList.toggle('open')}>
           <span></span><span></span><span></span>
