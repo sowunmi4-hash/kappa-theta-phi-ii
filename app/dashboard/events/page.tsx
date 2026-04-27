@@ -76,10 +76,12 @@ export default function EventsPage() {
 
   async function rsvp(event_id: string, attending: boolean) {
     await fetch('/api/dashboard/events', { method:'PATCH', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ event_id, attending }) });
-    await loadEvents();
+    const d = await fetch('/api/dashboard/events').then(r=>r.json());
+    const updated = (d.events || []);
+    setEvents(updated);
     if (selected?.id === event_id) {
-      const updated = events.find(e => e.id === event_id);
-      if (updated) setSelected({ ...updated, attending, rsvp_count: updated.rsvp_count + (attending ? 1 : -1) });
+      const fresh = updated.find((e: Event) => e.id === event_id);
+      if (fresh) setSelected(fresh);
     }
   }
 
@@ -335,7 +337,6 @@ export default function EventsPage() {
                 className={`rsvp-btn ${selected.attending ? 'rsvp-btn-out' : 'rsvp-btn-in'}`}
                 onClick={() => {
                   const newAttending = !selected.attending;
-                  setSelected(s => s ? { ...s, attending: newAttending, rsvp_count: s.rsvp_count + (newAttending ? 1 : -1) } : s);
                   rsvp(selected.id, newAttending);
                 }}
               >
