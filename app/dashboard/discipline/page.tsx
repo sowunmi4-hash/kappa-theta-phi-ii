@@ -395,7 +395,9 @@ function ViolationCard({ v, open, onToggle, canManage, isBrother, onSSP, onFine,
 }
 
 function MemberRecord({ violations, onReload }:{ violations:any[], onReload?:()=>void }) {
-  const [openCards, setOpenCards] = useState<Set<string>>(new Set());
+  // Auto-open any card that has a pending SSP offer so the button is immediately visible
+  const initialOpen = new Set(violations.filter(v => v.ssp?.status === 'offered').map((v:any) => v.id));
+  const [openCards, setOpenCards] = useState<Set<string>>(initialOpen);
   function toggle(id:string){ setOpenCards(p=>{const n=new Set(p);n.has(id)?n.delete(id):n.add(id);return n;}); }
 
   if (violations.length===0) return (
@@ -475,7 +477,227 @@ const SSP_LESSONS = [
   { key:'lesson_6', title:'Rebuilding Trust',                       desc:'Trust is earned back slowly. Actions speak louder than apologies. Being an example moving forward.' },
 ];
 
-function SSPBlock({ ssp, violationId, memberId, canManage, onSSP, onReload, cleared }:any) {
+function SSPBlock({ ssp, violationId, memberId, canManage, isBrother, onSSP, onReload, cleared }:any) {
+  const [expanded, setExpanded]   = useState(false);
+  const [localSsp, setLocalSsp]   = useState(ssp);
+  const [saving, setSaving]       = useState<string|null>(null);
+  const [enrollMsg, setEnrollMsg] = useState('');
+
+  const allLessonsDone  = SSP_LESSONS.every(l => localSsp[l.key]);
+  const canClear        = allLessonsDone && localSsp.reflections_done && !localSsp.cleared;
+  const offerNum        = localSsp.offer_number || 1;
+  const isOffered       = localSsp.status === 'offered';
+  const isEnrolled      = localSsp.status === 'enrolled' || localSsp.status === 'completed';
+  const isOptedOut      = localSsp.status === 'opted_out';
+  const lessonsComplete = SSP_LESSONS.filter(l => localSsp[l.key]).length;
+
+  async function brotherEnroll() {
+    setSaving('enroll');
+    await fetch('/api/dashboard/discipline/ssp', {
+      method: 'PATCH', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ssp_id: ssp.id, status: 'enrolled' })
+    });
+    setLocalSsp((p:any) => ({ ...p, status: 'enrolled' }));
+    setEnrollMsg('You have enrolled in the Sage Solution Program. Leadership has been notified.');
+    setSaving(null);
+    if (onReload) onReload();
+  }
+
+  async function brotherOptOut() {
+    if (!confirm('Are you sure you want to opt out? Opting out means disciplinary action will be at the discretion of the Sgt. at Arms.')) return;
+    setSaving('optout');
+    await fetch('/api/dashboard/discipline/ssp', {
+      method: 'PATCH', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ssp_id: ssp.id, status: 'opted_out' })
+    });
+    setLocalSsp((p:any) => ({ ...p, status: 'opted_out' }));
+    setSaving(null);
+    if (onReload) onReload();
+  }
+
+  async function toggleLesson(lesson: string, current: boolean) {
+    setSaving(lesson);
+    setLocalSsp((p:any) => ({ ...p, [lesson]: !current }));
+    await fetch('/api/dashboard/discipline/ssp-lessons', {
+      method: 'PATCH', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ssp_id: ssp.id, action: 'toggle_lesson', lesson, value: !current })
+    });
+    setSaving(null);
+  }
+
+  async function toggleReflections(current: boolean) {
+    setSaving('reflect');
+    setLocalSsp((p:any) => ({ ...p, reflections_done: !current }));
+    await fetch('/api/dashboard/discipline/ssp-lessons', {
+      method: 'PATCH', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ssp_id: ssp.id, action: 'toggle_reflections', value: !current })
+    });
+    setSaving(null);
+  }
+
+  async function clearBrother() {
+    if (!confirm('Mark this brother as cleared? This will dismiss all charges for this violation.')) return;
+    setSaving('clear');
+    await fetch('/api/dashboard/discipline/ssp-lessons', {
+      method: 'PATCH', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ssp_id: ssp.id, violation_id: violationId, member_id: memberId, action: 'clear' })
+    });
+    setSaving(null);
+    onReload();
+  }
+
+  const borderColor = cleared ? '1px solid rgba(74,222,128,0.3)' : isOffered && isBrother ? '1px solid rgba(198,147,10,0.35)' : undefined;
+
+  return (
+    <div className="track-block ssp-block" style={{ gridColumn: '1/-1', border: borderColor }}>
+
+      {/* Header row */}
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
+        <div className="track-label">Sage Solution Program — Offer {offerNum} of 3</div>
+        {cleared
+          ? <span style={{ fontSize: '0.65rem', color: '#4ade80', background: 'rgba(74,222,128,0.1)', border: '1px solid rgba(74,222,128,0.2)', padding: '2px 10px', borderRadius: '3px', letterSpacing: '2px' }}>CLEARED</span>
+          : <span style={{ fontSize: '0.65rem', color: 'var(--muted)', letterSpacing: '1px' }}>{localSsp.status?.replace('_', ' ').toUpperCase()}</span>
+        }
+      </div>
+
+      {/* ── BROTHER: SSP OFFERED ── */}
+      {isBrother && isOffered && !cleared && (
+        <div className="ssp-offered-box">
+          <div className="ssp-offered-title">You have been offered the Sage Solution Program</div>
+          <div className="ssp-offered-desc">
+            The SSP is a 6-lesson program that guides you through what brotherhood truly means. Completing all lessons and reflection exercises will clear all charges for this violation.
+          </div>
+          <div className="ssp-offered-desc" style={{ marginTop: '6px', color: 'rgba(240,232,208,0.35)' }}>
+            If you opt out, disciplinary action will be at the discretion of the Sgt. at Arms.
+          </div>
+          {enrollMsg
+            ? <div style={{ fontSize: '0.8rem', color: '#4ade80', marginTop: '10px', padding: '6px 10px', background: 'rgba(74,222,128,0.08)', borderRadius: '5px', border: '1px solid rgba(74,222,128,0.2)' }}>{enrollMsg}</div>
+            : (
+              <div style={{ display: 'flex', gap: '8px', marginTop: '14px', flexWrap: 'wrap' }}>
+                <button className="ssp-enroll-btn" onClick={brotherEnroll} disabled={!!saving}>
+                  {saving === 'enroll' ? 'Enrolling...' : 'Accept — Enroll in SSP'}
+                </button>
+                <button className="track-btn red" style={{ padding: '6px 14px' }} onClick={brotherOptOut} disabled={!!saving}>
+                  {saving === 'optout' ? 'Processing...' : 'Opt Out'}
+                </button>
+              </div>
+            )
+          }
+        </div>
+      )}
+
+      {/* ── BROTHER: OPTED OUT ── */}
+      {isBrother && isOptedOut && (
+        <div style={{ fontSize: '0.8rem', color: 'var(--crimson-c)', lineHeight: '1.6' }}>
+          You opted out of the SSP. Disciplinary action will be assessed at the discretion of the Sgt. at Arms.
+        </div>
+      )}
+
+      {/* ── BROTHER: ENROLLED — show curriculum + progress ── */}
+      {isBrother && isEnrolled && !cleared && (
+        <>
+          <div style={{ fontSize: '0.8rem', color: 'var(--muted)', marginBottom: '10px', lineHeight: '1.6' }}>
+            You are enrolled. Attend all 6 sessions with leadership, participate honestly, and complete your reflection exercises. Your progress is tracked below.
+          </div>
+          <button className="disc-add-violation" onClick={() => setExpanded(v => !v)} style={{ marginBottom: '8px' }}>
+            {expanded ? 'Hide Lessons' : `View Lessons and Progress (${lessonsComplete}/6 complete)`}
+          </button>
+          {expanded && (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', marginBottom: '8px' }}>
+              {SSP_LESSONS.map((l, i) => (
+                <div key={l.key} className={`ssp-lesson ${localSsp[l.key] ? 'done' : ''}`} style={{ cursor: 'default' }}>
+                  <div className="ssp-lesson-check">{localSsp[l.key] ? 'x' : `${i + 1}`}</div>
+                  <div style={{ flex: 1 }}>
+                    <div className="ssp-lesson-title">Lesson {i + 1} — {l.title}</div>
+                    <div className="ssp-lesson-desc">{l.desc}</div>
+                  </div>
+                </div>
+              ))}
+              <div className={`ssp-lesson ${localSsp.reflections_done ? 'done' : ''}`} style={{ cursor: 'default' }}>
+                <div className="ssp-lesson-check">{localSsp.reflections_done ? 'x' : 'R'}</div>
+                <div style={{ flex: 1 }}>
+                  <div className="ssp-lesson-title">Reflection Exercises</div>
+                  <div className="ssp-lesson-desc">Attend all sessions, participate honestly, complete reflection exercises, and show improved behavior over time.</div>
+                </div>
+              </div>
+            </div>
+          )}
+          <div style={{ fontSize: '0.7rem', color: 'rgba(240,232,208,0.25)' }}>Completing all lessons and reflections will clear all charges for this violation.</div>
+        </>
+      )}
+
+      {/* ── BROTHER: CLEARED ── */}
+      {isBrother && cleared && (
+        <div style={{ fontSize: '0.82rem', color: '#4ade80', lineHeight: '1.6' }}>
+          You successfully completed the Sage Solution Program. All charges for this violation have been cleared.
+          {localSsp.cleared_at && <span style={{ color: 'rgba(74,222,128,0.5)' }}> Cleared on {new Date(localSsp.cleared_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}.</span>}
+        </div>
+      )}
+
+      {/* ── LEADER VIEW ── */}
+      {canManage && (
+        <>
+          {isOffered && (
+            <div style={{ display: 'flex', gap: '5px', marginBottom: '8px', flexWrap: 'wrap' }}>
+              <button className="track-btn green" onClick={() => onSSP(ssp.id, 'enrolled')}>Mark Enrolled</button>
+              <button className="track-btn red" onClick={() => onSSP(ssp.id, 'opted_out')}>Mark Opted Out</button>
+            </div>
+          )}
+          {isOptedOut && (
+            <div style={{ fontSize: '0.75rem', color: 'var(--crimson-c)', marginBottom: '6px' }}>
+              Brother opted out. Disciplinary action at discretion of Sgt. at Arms.
+            </div>
+          )}
+          {isEnrolled && (
+            <>
+              <button className="disc-add-violation" style={{ marginBottom: '8px' }} onClick={() => setExpanded(v => !v)}>
+                {expanded ? 'Hide Lessons' : `Track Lessons (${lessonsComplete}/6 complete)`}
+              </button>
+              {expanded && (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', marginBottom: '10px' }}>
+                  {SSP_LESSONS.map((l, i) => (
+                    <div key={l.key} className={`ssp-lesson ${localSsp[l.key] ? 'done' : ''}`}
+                      onClick={() => !localSsp.cleared && toggleLesson(l.key, localSsp[l.key])}>
+                      <div className="ssp-lesson-check">{localSsp[l.key] ? 'x' : saving === l.key ? '...' : `${i + 1}`}</div>
+                      <div style={{ flex: 1 }}>
+                        <div className="ssp-lesson-title">Lesson {i + 1} — {l.title}</div>
+                        <div className="ssp-lesson-desc">{l.desc}</div>
+                      </div>
+                    </div>
+                  ))}
+                  <div className={`ssp-lesson ${localSsp.reflections_done ? 'done' : ''}`}
+                    onClick={() => !localSsp.cleared && toggleReflections(localSsp.reflections_done)}>
+                    <div className="ssp-lesson-check">{localSsp.reflections_done ? 'x' : saving === 'reflect' ? '...' : 'R'}</div>
+                    <div style={{ flex: 1 }}>
+                      <div className="ssp-lesson-title">Reflection Exercises Completed</div>
+                      <div className="ssp-lesson-desc">Attend all sessions, participate honestly, complete reflection exercises, show improved behavior.</div>
+                    </div>
+                  </div>
+                </div>
+              )}
+              {!localSsp.cleared && (
+                <div style={{ fontSize: '0.7rem', color: 'var(--muted)', marginBottom: '8px', lineHeight: '1.5' }}>
+                  All 6 lessons + reflections must be marked done to clear.
+                  {allLessonsDone && localSsp.reflections_done && <span style={{ color: '#4ade80' }}> All requirements met — ready to clear.</span>}
+                </div>
+              )}
+              {canClear && !localSsp.cleared && (
+                <button className="track-btn green" style={{ fontSize: '0.75rem', padding: '5px 14px' }} onClick={clearBrother} disabled={saving === 'clear'}>
+                  {saving === 'clear' ? 'Clearing...' : 'Mark Cleared — All Charges Dismissed'}
+                </button>
+              )}
+            </>
+          )}
+          {localSsp.cleared && (
+            <div style={{ fontSize: '0.75rem', color: '#4ade80', marginTop: '4px' }}>
+              Cleared by {localSsp.cleared_by_name} on {localSsp.cleared_at ? new Date(localSsp.cleared_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }) : '—'}
+            </div>
+          )}
+        </>
+      )}
+    </div>
+  );
+}
   const [expanded, setExpanded] = useState(false);
   const [localSsp, setLocalSsp] = useState(ssp);
   const [saving, setSaving]     = useState<string|null>(null);
