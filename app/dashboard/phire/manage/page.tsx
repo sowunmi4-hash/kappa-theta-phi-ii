@@ -4,6 +4,15 @@ import { useState, useEffect } from 'react';
 import '../../dash.css';
 import '../phire.css';
 
+// Silent state update — only triggers re-render if data actually changed
+function silentSet<T>(setter: React.Dispatch<React.SetStateAction<T>>, newVal: T) {
+  setter(prev => {
+    if (JSON.stringify(prev) === JSON.stringify(newVal)) return prev;
+    return newVal;
+  });
+}
+
+
 const LEADERS = ['Head Founder','Co-Founder','Iron Fleet'];
 const CATEGORIES = ['General','Attendance','Service','Recruitment','Outreach','Leadership','Training'];
 
@@ -66,7 +75,7 @@ export default function PhireManage() {
       fetch('/api/dashboard/phire/submissions?view=all').then(r=>r.json()),
     ]);
     setQueue(q.submissions||[]);
-    setActivities(a.activities||[]);
+    silentSet(setActivities, a.activities||[]);
     // Get pending redemptions from roster via a hacky approach - fetch all subs
     fetch('/api/dashboard/phire/rewards').catch(()=>{});
   }

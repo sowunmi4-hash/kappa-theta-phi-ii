@@ -2,6 +2,15 @@
 import { useState, useEffect, useRef } from 'react';
 import './dash.css';
 
+// Silent state update — only triggers re-render if data actually changed
+function silentSet<T>(setter: React.Dispatch<React.SetStateAction<T>>, newVal: T) {
+  setter(prev => {
+    if (JSON.stringify(prev) === JSON.stringify(newVal)) return prev;
+    return newVal;
+  });
+}
+
+
 const NAV = [
   { href: '/dashboard', label: 'Home', icon: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H4a1 1 0 01-1-1V9.5z"/><path d="M9 21V12h6v9"/></svg> },
   { href: '/dashboard/news', label: 'Wokou News', icon: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10l6 6v8a2 2 0 01-2 2z"/><path d="M17 21v-8H7"/><path d="M7 3v5h8"/></svg> },
@@ -30,7 +39,7 @@ export default function DashHome() {
   useEffect(() => {
     const poll = setInterval(() => {
       fetch('/api/dashboard/profile').then(r=>r.json()).then(d => {
-        if (!d.error) setData(d);
+        if (!d.error) silentSet(setData, d);
       });
     }, 30000);
     return () => clearInterval(poll);

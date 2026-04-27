@@ -4,6 +4,15 @@ import { useState, useEffect } from 'react';
 import '../dash.css';
 import './phire.css';
 
+// Silent state update — only triggers re-render if data actually changed
+function silentSet<T>(setter: React.Dispatch<React.SetStateAction<T>>, newVal: T) {
+  setter(prev => {
+    if (JSON.stringify(prev) === JSON.stringify(newVal)) return prev;
+    return newVal;
+  });
+}
+
+
 const TIER_COLOURS: Record<string,string> = { Bronze:'bronze', Silver:'silver', Gold:'gold', Platinum:'platinum', Diamond:'diamond' };
 
 export default function PhireHome() {
@@ -13,7 +22,7 @@ export default function PhireHome() {
   function loadData() {
     fetch('/api/dashboard/phire/balance').then(r=>r.json()).then(d => {
       if (d.error) { window.location.href='/login'; return; }
-      setData(d);
+      silentSet(setData, d);
     });
     fetch('/api/dashboard/phire/rewards').then(r=>r.json()).then(d => setTiers(d.tiers||[]));
   }

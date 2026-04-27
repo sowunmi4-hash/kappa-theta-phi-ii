@@ -4,6 +4,15 @@ import { useState, useEffect } from 'react';
 import '../../dash.css';
 import '../phire.css';
 
+// Silent state update — only triggers re-render if data actually changed
+function silentSet<T>(setter: React.Dispatch<React.SetStateAction<T>>, newVal: T) {
+  setter(prev => {
+    if (JSON.stringify(prev) === JSON.stringify(newVal)) return prev;
+    return newVal;
+  });
+}
+
+
 export default function PhireHistory() {
   const [member, setMember] = useState<any>(null);
   const [tab, setTab] = useState<'submissions'|'transactions'>('submissions');
@@ -39,15 +48,15 @@ export default function PhireHistory() {
   );
   useEffect(() => {
     fetch('/api/dashboard/phire/balance').then(r=>r.json()).then(d=>{ if(d.error){window.location.href='/login';return;} setMember(d.member); });
-    fetch('/api/dashboard/phire/submissions?view=own').then(r=>r.json()).then(d=>setSubmissions(d.submissions||[]));
-    fetch('/api/dashboard/phire/balance').then(r=>r.json()).then(d=>setTransactions(d.recent_transactions||[]));
+    fetch('/api/dashboard/phire/submissions?view=own').then(r=>r.json()).then(d=>silentSet(setSubmissions, d.submissions||[]));
+    fetch('/api/dashboard/phire/balance').then(r=>r.json()).then(d=>silentSet(setTransactions, d.recent_transactions||[]));
   }, []);
 
   // POLLING
   useEffect(() => {
     const poll = setInterval(() => {
-      fetch('/api/dashboard/phire/submissions?view=own').then(r=>r.json()).then(d=>setSubmissions(d.submissions||[]));
-      fetch('/api/dashboard/phire/balance').then(r=>r.json()).then(d=>setTransactions(d.recent_transactions||[]));
+      fetch('/api/dashboard/phire/submissions?view=own').then(r=>r.json()).then(d=>silentSet(setSubmissions, d.submissions||[]));
+      fetch('/api/dashboard/phire/balance').then(r=>r.json()).then(d=>silentSet(setTransactions, d.recent_transactions||[]));
     }, 30000);
     return () => clearInterval(poll);
   }, []);
