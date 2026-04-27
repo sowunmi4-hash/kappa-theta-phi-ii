@@ -107,10 +107,13 @@ export default function PhireHome() {
                       </a>
                     )}
                     {LEADERS.includes(member.role) && (
-                      <a href="/dashboard/phire/leaderboard" className="phire-action-btn" style={{gridColumn:'span 2'}}>
+                      <a href="/dashboard/phire/leaderboard" className="phire-action-btn">
                         <span className="phire-action-icon">🏆</span>Leaderboard
                       </a>
                     )}
+                    <a href="/dashboard/phire/guide" className="phire-action-btn" style={{gridColumn:'span 2'}}>
+                      <span className="phire-action-icon">📖</span>How to Use PHIRE
+                    </a>
                   </div>
                 </div>
               </div>
