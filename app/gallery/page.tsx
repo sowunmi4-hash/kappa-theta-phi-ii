@@ -28,7 +28,7 @@ export default function GalleryPage() {
     try {
       const r = await fetch(`${SUPABASE_URL}/rest/v1/gallery_posts?select=*&order=created_at.desc`, {
         headers: {
-          'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVhbWhyb2ViZXRiYWN2eGR2enhvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc0ODI0NTMsImV4cCI6MjA5MzA1ODQ1M30.LBpVOxMzqFKMPIFVOnKzNjuDZ9yPe6PkWHE7V16Y23A',
+          'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVhbWhyb2ViZXRiYWN2eGR2enhvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY2ODY0MTEsImV4cCI6MjA5MjI2MjQxMX0.F_So-6St7sCFYPYksjrBeo_xJQ0B0Y-Lv5mAsj4ViJg',
           'Accept-Profile': 'members'
         }
       });
