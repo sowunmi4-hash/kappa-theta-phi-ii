@@ -12,6 +12,15 @@ type GalleryPost = {
   created_at: string;
 };
 
+function getYouTubeId(url: string): string | null {
+  const m = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&?\s]+)/);
+  return m ? m[1] : null;
+}
+
+function isYouTube(url: string): boolean {
+  return !!getYouTubeId(url);
+}
+
 const SUPABASE_URL = 'https://uamhroebetbacvxdvzxo.supabase.co';
 const ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVhbWhyb2ViZXRiYWN2eGR2enhvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY2ODY0MTEsImV4cCI6MjA5MjI2MjQxMX0.F_So-6St7sCFYPYksjrBeo_xJQ0B0Y-Lv5mAsj4ViJg';
 
@@ -123,8 +132,17 @@ export default function GalleryPage() {
             <div className="gallery-empty">No posts yet. Be the first to share a moment.</div>
           )}
           {filtered.map(post => (
-            <div className="gallery-item" key={post.id} onClick={() => post.file_type === 'image' && setLightbox(post.file_url)}>
-              {post.file_type === 'video' ? (
+            <div className="gallery-item" key={post.id} onClick={() => !isYouTube(post.file_url) && post.file_type === 'image' && setLightbox(post.file_url)}>
+              {isYouTube(post.file_url) ? (
+                <div className="gallery-yt-wrap" onClick={e => e.stopPropagation()}>
+                  <iframe
+                    src={`https://www.youtube.com/embed/${getYouTubeId(post.file_url)}`}
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                    loading="lazy"
+                  />
+                </div>
+              ) : post.file_type === 'video' ? (
                 <video src={post.file_url} controls preload="metadata" />
               ) : (
                 <img src={post.file_url} alt={post.caption || 'Gallery'} loading="lazy" />
