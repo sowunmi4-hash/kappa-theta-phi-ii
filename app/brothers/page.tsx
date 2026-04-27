@@ -1,5 +1,5 @@
 'use client';
-import { useEffect } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import './brothers.css';
 
 type Member = {
@@ -63,6 +63,27 @@ function MemberCard({ frat, role, fraction, title, iron, image }: Member) {
 }
 
 export default function BrothersPage() {
+  const audioRef = useRef<HTMLAudioElement>(null);
+  const [playing, setPlaying] = useState(false);
+  const [progress, setProgress] = useState(0);
+
+  function togglePlay() {
+    if (!audioRef.current) return;
+    if (playing) { audioRef.current.pause(); }
+    else { audioRef.current.play(); }
+    setPlaying(!playing);
+  }
+
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+    const update = () => { if (audio.duration) setProgress((audio.currentTime / audio.duration) * 100); };
+    const ended = () => { setPlaying(false); setProgress(0); };
+    audio.addEventListener('timeupdate', update);
+    audio.addEventListener('ended', ended);
+    return () => { audio.removeEventListener('timeupdate', update); audio.removeEventListener('ended', ended); };
+  }, []);
+
   useEffect(() => {
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); });
@@ -86,6 +107,16 @@ export default function BrothersPage() {
       </nav>
 
       <main className="brothers-page">
+
+        <audio ref={audioRef} src="/brothers/anthem.mp3" preload="metadata" />
+
+        <div className="audio-player" onClick={togglePlay}>
+          <div className="audio-btn">{playing ? '❚❚' : '▶'}</div>
+          <div className="audio-info">
+            <div className="audio-title">Hoist the Colours</div>
+            <div className="audio-bar"><div className="audio-bar-fill" style={{ width: `${progress}%` }} /></div>
+          </div>
+        </div>
 
         <section className="brothers-hero">
           <div className="brothers-hero-bg" />
