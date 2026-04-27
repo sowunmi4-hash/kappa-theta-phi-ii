@@ -28,7 +28,7 @@ const IRON_FLEET: Member[] = [
 
 const BROTHERS: Member[] = [
   { frat: 'Big Brother Sage', fraction: 'Ishi No', title: 'Member', image: '/brothers/sage.png' },
-  { frat: 'Big Brother Fathom', fraction: 'Kuro Kanda', title: 'Member' },
+  { frat: 'Big Brother Fathom', fraction: 'Kuro Kanda', title: 'Member', image: '/brothers/fathom.png' },
   { frat: 'Big Brother Khaos', fraction: 'Kuro Kanda', title: 'Member', image: '/brothers/khaos.png' },
   { frat: 'Big Brother Limitless', image: '/brothers/limitless.png' },
   { frat: 'Big Brother 5 Star General', image: '/brothers/five-star-general.png' },
