@@ -1,0 +1,482 @@
+'use client';
+export const dynamic = 'force-dynamic';
+import { useState, useEffect, useRef } from 'react';
+import '../dash.css';
+import './discipline.css';
+
+const COLORS = [
+  { id:'grey',       label:'Grey',        icon:'⚫' },
+  { id:'navy_blue',  label:'Navy Blue',   icon:'🔵' },
+  { id:'gold',       label:'Gold',        icon:'🟡' },
+  { id:'crimson_red',label:'Crimson Red', icon:'🔴' },
+];
+const FINE_AMOUNTS: Record<string,number> = { navy_blue:1500, gold:3000 };
+const SSP_STATUS_LABELS: Record<string,string> = { offered:'Offered', enrolled:'Enrolled', completed:'Completed', opted_out:'Opted Out' };
+const FINE_STATUS_LABELS: Record<string,string> = { pending:'Pending', payment_plan:'Payment Plan', paid:'Paid' };
+
+function timeAgo(d:string){ const s=Math.floor((Date.now()-new Date(d).getTime())/1000); if(s<86400) return `${Math.floor(s/3600)}h ago`; if(s<604800) return `${Math.floor(s/86400)}d ago`; return new Date(d).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}); }
+
+export default function DisciplinePage() {
+  const [member, setMember]       = useState<any>(null);
+  const [canManage, setCanManage] = useState(false);
+  const [tab, setTab]             = useState<'all'|'issue'|'my'>('all');
+  const [violations, setViolations] = useState<any[]>([]);
+  const [roster, setRoster]       = useState<any[]>([]);
+  const [openCards, setOpenCards] = useState<Set<string>>(new Set());
+  const [loading, setLoading]     = useState(true);
+  const [modal, setModal]         = useState<any>(null);
+
+  // Issue form state
+  const [form, setForm] = useState({
+    member_id:'', offense_color:'grey',
+    violations:[''], is_repeat:false, notes:''
+  });
+  const [submitting, setSubmitting] = useState(false);
+  const [submitMsg, setSubmitMsg]   = useState('');
+
+  // My record
+  const [myRecord, setMyRecord]   = useState<any[]>([]);
+
+  useEffect(() => {
+    fetch('/api/dashboard/phire/balance').then(r=>r.json()).then(d => {
+      if (d.error) { window.location.href='/login'; return; }
+      setMember(d.member);
+    });
+  }, []);
+
+  useEffect(() => {
+    if (!member) return;
+    const manage = member.fraction==='Ishi No Fraction' || member.role==='Head Founder' || member.role==='Senior Founder';
+    setCanManage(manage);
+    if (manage) {
+      loadAll();
+      fetch('/api/dashboard/phire/leaderboard').then(r=>r.json()).then(d=>setRoster(d.leaderboard||[]));
+    }
+    fetch('/api/dashboard/discipline/my-record').then(r=>r.json()).then(d=>setMyRecord(d.violations||[]));
+    setLoading(false);
+  }, [member]);
+
+  async function loadAll() {
+    const d = await fetch('/api/dashboard/discipline/violations?view=all').then(r=>r.json());
+    setViolations(d.violations||[]);
+  }
+
+  function toggleCard(id:string) {
+    setOpenCards(p => { const n = new Set(p); n.has(id) ? n.delete(id) : n.add(id); return n; });
+  }
+
+  async function issueViolation() {
+    if (!form.member_id || !form.offense_color || !form.violations.some(v=>v.trim())) {
+      setSubmitMsg('Please select a brother, offense color, and at least one violation.'); return;
+    }
+    setSubmitting(true); setSubmitMsg('');
+    const res = await fetch('/api/dashboard/discipline/violations', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ ...form, violations: form.violations.filter(v=>v.trim()),
+        member_name: roster.find(r=>r.member_id===form.member_id)?.frat_name||'Unknown' })
+    }).then(r=>r.json());
+    if (res.error) { setSubmitMsg(`❌ ${res.error}`); setSubmitting(false); return; }
+    setSubmitMsg('✅ Violation issued successfully.');
+    setForm({ member_id:'', offense_color:'grey', violations:[''], is_repeat:false, notes:'' });
+    setSubmitting(false);
+    await loadAll();
+    setTimeout(() => setSubmitMsg(''), 4000);
+  }
+
+  async function updateSSP(ssp_id:string, status:string, extra={}) {
+    await fetch('/api/dashboard/discipline/ssp', { method:'PATCH', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ ssp_id, status, ...extra }) });
+    await loadAll();
+  }
+
+  async function updateFine(fine_id:string, status:string, extra={}) {
+    await fetch('/api/dashboard/discipline/fines', { method:'PATCH', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ fine_id, status, ...extra }) });
+    await loadAll();
+  }
+
+  async function liftSuspension(suspension_id:string) {
+    if (!confirm('Lift this suspension early?')) return;
+    await fetch('/api/dashboard/discipline/suspensions', { method:'PATCH', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ suspension_id, action:'lift' }) });
+    await loadAll();
+  }
+
+  async function logCourtMarshall(violation_id:string, member_id:string, data:any) {
+    await fetch('/api/dashboard/discipline/court-marshall', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ violation_id, member_id, ...data }) });
+    setModal(null); await loadAll();
+  }
+
+  const colorCounts: Record<string,number> = { grey:0, navy_blue:0, gold:0, crimson_red:0 };
+  violations.forEach(v => { if (colorCounts[v.offense_color]!==undefined) colorCounts[v.offense_color]++; });
+
+  const slug = member?.frat_name?.toLowerCase().replace(/\s+/g,'-').replace('big-brother-','') || '';
+  const NAV = [
+    { href:'/dashboard', label:'Home' },
+    { href:'/dashboard/news', label:'Wokou News' },
+    { href:'/dashboard/events', label:'Events' },
+    { href:'/dashboard/phire', label:'PHIRE' },
+    { href:'/dashboard/gallery', label:'My Gallery' },
+    { href:'/dashboard/edit', label:'Edit Profile' },
+  ];
+
+  if (!member || loading) return <div className="dash-loading">LOADING...</div>;
+
+  // Non-managers only see their own record
+  if (!canManage) {
+    return (
+      <div className="dash-app disc-root">
+        <aside className="dash-sidebar">
+          <div className="dash-sidebar-logo"><img src="/logo.png" alt="KΘΦ II"/><span className="dash-sidebar-logo-text">KΘΦ II</span></div>
+          <div className="dash-sidebar-member">
+            <div className="dash-sidebar-portrait"><img src={`/brothers/${slug}.png`} alt="" onError={(e:any)=>e.target.src='/logo.png'}/></div>
+            <div className="dash-sidebar-name">{member.frat_name}</div>
+            <div className="dash-sidebar-role">{member.role}</div>
+          </div>
+          <nav className="dash-nav">
+            {NAV.map(n=><a key={n.href} href={n.href} className="dash-nav-item"><span>{n.label}</span></a>)}
+            <div className="dash-nav-divider"/><a href="/" className="dash-nav-item"><span>Back to Site</span></a>
+          </nav>
+        </aside>
+        <main className="dash-main">
+          <div className="disc-hero"><div className="disc-hero-title">My Discipline Record</div><div className="disc-hero-sub">Your personal record — private and visible only to you</div></div>
+          <div className="disc-content">
+            <MemberRecord violations={myRecord} />
+          </div>
+        </main>
+      </div>
+    );
+  }
+
+  return (
+    <div className="dash-app disc-root">
+      <aside className="dash-sidebar">
+        <div className="dash-sidebar-logo"><img src="/logo.png" alt="KΘΦ II"/><span className="dash-sidebar-logo-text">KΘΦ II</span></div>
+        <div className="dash-sidebar-member">
+          <div className="dash-sidebar-portrait"><img src={`/brothers/${slug}.png`} alt="" onError={(e:any)=>e.target.src='/logo.png'}/></div>
+          <div className="dash-sidebar-name">{member.frat_name}</div>
+          <div className="dash-sidebar-role">{member.role}</div>
+        </div>
+        <nav className="dash-nav">
+          {NAV.map(n=><a key={n.href} href={n.href} className="dash-nav-item"><span>{n.label}</span></a>)}
+          <div className="dash-nav-divider"/><a href="/" className="dash-nav-item"><span>Back to Site</span></a>
+        </nav>
+      </aside>
+
+      <main className="dash-main">
+        <div className="disc-hero">
+          <div className="disc-hero-title">⚖️ Discipline & Enforcement</div>
+          <div className="disc-hero-sub">KΘΦ II Color System — Ishi No Faction Management</div>
+        </div>
+
+        <div className="disc-content">
+          {/* Stats */}
+          <div className="disc-stats">
+            {COLORS.map(c=>(
+              <div key={c.id} className={`disc-stat ${c.id}`}>
+                <div className="disc-stat-num">{colorCounts[c.id]}</div>
+                <div className="disc-stat-label">{c.label}</div>
+              </div>
+            ))}
+          </div>
+
+          {/* Tabs */}
+          <div className="disc-tabs">
+            <button className={`disc-tab ${tab==='all'?'active':''}`} onClick={()=>setTab('all')}>All Violations ({violations.length})</button>
+            <button className={`disc-tab ${tab==='issue'?'active':''}`} onClick={()=>setTab('issue')}>Issue Violation</button>
+            <button className={`disc-tab ${tab==='my'?'active':''}`} onClick={()=>setTab('my')}>My Record</button>
+          </div>
+
+          {/* ALL VIOLATIONS */}
+          {tab==='all' && (
+            <>
+              {violations.length===0 && <div style={{textAlign:'center',padding:'3rem',color:'var(--muted)',fontSize:'0.85rem'}}>No violations on record.</div>}
+              {violations.map(v=>(
+                <ViolationCard key={v.id} v={v} open={openCards.has(v.id)} onToggle={()=>toggleCard(v.id)}
+                  canManage={canManage} onSSP={updateSSP} onFine={updateFine} onLiftSusp={liftSuspension}
+                  onCourtMarshall={()=>setModal(v)} />
+              ))}
+            </>
+          )}
+
+          {/* ISSUE VIOLATION */}
+          {tab==='issue' && (
+            <div className="disc-form-wrap">
+              <div className="disc-form-title">⚠️ Issue New Violation</div>
+
+              {submitMsg && (
+                <div style={{padding:'0.7rem 1rem',borderRadius:'6px',marginBottom:'1rem',fontSize:'0.82rem',background:submitMsg.startsWith('✅')?'rgba(74,222,128,0.08)':'rgba(178,34,52,0.08)',border:`1px solid ${submitMsg.startsWith('✅')?'rgba(74,222,128,0.2)':'rgba(178,34,52,0.2)'}`,color:submitMsg.startsWith('✅')?'#4ade80':'#e05070'}}>
+                  {submitMsg}
+                </div>
+              )}
+
+              <div className="field-group" style={{marginBottom:'1rem'}}>
+                <label className="field-label">Brother</label>
+                <select className="disc-member-select" value={form.member_id} onChange={e=>setForm(f=>({...f,member_id:e.target.value}))}>
+                  <option value="">Select brother...</option>
+                  {roster.map(r=><option key={r.member_id} value={r.member_id}>{r.frat_name}</option>)}
+                </select>
+              </div>
+
+              <div className="field-group" style={{marginBottom:'1rem'}}>
+                <label className="field-label">Offense Color</label>
+                <div className="disc-color-picker">
+                  {COLORS.map(c=>(
+                    <button key={c.id} className={`disc-color-opt ${c.id} ${form.offense_color===c.id?'selected':''}`} onClick={()=>setForm(f=>({...f,offense_color:c.id}))}>
+                      {c.icon} {c.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Offense description */}
+              <div style={{background:'var(--raised)',border:'1px solid var(--border)',borderRadius:'8px',padding:'0.9rem 1rem',marginBottom:'1rem',fontSize:'0.78rem',color:'var(--muted)',lineHeight:'1.6'}}>
+                {form.offense_color==='grey' && <><strong style={{color:'var(--grey-c)'}}>Grey Offense:</strong> Counseling with Sgt. at Arms and Chief Admin. Sage Solution Program offered and explained. Class time set for all brothers.</>}
+                {form.offense_color==='navy_blue' && <><strong style={{color:'var(--navy-c)'}}>Navy Blue Offense:</strong> Counseling with Sgt. at Arms and Chief Admin. SSP offered (warrant + 1,500L fine if opted out). 1st Warrant issued. 1 week to pay fine.</>}
+                {form.offense_color==='gold' && <><strong style={{color:'var(--gold-c)'}}>Gold Offense:</strong> Meeting with Daimyo and Chief Admin. SSP offered (warrant + 3,000L fine if opted out). 2nd Warrant issued. 1 month gear prohibition + suspension from ALL frat activities. 3,000L fine, 1 week to pay.</>}
+                {form.offense_color==='crimson_red' && <><strong style={{color:'var(--crimson-c)'}}>Crimson Red Offense:</strong> Corsair Court Marshall with ALL Founders. Disciplinary actions based on verdict of court marshall. Log verdict and consequences manually after proceedings.</>}
+              </div>
+
+              <label className="disc-repeat-toggle">
+                <input type="checkbox" checked={form.is_repeat} onChange={e=>setForm(f=>({...f,is_repeat:e.target.checked}))} />
+                <span>This is a <strong>repeat</strong> violation (same violation committed 2+ times — SSP not offered, fine + penalty applied automatically)</span>
+              </label>
+
+              <div className="field-group" style={{marginBottom:'1rem'}}>
+                <label className="field-label">Violation(s) Committed</label>
+                <div className="disc-violation-inputs">
+                  {form.violations.map((v,i)=>(
+                    <div key={i} className="disc-violation-row">
+                      <input className="disc-violation-input" value={v} onChange={e=>{const a=[...form.violations];a[i]=e.target.value;setForm(f=>({...f,violations:a}));}} placeholder={`Violation ${i+1}...`} />
+                      {form.violations.length>1 && <button className="disc-remove-btn" onClick={()=>setForm(f=>({...f,violations:f.violations.filter((_,j)=>j!==i)}))}>✕</button>}
+                    </div>
+                  ))}
+                  <button className="disc-add-violation" onClick={()=>setForm(f=>({...f,violations:[...f.violations,'']}))}>+ Add another violation</button>
+                </div>
+              </div>
+
+              <div className="field-group" style={{marginBottom:'1.2rem'}}>
+                <label className="field-label">Additional Notes (optional)</label>
+                <textarea className="field-textarea" style={{minHeight:'70px'}} value={form.notes} onChange={e=>setForm(f=>({...f,notes:e.target.value}))} placeholder="Any additional context..." />
+              </div>
+
+              <button className="btn btn-gold" style={{background:'var(--crimson-c)',borderColor:'var(--crimson-c)',color:'#fff'}} onClick={issueViolation} disabled={submitting}>
+                {submitting ? 'Issuing...' : '⚠️ Issue Violation'}
+              </button>
+            </div>
+          )}
+
+          {/* MY RECORD */}
+          {tab==='my' && <MemberRecord violations={myRecord} />}
+        </div>
+      </main>
+
+      {/* Court Marshall Modal */}
+      {modal && (
+        <CourtMarshallModal v={modal} onClose={()=>setModal(null)} onSave={logCourtMarshall} />
+      )}
+    </div>
+  );
+}
+
+function ViolationCard({ v, open, onToggle, canManage, onSSP, onFine, onLiftSusp, onCourtMarshall }:any) {
+  const [fineModal, setFineModal] = useState(false);
+  const [planAmt, setPlanAmt]     = useState('');
+  const [planNote, setPlanNote]   = useState('');
+
+  function colorClass(c:string){ return c; }
+
+  return (
+    <div className={`violation-card ${colorClass(v.offense_color)} ${open?'open':''}`}>
+      <div className="violation-header" onClick={onToggle}>
+        <div style={{flex:1}}>
+          <div className="violation-member">
+            {v.member_name}
+            {v.is_repeat && <span className="violation-repeat">REPEAT</span>}
+          </div>
+          <div style={{display:'flex',alignItems:'center',gap:'8px',marginTop:'5px',flexWrap:'wrap'}}>
+            <span className={`offense-badge ${v.offense_color}`}>
+              {COLORS.find(c=>c.id===v.offense_color)?.icon} {COLORS.find(c=>c.id===v.offense_color)?.label}
+            </span>
+            <span className="violation-date">Issued {timeAgo(v.created_at)} by {v.issued_by_name}</span>
+          </div>
+        </div>
+        <div className="violation-chevron">›</div>
+      </div>
+
+      <div className="violation-body">
+        {/* Violations list */}
+        <div className="violation-violations">
+          <div className="violation-violations-label">Violations</div>
+          {(v.violations||[]).map((vio:string,i:number)=>(
+            <div key={i} className="violation-item">{vio}</div>
+          ))}
+        </div>
+        {v.notes && <div className="violation-notes">Notes: {v.notes}</div>}
+
+        {/* Tracking blocks */}
+        <div className="track-grid">
+
+          {/* SSP */}
+          {v.ssp && (
+            <div className="track-block">
+              <div className="track-label">Sage Solution Program</div>
+              <div className="track-status">{SSP_STATUS_LABELS[v.ssp.status]||v.ssp.status}</div>
+              {v.ssp.class_time && <div className="track-detail">Class: {v.ssp.class_time}</div>}
+              {canManage && v.ssp.status==='offered' && (
+                <div style={{display:'flex',gap:'5px',marginTop:'6px',flexWrap:'wrap'}}>
+                  <button className="track-btn green" onClick={()=>onSSP(v.ssp.id,'enrolled')}>Enrolled</button>
+                  <button className="track-btn red" onClick={()=>onSSP(v.ssp.id,'opted_out')}>Opted Out</button>
+                </div>
+              )}
+              {canManage && v.ssp.status==='enrolled' && (
+                <button className="track-btn green" style={{marginTop:'6px'}} onClick={()=>onSSP(v.ssp.id,'completed')}>Mark Completed</button>
+              )}
+            </div>
+          )}
+
+          {/* Fines */}
+          {v.fines?.map((fine:any)=>(
+            <div key={fine.id} className="track-block">
+              <div className="track-label">Fine — {fine.amount_ls.toLocaleString()}L</div>
+              <div className="track-status">{FINE_STATUS_LABELS[fine.status]}</div>
+              {fine.due_date && fine.status!=='paid' && <div className="track-detail">Due: {new Date(fine.due_date+'T12:00:00').toLocaleDateString('en-GB',{day:'numeric',month:'short'})}</div>}
+              {fine.payment_plan_amount && <div className="track-detail">Plan: {fine.payment_plan_amount.toLocaleString()}L — {fine.payment_plan_notes}</div>}
+              {fine.paid_at && <div className="track-detail">Paid: {timeAgo(fine.paid_at)}</div>}
+              {canManage && fine.status!=='paid' && (
+                <div style={{display:'flex',gap:'5px',marginTop:'6px',flexWrap:'wrap'}}>
+                  <button className="track-btn green" onClick={()=>onFine(fine.id,'paid')}>Mark Paid</button>
+                  {fine.status!=='payment_plan' && <button className="track-btn gold" onClick={()=>setFineModal(true)}>Payment Plan</button>}
+                </div>
+              )}
+              {fineModal && canManage && (
+                <div style={{marginTop:'8px',display:'flex',flexDirection:'column',gap:'6px'}}>
+                  <input className="disc-violation-input" placeholder="Amount agreed (L$)..." value={planAmt} onChange={e=>setPlanAmt(e.target.value)} type="number"/>
+                  <input className="disc-violation-input" placeholder="Plan notes..." value={planNote} onChange={e=>setPlanNote(e.target.value)}/>
+                  <div style={{display:'flex',gap:'5px'}}>
+                    <button className="track-btn gold" onClick={()=>{onFine(fine.id,'payment_plan',{payment_plan_amount:parseInt(planAmt),payment_plan_notes:planNote});setFineModal(false);}}>Save Plan</button>
+                    <button className="track-btn" style={{color:'var(--muted)',borderColor:'var(--border)'}} onClick={()=>setFineModal(false)}>Cancel</button>
+                  </div>
+                </div>
+              )}
+            </div>
+          ))}
+
+          {/* Warrants */}
+          {v.warrants?.map((w:any)=>(
+            <div key={w.id} className="track-block">
+              <div className="track-label">Warrant #{w.warrant_number}</div>
+              <div className="track-status" style={{color:'var(--crimson-c)'}}>⚠️ Warrant Issued</div>
+              <div className="track-detail">Issued {timeAgo(w.issued_at)}</div>
+            </div>
+          ))}
+
+          {/* Suspension */}
+          {v.suspensions?.map((s:any)=>(
+            <div key={s.id} className="track-block">
+              <div className="track-label">Suspension</div>
+              <div className="track-status" style={{color:s.status==='active'?'var(--crimson-c)':'#4ade80'}}>{s.status==='active'?'🔴 Active':'🟢 Lifted'}</div>
+              <div className="track-detail">{new Date(s.start_date+'T12:00:00').toLocaleDateString('en-GB',{day:'numeric',month:'short'})} → {new Date(s.end_date+'T12:00:00').toLocaleDateString('en-GB',{day:'numeric',month:'short'})}</div>
+              <div className="track-detail" style={{marginTop:'2px'}}>No frat gear. No frat activities.</div>
+              {s.status==='lifted' && <div className="track-detail">Lifted by {s.lifted_by_name}</div>}
+              {canManage && s.status==='active' && <button className="track-btn green" style={{marginTop:'6px'}} onClick={()=>onLiftSusp(s.id)}>Lift Early</button>}
+            </div>
+          ))}
+
+          {/* Court Marshall */}
+          {v.offense_color==='crimson_red' && (
+            <div className="track-block" style={{gridColumn:'1/-1'}}>
+              <div className="track-label">Court Marshall</div>
+              {v.court_marshall ? (
+                <>
+                  <div className="track-status">⚖️ Verdict Logged</div>
+                  {v.court_marshall.held_at && <div className="track-detail">Held: {new Date(v.court_marshall.held_at+'T12:00:00').toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'})}</div>}
+                  {v.court_marshall.verdict && <div className="track-detail" style={{marginTop:'4px'}}><strong style={{color:'var(--bone)'}}>Verdict:</strong> {v.court_marshall.verdict}</div>}
+                  {v.court_marshall.consequences && <div className="track-detail" style={{marginTop:'4px'}}><strong style={{color:'var(--bone)'}}>Consequences:</strong> {v.court_marshall.consequences}</div>}
+                  {v.court_marshall.notes && <div className="track-detail" style={{marginTop:'4px',fontStyle:'italic'}}>{v.court_marshall.notes}</div>}
+                  <div className="track-detail" style={{marginTop:'4px'}}>Logged by {v.court_marshall.logged_by_name}</div>
+                </>
+              ) : (
+                <>
+                  <div className="track-status" style={{color:'var(--muted)'}}>Awaiting Proceedings</div>
+                  {canManage && <button className="track-btn red" style={{marginTop:'6px'}} onClick={onCourtMarshall}>Log Verdict</button>}
+                </>
+              )}
+            </div>
+          )}
+        </div>
+
+        <div className="issued-by">Violation ID: {v.id.slice(0,8)}… · Issued by {v.issued_by_name} · {new Date(v.created_at).toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'})}</div>
+      </div>
+    </div>
+  );
+}
+
+function MemberRecord({ violations }:{ violations:any[] }) {
+  const [openCards, setOpenCards] = useState<Set<string>>(new Set());
+  function toggle(id:string){ setOpenCards(p=>{const n=new Set(p);n.has(id)?n.delete(id):n.add(id);return n;}); }
+
+  if (violations.length===0) return (
+    <div className="disc-my-wrap">
+      <div className="disc-clean-record">
+        <div className="disc-clean-icon">✅</div>
+        <div style={{fontSize:'1rem',color:'var(--bone)',fontWeight:700,marginBottom:'0.5rem'}}>Clean Record</div>
+        <div className="disc-clean-text">You have no violations on record. Keep it that way.</div>
+      </div>
+    </div>
+  );
+
+  return (
+    <div className="disc-my-wrap">
+      <div style={{marginBottom:'1.5rem',fontSize:'0.8rem',color:'var(--muted)'}}>
+        You have <strong style={{color:'var(--bone)'}}>{violations.length}</strong> violation{violations.length!==1?'s':''} on record. This is private — only you and discipline leadership can see this.
+      </div>
+      {violations.map(v=>(
+        <ViolationCard key={v.id} v={v} open={openCards.has(v.id)} onToggle={()=>toggle(v.id)}
+          canManage={false} onSSP={()=>{}} onFine={()=>{}} onLiftSusp={()=>{}} onCourtMarshall={()=>{}} />
+      ))}
+    </div>
+  );
+}
+
+function CourtMarshallModal({ v, onClose, onSave }:any) {
+  const [form, setForm] = useState({ held_at:'', verdict:'', consequences:'', notes:'' });
+  const [saving, setSaving] = useState(false);
+  async function save() {
+    setSaving(true);
+    await onSave(v.id, v.member_id, form);
+    setSaving(false);
+  }
+  return (
+    <div className="disc-modal-overlay" onClick={onClose}>
+      <div className="disc-modal" onClick={e=>e.stopPropagation()}>
+        <div className="disc-modal-header">
+          <div className="disc-modal-title">⚖️ Log Court Marshall Verdict</div>
+          <button className="disc-modal-close" onClick={onClose}>✕</button>
+        </div>
+        <div className="disc-modal-body">
+          <div style={{fontSize:'0.82rem',color:'var(--muted)',marginBottom:'1rem'}}>Brother: <strong style={{color:'var(--bone)'}}>{v.member_name}</strong></div>
+          <div className="field-group" style={{marginBottom:'0.9rem'}}>
+            <label className="field-label">Date Held</label>
+            <input className="field-input" type="date" value={form.held_at} onChange={e=>setForm(f=>({...f,held_at:e.target.value}))} />
+          </div>
+          <div className="field-group" style={{marginBottom:'0.9rem'}}>
+            <label className="field-label">Verdict</label>
+            <input className="field-input" value={form.verdict} onChange={e=>setForm(f=>({...f,verdict:e.target.value}))} placeholder="e.g. Guilty, Not Guilty, Dismissed..." />
+          </div>
+          <div className="field-group" style={{marginBottom:'0.9rem'}}>
+            <label className="field-label">Consequences</label>
+            <textarea className="field-textarea" style={{minHeight:'80px'}} value={form.consequences} onChange={e=>setForm(f=>({...f,consequences:e.target.value}))} placeholder="List all disciplinary actions decided by the court..." />
+          </div>
+          <div className="field-group" style={{marginBottom:'1.2rem'}}>
+            <label className="field-label">Additional Notes</label>
+            <textarea className="field-textarea" style={{minHeight:'60px'}} value={form.notes} onChange={e=>setForm(f=>({...f,notes:e.target.value}))} placeholder="Any additional notes from proceedings..." />
+          </div>
+          <div className="save-bar">
+            <button className="btn btn-gold" style={{background:'var(--crimson-c)',borderColor:'var(--crimson-c)',color:'#fff'}} onClick={save} disabled={saving||!form.verdict}>
+              {saving?'Saving...':'Save Verdict'}
+            </button>
+            <button className="btn btn-ghost" onClick={onClose}>Cancel</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
