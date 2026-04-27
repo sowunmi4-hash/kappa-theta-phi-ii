@@ -509,9 +509,9 @@ function SSPBlock({ ssp, violationId, memberId, canManage, isBrother, onSSP, onR
       body: JSON.stringify({ ssp_id: ssp.id, status: 'enrolled' })
     });
     setLocalSsp((p:any) => ({ ...p, status: 'enrolled' }));
-    setEnrollMsg('You have enrolled in the Sage Solution Program. Leadership has been notified.');
     setSaving(null);
     if (onReload) onReload();
+    window.location.href = '/dashboard/ssp';
   }
 
   async function brotherOptOut() {
@@ -586,7 +586,7 @@ function SSPBlock({ ssp, violationId, memberId, canManage, isBrother, onSSP, onR
             : (
               <div style={{ display: 'flex', gap: '8px', marginTop: '14px', flexWrap: 'wrap' }}>
                 <button className="ssp-enroll-btn" onClick={brotherEnroll} disabled={!!saving}>
-                  {saving === 'enroll' ? 'Enrolling...' : 'Accept — Enroll in SSP'}
+                  {saving === 'enroll' ? 'Enrolling...' : 'Accept — Begin SSP'}
                 </button>
                 <button className="track-btn red" style={{ padding: '6px 14px' }} onClick={brotherOptOut} disabled={!!saving}>
                   {saving === 'optout' ? 'Processing...' : 'Opt Out'}

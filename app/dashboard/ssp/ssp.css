@@ -1,0 +1,115 @@
+/* ─── SSP PAGE ─── */
+.ssp-wrap { padding: 2rem 2.5rem 4rem; }
+
+.ssp-header { margin-bottom: 2rem; padding-bottom: 1.5rem; border-bottom: 1px solid var(--border); }
+.ssp-page-title { font-size: 1.4rem; font-weight: 800; color: var(--bone); letter-spacing: 2px; font-family: 'Noto Serif JP', serif; }
+.ssp-page-sub { font-size: 0.82rem; color: var(--muted); margin-top: 5px; line-height: 1.6; }
+
+/* Layout */
+.ssp-layout { display: grid; grid-template-columns: 220px 1fr; gap: 1.5rem; align-items: start; }
+
+/* Session list */
+.ssp-sessions { display: flex; flex-direction: column; gap: 3px; }
+.ssp-sessions-label { font-size: 0.58rem; letter-spacing: 4px; color: var(--gold-dim); text-transform: uppercase; margin-bottom: 0.6rem; }
+.ssp-session-item {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 8px; padding: 0.9rem 1rem; cursor: pointer;
+  transition: all 0.15s;
+}
+.ssp-session-item:hover { border-color: rgba(198,147,10,0.25); background: var(--raised); }
+.ssp-session-item.active { border-color: rgba(198,147,10,0.4); background: rgba(198,147,10,0.05); }
+.ssp-session-item.cleared { border-color: rgba(74,222,128,0.25); }
+.ssp-session-item.cleared.active { border-color: rgba(74,222,128,0.4); }
+.ssp-session-offense { font-size: 0.72rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; }
+.ssp-session-status { font-size: 0.75rem; color: var(--bone); margin-top: 2px; text-transform: capitalize; }
+.ssp-session-offer { font-size: 0.62rem; color: var(--muted); margin-top: 1px; }
+.ssp-session-bar { height: 3px; background: var(--raised); border-radius: 2px; margin-top: 8px; overflow: hidden; }
+.ssp-session-bar-fill { height: 100%; border-radius: 2px; transition: width 0.5s; }
+.ssp-session-pct { font-size: 0.62rem; color: var(--muted); margin-top: 3px; text-align: right; }
+
+/* Status banners */
+.ssp-banner {
+  border-radius: 8px; padding: 1rem 1.2rem; margin-bottom: 1.5rem; border: 1px solid;
+}
+.ssp-banner.enrolled   { background: rgba(198,147,10,0.07); border-color: rgba(198,147,10,0.25); }
+.ssp-banner.cleared    { background: rgba(74,222,128,0.07); border-color: rgba(74,222,128,0.25); }
+.ssp-banner.opted-out  { background: rgba(178,34,52,0.07);  border-color: rgba(178,34,52,0.25); }
+.ssp-banner.offered    { background: rgba(198,147,10,0.05); border-color: rgba(198,147,10,0.15); }
+.ssp-banner-title { font-size: 0.88rem; font-weight: 700; color: var(--bone); margin-bottom: 4px; }
+.ssp-banner-sub   { font-size: 0.78rem; color: var(--muted); line-height: 1.6; }
+
+/* Progress bar */
+.ssp-progress-wrap { margin-bottom: 1.5rem; }
+.ssp-progress-bar { height: 6px; background: var(--raised); border-radius: 3px; overflow: hidden; }
+.ssp-progress-fill { height: 100%; border-radius: 3px; transition: width 0.6s cubic-bezier(0.22,1,0.36,1); }
+
+/* Violation reference */
+.ssp-violation-ref {
+  background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
+  padding: 1rem 1.2rem; margin-bottom: 1.5rem;
+}
+.ssp-violation-ref-label { font-size: 0.6rem; letter-spacing: 3px; color: var(--muted); text-transform: uppercase; margin-bottom: 6px; }
+.ssp-violation-ref-color { font-size: 0.78rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 6px; }
+.ssp-violation-ref-items { display: flex; flex-direction: column; gap: 3px; }
+.ssp-violation-ref-item { font-size: 0.8rem; color: rgba(240,232,208,0.65); padding: 3px 0; border-bottom: 1px solid rgba(255,255,255,0.04); }
+.ssp-violation-ref-item:last-child { border-bottom: none; }
+
+/* Completion standard */
+.ssp-standard {
+  background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
+  padding: 1.1rem 1.2rem; margin-bottom: 2rem;
+}
+.ssp-standard-title { font-size: 0.65rem; letter-spacing: 4px; color: var(--gold-dim); text-transform: uppercase; margin-bottom: 0.8rem; }
+.ssp-standard-items { display: flex; flex-direction: column; gap: 6px; margin-bottom: 0.8rem; }
+.ssp-standard-item {
+  display: flex; align-items: center; gap: 10px;
+  font-size: 0.82rem; color: rgba(240,232,208,0.6);
+}
+.ssp-standard-item.done { color: #4ade80; }
+.ssp-check {
+  width: 22px; height: 22px; border-radius: 50%; flex-shrink: 0;
+  border: 1px solid var(--border); background: var(--raised);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.65rem; font-weight: 700; color: var(--muted);
+}
+.ssp-standard-item.done .ssp-check { border-color: rgba(74,222,128,0.4); background: rgba(74,222,128,0.1); color: #4ade80; }
+.ssp-standard-note { font-size: 0.7rem; color: rgba(240,232,208,0.25); line-height: 1.6; border-top: 1px solid var(--border); padding-top: 0.7rem; }
+
+/* Lessons */
+.ssp-lessons-title { font-size: 0.65rem; letter-spacing: 4px; color: var(--gold-dim); text-transform: uppercase; margin-bottom: 0.8rem; }
+.ssp-lessons { display: flex; flex-direction: column; gap: 4px; }
+
+.ssp-lesson-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 8px; padding: 1.1rem 1.2rem;
+  transition: all 0.2s; animation: fadeUp 0.3s both;
+}
+.ssp-lesson-card:nth-child(1) { animation-delay: 0.05s; }
+.ssp-lesson-card:nth-child(2) { animation-delay: 0.1s; }
+.ssp-lesson-card:nth-child(3) { animation-delay: 0.15s; }
+.ssp-lesson-card:nth-child(4) { animation-delay: 0.2s; }
+.ssp-lesson-card:nth-child(5) { animation-delay: 0.25s; }
+.ssp-lesson-card:nth-child(6) { animation-delay: 0.3s; }
+.ssp-lesson-card:nth-child(7) { animation-delay: 0.35s; }
+.ssp-lesson-card.done { border-color: rgba(74,222,128,0.2); background: rgba(74,222,128,0.03); }
+
+.ssp-lesson-header { display: flex; align-items: center; gap: 10px; margin-bottom: 0.7rem; }
+.ssp-lesson-num {
+  width: 28px; height: 28px; border-radius: 50%; flex-shrink: 0;
+  border: 1px solid var(--border); background: var(--raised);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.72rem; font-weight: 800; color: var(--muted);
+}
+.ssp-lesson-card.done .ssp-lesson-num { border-color: rgba(74,222,128,0.4); background: rgba(74,222,128,0.1); color: #4ade80; }
+.ssp-lesson-title-text { flex: 1; font-size: 0.88rem; font-weight: 700; color: var(--bone); }
+.ssp-lesson-card.done .ssp-lesson-title-text { color: rgba(240,232,208,0.5); }
+.ssp-lesson-tag { font-size: 0.58rem; letter-spacing: 1px; text-transform: uppercase; background: rgba(74,222,128,0.1); color: #4ade80; border: 1px solid rgba(74,222,128,0.2); padding: 2px 7px; border-radius: 3px; }
+
+.ssp-lesson-points { padding-left: 1.2rem; display: flex; flex-direction: column; gap: 5px; }
+.ssp-lesson-points li { font-size: 0.82rem; color: rgba(240,232,208,0.6); line-height: 1.6; }
+.ssp-lesson-card.done .ssp-lesson-points li { color: rgba(240,232,208,0.35); }
+
+@media (max-width: 800px) {
+  .ssp-layout { grid-template-columns: 1fr; }
+  .ssp-wrap { padding: 1.5rem 1rem 3rem; }
+}
