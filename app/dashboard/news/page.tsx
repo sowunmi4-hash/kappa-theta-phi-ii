@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import '../dash.css';
 
-const LEADERS = ['Head Founder','Co-Founder','Senior Founder','Iron Fleet'];
+const LEADERS = ['Head Founder','Co-Founder','Co-Founder','Iron Fleet'];
 const NAV = [
   { href: '/dashboard', label: 'Home' },
   { href: '/dashboard/news', label: 'Wokou News' },

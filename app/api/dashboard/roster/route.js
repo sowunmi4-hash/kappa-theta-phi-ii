@@ -13,7 +13,7 @@ async function getMember(token) {
   return m[0] || null;
 }
 
-const LEADERS = ['Head Founder', 'Co-Founder', 'Iron Fleet', 'Senior Founder'];
+const LEADERS = ['Head Founder', 'Co-Founder', 'Iron Fleet', 'Co-Founder'];
 
 export async function GET() {
   const token = (await cookies()).get(C)?.value;

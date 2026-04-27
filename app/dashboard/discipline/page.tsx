@@ -46,7 +46,7 @@ export default function DisciplinePage() {
 
   useEffect(() => {
     if (!member) return;
-    const manage = member.fraction==='Ishi No Fraction' || member.role==='Head Founder' || member.role==='Senior Founder';
+    const manage = member.fraction==='Ishi No Fraction' || member.role==='Head Founder' || member.role==='Co-Founder';
     setCanManage(manage);
     if (manage) {
       loadAll();
@@ -59,7 +59,7 @@ export default function DisciplinePage() {
   // POLLING: silent background refresh every 30s
   useEffect(() => {
     if (!member) return;
-    const manage = member.fraction==='Ishi No Fraction' || member.role==='Head Founder' || member.role==='Senior Founder';
+    const manage = member.fraction==='Ishi No Fraction' || member.role==='Head Founder' || member.role==='Co-Founder';
     const poll = setInterval(() => {
       if (manage) loadAll();
       fetch('/api/dashboard/discipline/my-record').then(r=>r.json()).then(d=>setMyRecord(d.violations||[]));
