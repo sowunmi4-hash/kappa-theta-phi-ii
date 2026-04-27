@@ -178,3 +178,37 @@ details[open] .guide-faq-q::after { transform: rotate(90deg); }
   .guide-tier-reset { display: none; }
   .guide-wrap { padding: 1.5rem 1rem 3rem; }
 }
+
+/* ── LEADER DIVIDER ── */
+.guide-leader-divider {
+  display: flex; align-items: center; gap: 1rem;
+  margin: 2.5rem 0 1.5rem;
+}
+.guide-leader-divider-line {
+  flex: 1; height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(178,34,52,0.3), transparent);
+}
+.guide-leader-divider-label {
+  font-size: 0.7rem; letter-spacing: 4px; text-transform: uppercase;
+  color: #e05070; white-space: nowrap;
+  background: rgba(178,34,52,0.08); border: 1px solid rgba(178,34,52,0.25);
+  padding: 4px 14px; border-radius: 20px;
+}
+
+/* Leader sections get a subtle left accent */
+.leader-section {
+  border-left: 2px solid rgba(178,34,52,0.2);
+  padding-left: 1.2rem;
+  margin-left: -1.2rem;
+}
+
+/* Leader items in sidenav */
+.guide-sidenav-group-label {
+  font-size: 0.55rem; letter-spacing: 3px; text-transform: uppercase;
+  color: var(--gold-dim); padding: 0.3rem 0.6rem 0.1rem;
+  margin-top: 0.3rem;
+}
+.guide-sidenav-group-label.leader { color: rgba(224,80,112,0.6); }
+.guide-sidenav-divider { height: 1px; background: var(--border); margin: 0.5rem 0; }
+.guide-sidenav-item.leader:hover { color: #e05070; background: rgba(178,34,52,0.06); }
+.guide-sidenav-item.leader.active { color: #e05070; background: rgba(178,34,52,0.1); }
