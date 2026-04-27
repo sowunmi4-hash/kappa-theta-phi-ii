@@ -235,13 +235,24 @@
 .field-textarea { resize: vertical; min-height: 90px; }
 .upload-zone {
   border: 1px dashed rgba(198,147,10,0.2); border-radius: 6px;
-  padding: 1.2rem; text-align: center; cursor: pointer;
-  color: var(--muted); font-size: 0.8rem; transition: all 0.15s;
+  min-height: 110px;
+  padding: 1.5rem 1.2rem; text-align: center; cursor: pointer;
+  color: var(--muted); font-size: 0.82rem; transition: all 0.15s;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px;
+  background: var(--raised);
 }
 .upload-zone:hover { border-color: var(--gold); color: var(--gold); background: rgba(198,147,10,0.04); }
+.upload-zone-icon {
+  width: 36px; height: 36px; border-radius: 50%;
+  border: 1px solid rgba(198,147,10,0.25);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1rem; color: rgba(198,147,10,0.5);
+  font-weight: 300; letter-spacing: 0;
+}
+.upload-zone:hover .upload-zone-icon { border-color: var(--gold); color: var(--gold); }
 .upload-hint { font-size: 0.65rem; color: rgba(240,232,208,0.25); margin-top: 5px; }
-.upload-thumb { max-width: 100%; max-height: 130px; border-radius: 6px; margin-top: 8px; object-fit: cover; display: block; }
-.upload-thumb-portrait { width: 80px; height: 80px; border-radius: 50%; margin: 8px auto 0; object-fit: cover; display: block; border: 2px solid var(--gold); }
+.upload-thumb { max-width: 100%; max-height: 140px; border-radius: 6px; margin-top: 8px; object-fit: cover; display: block; width: 100%; }
+.upload-thumb-portrait { width: 88px; height: 88px; border-radius: 50%; margin: 8px auto 0; object-fit: cover; display: block; border: 2px solid var(--gold); }
 .social-row { display: flex; gap: 8px; align-items: center; margin-bottom: 8px; }
 .social-platform { width: 80px; font-size: 0.7rem; color: var(--muted); flex-shrink: 0; letter-spacing: 1px; }
 .save-bar { display: flex; gap: 0.8rem; align-items: center; padding-top: 1rem; }

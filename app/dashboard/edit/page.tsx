@@ -83,7 +83,8 @@ export default function EditPage() {
               <label className="field-label">Portrait</label>
               <label className="upload-zone">
                 <input type="file" accept="image/*" style={{ display:'none' }} onChange={e => uploadFile(e,'portrait')} />
-                {uploading==='portrait' ? '⏳ Uploading...' : '📷 Click to upload portrait'}
+                <div className="upload-zone-icon">↑</div>
+                <div>{uploading==='portrait' ? 'Uploading...' : 'Click to upload portrait'}</div>
                 {(previews.portrait||profile.portrait_url) && <img src={previews.portrait||profile.portrait_url} className="upload-thumb-portrait" alt="portrait" />}
                 <div className="upload-hint">Square image recommended</div>
               </label>
@@ -92,7 +93,8 @@ export default function EditPage() {
               <label className="field-label">Banner</label>
               <label className="upload-zone">
                 <input type="file" accept="image/*" style={{ display:'none' }} onChange={e => uploadFile(e,'banner')} />
-                {uploading==='banner' ? '⏳ Uploading...' : '🖼 Click to upload banner'}
+                <div className="upload-zone-icon">↑</div>
+                <div>{uploading==='banner' ? 'Uploading...' : 'Click to upload banner'}</div>
                 {(previews.banner||profile.banner_url) && <img src={previews.banner||profile.banner_url} className="upload-thumb" alt="banner" />}
                 <div className="upload-hint">Wide/landscape image works best</div>
               </label>
