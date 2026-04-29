@@ -21,7 +21,10 @@ function timeAgo(d:string){ const s=Math.floor((Date.now()-new Date(d).getTime()
 export default function DisciplinePage() {
   const [member, setMember]       = useState<any>(null);
   const [canManage, setCanManage] = useState(false);
-  const [tab, setTab]             = useState<'all'|'issue'|'my'>('all');
+  const [tab, setTab]             = useState<'all'|'issue'|'my'|'dues'>('all');
+  const [duesReport, setDuesReport] = useState<any>(null);
+  const [duesPeriod, setDuesPeriod] = useState<string>('');
+  const [duesLoading, setDuesLoading] = useState(false);
   const [violations, setViolations] = useState<any[]>([]);
   const [roster, setRoster]       = useState<any[]>([]);
   const [openCards, setOpenCards] = useState<Set<string>>(new Set());
@@ -43,6 +46,11 @@ export default function DisciplinePage() {
     fetch('/api/dashboard/phire/balance').then(r=>r.json()).then(d => {
       if (d.error) { window.location.href='/login'; return; }
       setMember(d.member);
+      // Check if this member can see dues report
+      const canSeeDues = d.member?.fraction === 'Ishi No Fraction' || d.member?.frat_name === 'Big Brother Substance';
+      if (canSeeDues) {
+        loadDuesReport('');
+      }
     });
   }, []);
 
@@ -153,6 +161,129 @@ export default function DisciplinePage() {
           <div className="disc-content">
             <MemberRecord violations={myRecord} onReload={async()=>{ const d=await fetch('/api/dashboard/discipline/my-record').then(r=>r.json()); setMyRecord(d.violations||[]); }} />
           </div>
+        {/* DUES REPORT TAB */}
+        {tab === 'dues' && canSeeDues && (
+          <div style={{padding:'1.5rem'}}>
+            {/* Period selector */}
+            {duesReport?.periods?.length > 0 && (
+              <div style={{display:'flex',gap:'8px',flexWrap:'wrap',marginBottom:'1.5rem',alignItems:'center'}}>
+                <span style={{fontSize:'0.6rem',letterSpacing:'3px',color:'var(--muted)',textTransform:'uppercase'}}>Period:</span>
+                {duesReport.periods.map((p:any) => (
+                  <button key={p.id} onClick={()=>{ setDuesPeriod(p.id); loadDuesReport(p.id); }}
+                    style={{padding:'4px 12px',borderRadius:'20px',fontSize:'0.72rem',cursor:'pointer',fontFamily:'Rajdhani,sans-serif',
+                      background: duesPeriod===p.id || (!duesPeriod && p.id===duesReport?.period?.id) ? 'rgba(198,147,10,0.1)' : 'var(--surface)',
+                      border: duesPeriod===p.id || (!duesPeriod && p.id===duesReport?.period?.id) ? '1px solid rgba(198,147,10,0.4)' : '1px solid var(--border)',
+                      color: duesPeriod===p.id || (!duesPeriod && p.id===duesReport?.period?.id) ? 'var(--gold)' : 'var(--muted)'}}>
+                    {p.label}
+                  </button>
+                ))}
+              </div>
+            )}
+
+            {duesLoading && <div style={{textAlign:'center',padding:'2rem',color:'var(--muted)'}}>Loading report...</div>}
+
+            {!duesLoading && duesReport && (
+              <>
+                {/* Summary stats */}
+                {duesReport.summary && (
+                  <div style={{display:'grid',gridTemplateColumns:'repeat(4,1fr)',gap:'8px',marginBottom:'1.5rem'}}>
+                    {[
+                      {label:'Paid',val:duesReport.summary.paid,color:'#4ade80'},
+                      {label:'Partial',val:duesReport.summary.partial,color:'#c6930a'},
+                      {label:'Unpaid',val:duesReport.summary.unpaid,color:'#e05070'},
+                      {label:'Total Collected',val:`L$${duesReport.summary.total_collected.toLocaleString()}`,color:'var(--bone)'},
+                    ].map(s => (
+                      <div key={s.label} style={{background:'var(--surface)',border:'1px solid var(--border)',borderRadius:'8px',padding:'0.8rem',textAlign:'center'}}>
+                        <div style={{fontSize:'1.4rem',fontWeight:800,color:s.color}}>{s.val}</div>
+                        <div style={{fontSize:'0.6rem',letterSpacing:'2px',color:'var(--muted)',marginTop:'2px',textTransform:'uppercase'}}>{s.label}</div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {/* DISCIPLINARY REPORT - visible to all Ishi No Faction */}
+                <div style={{background:'rgba(178,34,52,0.06)',border:'1px solid rgba(178,34,52,0.2)',borderRadius:'10px',padding:'1.2rem',marginBottom:'1.5rem'}}>
+                  <div style={{fontSize:'0.6rem',letterSpacing:'3px',color:'#e05070',textTransform:'uppercase',marginBottom:'1rem',fontWeight:700}}>
+                    ⚔ Disciplinary Report — Outstanding Dues ({duesReport.disciplinary?.length || 0} Brothers)
+                  </div>
+                  {duesReport.disciplinary?.length === 0 && (
+                    <div style={{textAlign:'center',padding:'1rem',color:'var(--muted)',fontSize:'0.85rem'}}>All brothers are in good standing this period.</div>
+                  )}
+                  {duesReport.disciplinary?.map((rec:any) => {
+                    const owed = rec.amount_due - rec.linden_paid - rec.sweat_equity_value;
+                    return (
+                      <div key={rec.id} style={{display:'flex',justifyContent:'space-between',alignItems:'center',padding:'0.7rem 0.9rem',background:'var(--raised)',border:'1px solid var(--border)',borderRadius:'6px',marginBottom:'4px'}}>
+                        <div>
+                          <div style={{fontWeight:700,color:'var(--bone)',fontSize:'0.9rem'}}>{rec.member_name}</div>
+                          <div style={{fontSize:'0.7rem',color:'var(--muted)',marginTop:'2px'}}>
+                            Paid L${rec.linden_paid.toLocaleString()} + L${rec.sweat_equity_value.toLocaleString()} sweat equity — outstanding L${owed.toLocaleString()}
+                          </div>
+                        </div>
+                        <span style={{fontSize:'0.6rem',letterSpacing:'2px',padding:'2px 10px',borderRadius:'3px',fontWeight:700,textTransform:'uppercase',
+                          color:rec.status==='partial'?'#c6930a':'#e05070',
+                          background:rec.status==='partial'?'rgba(198,147,10,0.08)':'rgba(178,34,52,0.08)',
+                          border:`1px solid ${rec.status==='partial'?'rgba(198,147,10,0.25)':'rgba(178,34,52,0.25)'}`}}>
+                          {rec.status}
+                        </span>
+                      </div>
+                    );
+                  })}
+                </div>
+
+                {/* FULL REPORT - Substance only */}
+                {duesReport.can_see_full && duesReport.full_records && (
+                  <div style={{background:'var(--surface)',border:'1px solid var(--border)',borderRadius:'10px',padding:'1.2rem'}}>
+                    <div style={{fontSize:'0.6rem',letterSpacing:'3px',color:'var(--gold)',textTransform:'uppercase',marginBottom:'1rem',fontWeight:700}}>
+                      ◈ Full Dues Report — All Brothers ({duesReport.full_records.length})
+                    </div>
+                    {duesReport.full_records.map((rec:any) => {
+                      const remaining = Math.max(0, rec.amount_due - rec.linden_paid - rec.sweat_equity_value);
+                      const progress = Math.min(100, Math.round(((rec.linden_paid + rec.sweat_equity_value) / rec.amount_due) * 100));
+                      const statusColor:any = {paid:'#4ade80',partial:'#c6930a',unpaid:'#e05070',waived:'rgba(240,232,208,0.2)'};
+                      return (
+                        <div key={rec.id} style={{borderLeft:`3px solid ${statusColor[rec.status]}`,background:'var(--raised)',borderRadius:'6px',padding:'0.8rem 1rem',marginBottom:'6px'}}>
+                          <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:'4px'}}>
+                            <span style={{fontWeight:700,color:'var(--bone)'}}>{rec.member_name}</span>
+                            <span style={{fontSize:'0.6rem',letterSpacing:'2px',padding:'2px 10px',borderRadius:'3px',fontWeight:700,textTransform:'uppercase',
+                              color:statusColor[rec.status],background:'rgba(0,0,0,0.2)',border:`1px solid ${statusColor[rec.status]}44`}}>
+                              {rec.status}
+                            </span>
+                          </div>
+                          <div style={{height:'2px',background:'var(--border)',borderRadius:'2px',marginBottom:'4px'}}>
+                            <div style={{height:'100%',width:`${progress}%`,background:statusColor[rec.status],borderRadius:'2px'}}/>
+                          </div>
+                          <div style={{display:'flex',gap:'1rem',fontSize:'0.7rem',color:'var(--muted)'}}>
+                            <span style={{color:'#4ade80'}}>L${rec.linden_paid.toLocaleString()} cash</span>
+                            <span style={{color:'#c6930a'}}>L${rec.sweat_equity_value.toLocaleString()} sweat</span>
+                            <span style={{color:'#e05070'}}>L${remaining.toLocaleString()} remaining</span>
+                            {rec.payments?.length > 0 && <span>{rec.payments.length} payment{rec.payments.length!==1?'s':''}</span>}
+                            {rec.sweat_equity?.length > 0 && <span>{rec.sweat_equity.length} sweat submission{rec.sweat_equity.length!==1?'s':''}</span>}
+                          </div>
+                          {rec.payments?.map((p:any) => (
+                            <div key={p.id} style={{marginTop:'4px',fontSize:'0.68rem',color:'rgba(240,232,208,0.3)',paddingLeft:'8px'}}>
+                              └ L${p.amount_ls.toLocaleString()} on {new Date(p.created_at).toLocaleDateString('en-GB')}
+                              {p.transaction_id && <span style={{fontFamily:'monospace',marginLeft:'6px'}}>{p.transaction_id.slice(0,16)}...</span>}
+                            </div>
+                          ))}
+                        </div>
+                      );
+                    })}
+                    <div style={{marginTop:'1rem',padding:'0.8rem',background:'var(--raised)',borderRadius:'6px',fontSize:'0.78rem',color:'var(--muted)',display:'flex',gap:'2rem'}}>
+                      <span>Total collected: <strong style={{color:'#4ade80'}}>L${duesReport.summary.total_collected.toLocaleString()}</strong></span>
+                      <span>Sweat equity: <strong style={{color:'#c6930a'}}>L${duesReport.summary.total_sweat.toLocaleString()}</strong></span>
+                      <span>Brothers paid: <strong style={{color:'var(--bone)'}}>{duesReport.summary.paid}/{duesReport.summary.total}</strong></span>
+                    </div>
+                  </div>
+                )}
+              </>
+            )}
+
+            {!duesLoading && !duesReport && (
+              <div style={{textAlign:'center',padding:'3rem',color:'var(--muted)'}}>No dues periods found.</div>
+            )}
+          </div>
+        )}
+
         </main>
       </div>
     );
@@ -195,6 +326,7 @@ export default function DisciplinePage() {
             <button className={`disc-tab ${tab==='all'?'active':''}`} onClick={()=>setTab('all')}>All Violations ({violations.length})</button>
             <button className={`disc-tab ${tab==='issue'?'active':''}`} onClick={()=>setTab('issue')}>Issue Violation</button>
             <button className={`disc-tab ${tab==='my'?'active':''}`} onClick={()=>setTab('my')}>My Record</button>
+            {canSeeDues && <button className={`disc-tab ${tab==='dues'?'active':''}`} onClick={()=>setTab('dues')} style={{color: tab==='dues' ? 'var(--gold)' : 'var(--muted)'}}>Dues Report</button>}
           </div>
 
           {/* ALL VIOLATIONS */}

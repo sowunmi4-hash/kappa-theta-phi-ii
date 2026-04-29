@@ -17,7 +17,7 @@ export async function getMember() {
 }
 
 export const CAN_MANAGE = (member) =>
-  member && (member.frat_name === 'Big Brother Cool Breeze' || member.frat_name === 'Big Brother Substance');
+  member && member.frat_name === 'Big Brother Cool Breeze';
 
 // Recalculate and update a dues_record status after any payment/equity change
 export async function recalcRecord(period_id, member_id) {
