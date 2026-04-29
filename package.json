@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "postbuild": "cp .next/routes-manifest.json routes-manifest.json 2>/dev/null || true"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.49.4",
