@@ -184,6 +184,7 @@ export default function EventsPage() {
           ))}
           <div className="dash-nav-divider"/>
           <a href="/" className="dash-nav-item"><span>Back to Site</span></a>
+            <button onClick={async()=>{await fetch('/api/logout',{method:'POST'});window.location.href='/login';}} className="dash-nav-item" style={{width:'100%',textAlign:'left',background:'none',border:'none',cursor:'pointer',color:'#e05070',fontFamily:'inherit'}}><span>Sign Out</span></button>
         </nav>
       </aside>
 
