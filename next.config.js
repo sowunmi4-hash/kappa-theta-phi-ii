@@ -6,5 +6,6 @@ const nextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
+  distDir: '.next',
 };
 module.exports = nextConfig;
