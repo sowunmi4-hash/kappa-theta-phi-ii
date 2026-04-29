@@ -5,14 +5,13 @@ import '../dash.css';
 import './dues.css';
 
 const SWEAT_CATEGORIES = ['Planning','Advertising','Recruitment','Design','Content Creation','Event Support','Administrative','General'];
-const STATUS_COLOURS: Record<string,string> = { paid:'#4ade80', partial:'#c6930a', unpaid:'#e05070', waived:'rgba(240,232,208,0.2)' };
+const STATUS_COLOURS = { paid:'#4ade80', partial:'#c6930a', unpaid:'#e05070', waived:'rgba(240,232,208,0.2)' };
 
-function fmt(n: number) { return `L$${n.toLocaleString()}`; }
-function pct(paid: number, sweat: number, due: number) { return Math.min(100, Math.round(((paid + sweat) / due) * 100)); }
-function timeAgo(d:string){ return new Date(d).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}); }
+function fmt(n) { return `L$${Number(n).toLocaleString()}`; }
+function pct(paid, sweat, due) { return Math.min(100, Math.round(((paid + sweat) / due) * 100)); }
+function timeAgo(d){ return new Date(d).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}); }
 
-
-function Countdown({ expiresAt }: { expiresAt: string }) {
+function Countdown({ expiresAt }) {
   const [time, setTime] = useState('');
   const [urgent, setUrgent] = useState(false);
   const [expired, setExpired] = useState(false);
@@ -25,7 +24,7 @@ function Countdown({ expiresAt }: { expiresAt: string }) {
       const hours   = Math.floor((diff % 86400000) / 3600000);
       const minutes = Math.floor((diff % 3600000) / 60000);
       const seconds = Math.floor((diff % 60000) / 1000);
-      setUrgent(diff < 86400000 * 3); // urgent if < 3 days
+      setUrgent(diff < 86400000 * 3);
       if (days > 0) setTime(`${days}d ${hours}h ${minutes}m ${seconds}s`);
       else if (hours > 0) setTime(`${hours}h ${minutes}m ${seconds}s`);
       else setTime(`${minutes}m ${seconds}s`);
@@ -36,29 +35,23 @@ function Countdown({ expiresAt }: { expiresAt: string }) {
   }, [expiresAt]);
 
   if (expired) return <span style={{color:'#e05070',fontSize:'0.78rem',fontWeight:700}}>EXPIRED</span>;
-  return (
-    <span style={{color: urgent ? '#e05070' : '#4ade80', fontSize:'0.78rem', fontWeight:700, fontFamily:'monospace'}}>
-      {time}
-    </span>
-  );
+  return <span style={{color: urgent ? '#e05070' : '#4ade80', fontSize:'0.78rem', fontWeight:700, fontFamily:'monospace'}}>{time}</span>;
 }
 
 export default function DuesPage() {
-  const [member, setMember]       = useState<any>(null);
+  const [member, setMember]       = useState(null);
   const [canManage, setCanManage] = useState(false);
-  const [periods, setPeriods]     = useState<any[]>([]);
-  const [activePeriod, setActivePeriod] = useState<string|null>(null);
-  const [records, setRecords]     = useState<any[]>([]);
-  const [myRecords, setMyRecords] = useState<any[]>([]);
-  const [openCards, setOpenCards] = useState<Set<string>>(new Set());
-  const [modal, setModal]         = useState<any>(null);
+  const [periods, setPeriods]     = useState([]);
+  const [activePeriod, setActivePeriod] = useState(null);
+  const [records, setRecords]     = useState([]);
+  const [myRecords, setMyRecords] = useState([]);
+  const [openCards, setOpenCards] = useState(new Set());
+  const [modal, setModal]         = useState(null);
   const [loading, setLoading]     = useState(true);
-
-  // Form states
   const [payForm, setPayForm]     = useState({ amount_ls:'', transaction_id:'', expires_at:'', casper_expiry_text:'', notes:'', target_member_id:'' });
   const [sweatForm, setSweatForm] = useState({ contribution:'', category:'General', value_requested:'', notes:'' });
   const [periodForm, setPeriodForm] = useState({ month: new Date().getMonth()+1, year: new Date().getFullYear(), amount_due: 4000 });
-  const [sweatApprove, setSweatApprove] = useState<{id:string, value:string, notes:string}|null>(null);
+  const [sweatApprove, setSweatApprove] = useState(null);
   const [saving, setSaving]       = useState(false);
   const [msg, setMsg]             = useState('');
 
@@ -87,7 +80,7 @@ export default function DuesPage() {
     });
   }, []);
 
-  async function loadRecords(pid: string) {
+  async function loadRecords(pid) {
     const d = await fetch(`/api/dashboard/dues/record?period_id=${pid}&view=all`).then(r=>r.json());
     setRecords(d.records||[]);
   }
@@ -97,12 +90,12 @@ export default function DuesPage() {
     setMyRecords(d.records||[]);
   }
 
-  async function selectPeriod(pid: string) {
+  async function selectPeriod(pid) {
     setActivePeriod(pid);
     if (canManage) await loadRecords(pid);
   }
 
-  function toggleCard(id:string) {
+  function toggleCard(id) {
     setOpenCards(p => { const n=new Set(p); n.has(id)?n.delete(id):n.add(id); return n; });
   }
 
@@ -121,13 +114,13 @@ export default function DuesPage() {
   async function logPayment() {
     if (!payForm.amount_ls) { setMsg('Enter the payment amount.'); return; }
     setSaving(true);
-    const body: any = { period_id: activePeriod, amount_ls: parseInt(payForm.amount_ls), transaction_id: payForm.transaction_id||null, expires_at: payForm.expires_at||null, casper_expiry_text: payForm.casper_expiry_text||null, notes: payForm.notes||null };
+    const body = { period_id: activePeriod, amount_ls: parseInt(payForm.amount_ls), transaction_id: payForm.transaction_id||null, expires_at: payForm.expires_at||null, casper_expiry_text: payForm.casper_expiry_text||null, notes: payForm.notes||null };
     if (canManage && payForm.target_member_id) body.target_member_id = payForm.target_member_id;
     const res = await fetch('/api/dashboard/dues/payments', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body) }).then(r=>r.json());
     if (res.error) { setMsg(`Error: ${res.error}`); setSaving(false); return; }
     setMsg('Payment logged.');
     setPayForm({ amount_ls:'', transaction_id:'', expires_at:'', casper_expiry_text:'', notes:'', target_member_id:'' });
-    if (canManage) await loadRecords(activePeriod!);
+    if (canManage) await loadRecords(activePeriod);
     await loadMyRecords();
     setSaving(false);
     setTimeout(() => { setModal(null); setMsg(''); }, 1500);
@@ -146,24 +139,23 @@ export default function DuesPage() {
     setTimeout(() => { setModal(null); setMsg(''); }, 1500);
   }
 
-  async function approveSweat(sweat_id:string, action:string, value:string, notes:string) {
+  async function approveSweat(sweat_id, action, value, notes) {
     setSaving(true);
     await fetch('/api/dashboard/dues/sweat-equity', { method:'PATCH', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ sweat_id, action, value_approved:parseInt(value)||0, notes }) });
     setSweatApprove(null);
-    if (canManage) await loadRecords(activePeriod!);
+    if (canManage) await loadRecords(activePeriod);
     await loadMyRecords();
     setSaving(false);
   }
 
-  async function waveRecord(record_id:string) {
+  async function waveRecord(record_id) {
     if (!confirm('Waive dues for this brother this period?')) return;
     await fetch('/api/dashboard/dues/record', { method:'PATCH', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ record_id, status:'waived' }) });
-    if (canManage) await loadRecords(activePeriod!);
+    if (canManage) await loadRecords(activePeriod);
   }
 
   const currentPeriod = periods.find(p => p.id === activePeriod);
   const slug = member?.frat_name?.toLowerCase().replace(/\s+/g,'-').replace('big-brother-','') || '';
-
   const stats = canManage ? {
     total: records.length,
     paid: records.filter(r=>r.status==='paid').length,
@@ -178,7 +170,7 @@ export default function DuesPage() {
       <aside className="dash-sidebar">
         <div className="dash-sidebar-logo"><img src="/logo.png" alt="KΘΦ II"/><span className="dash-sidebar-logo-text">KΘΦ II</span></div>
         <div className="dash-sidebar-member">
-          <div className="dash-sidebar-portrait"><img src={`/brothers/${slug}.png`} alt="" onError={(e:any)=>e.target.src='/logo.png'}/></div>
+          <div className="dash-sidebar-portrait"><img src={`/brothers/${slug}.png`} alt="" onError={(e)=>e.target.src='/logo.png'}/></div>
           <div className="dash-sidebar-name">{member.frat_name}</div>
           <div className="dash-sidebar-role">{member.role}</div>
         </div>
@@ -196,20 +188,15 @@ export default function DuesPage() {
         </div>
 
         <div className="dues-wrap">
-
           {/* Period selector */}
           <div className="dues-period-bar">
             {periods.map(p => (
-              <button key={p.id} className={`dues-period-btn ${activePeriod===p.id?'active':''}`} onClick={()=>selectPeriod(p.id)}>
-                {p.label}
-              </button>
+              <button key={p.id} className={`dues-period-btn ${activePeriod===p.id?'active':''}`} onClick={()=>selectPeriod(p.id)}>{p.label}</button>
             ))}
-            {canManage && (
-              <button className="dues-action-btn gold" onClick={()=>setModal('period')}>+ New Period</button>
-            )}
+            {canManage && <button className="dues-action-btn gold" onClick={()=>setModal('period')}>+ New Period</button>}
           </div>
 
-          {/* ── MANAGER VIEW ── */}
+          {/* Manager View */}
           {canManage && activePeriod && (
             <>
               {stats && (
@@ -221,17 +208,16 @@ export default function DuesPage() {
                 </div>
               )}
 
-              {/* Sweat equity queue */}
-              {records.flatMap(r => r.sweat_equity?.filter((s:any) => s.status==='pending') || []).length > 0 && (
+              {/* Pending sweat equity */}
+              {records.flatMap(r => r.sweat_equity?.filter(s => s.status==='pending') || []).length > 0 && (
                 <div style={{background:'rgba(198,147,10,0.06)',border:'1px solid rgba(198,147,10,0.2)',borderRadius:'8px',padding:'1rem 1.2rem',marginBottom:'1.5rem'}}>
                   <div className="dues-section-title" style={{marginTop:0}}>Sweat Equity — Pending Approval</div>
-                  {records.flatMap(r => (r.sweat_equity||[]).filter((s:any)=>s.status==='pending').map((s:any) => ({...s, member_name: r.member_name}))).map((s:any) => (
+                  {records.flatMap(r => (r.sweat_equity||[]).filter(s=>s.status==='pending').map(s => ({...s, member_name: r.member_name}))).map(s => (
                     <div key={s.id} className="dues-entry">
                       <div className="dues-entry-main">
                         <div className="dues-entry-title">{s.member_name}</div>
                         <div className="dues-entry-detail">{s.category} — {s.contribution}</div>
                         {s.value_requested && <div className="dues-entry-detail">Requested: {fmt(s.value_requested)}</div>}
-                        {s.notes && <div className="dues-entry-detail" style={{fontStyle:'italic'}}>{s.notes}</div>}
                       </div>
                       {sweatApprove?.id===s.id ? (
                         <div style={{display:'flex',flexDirection:'column',gap:'5px',minWidth:'180px'}}>
@@ -265,7 +251,6 @@ export default function DuesPage() {
                         {rec.expires_at && (
                           <div style={{marginTop:'4px',fontSize:'0.7rem',color:'rgba(240,232,208,0.4)'}}>
                             Expires: <Countdown expiresAt={rec.expires_at} />
-                            {rec.casper_expiry_text && <span style={{marginLeft:'6px',color:'rgba(240,232,208,0.2)'}}>{rec.casper_expiry_text}</span>}
                           </div>
                         )}
                       </div>
@@ -283,46 +268,35 @@ export default function DuesPage() {
                         <div className="dues-breakdown-item"><div className="dues-breakdown-amount" style={{color:'#c6930a'}}>{fmt(rec.sweat_equity_value)}</div><div className="dues-breakdown-label">Sweat Equity</div></div>
                         <div className="dues-breakdown-item"><div className="dues-breakdown-amount" style={{color:'#e05070'}}>{fmt(remaining)}</div><div className="dues-breakdown-label">Remaining</div></div>
                       </div>
-
-                      {/* Payments */}
                       {rec.payments?.length > 0 && (
-                        <>
-                          <div className="dues-section-title">Linden Payments</div>
-                          {rec.payments.map((p:any) => (
-                            <div key={p.id} className="dues-entry">
-                              <div className="dues-entry-main">
-                                <div className="dues-entry-title">{fmt(p.amount_ls)} — logged by {p.logged_by_name}</div>
-                                {p.transaction_id && <div className="dues-entry-txid">Tx: {p.transaction_id}</div>}
-                                <div className="dues-entry-detail">{timeAgo(p.created_at)}</div>
-                              </div>
-                              <div className="dues-entry-amount">{fmt(p.amount_ls)}</div>
+                        <><div className="dues-section-title">Linden Payments</div>
+                        {rec.payments.map(p => (
+                          <div key={p.id} className="dues-entry">
+                            <div className="dues-entry-main">
+                              <div className="dues-entry-title">{fmt(p.amount_ls)} — logged by {p.logged_by_name}</div>
+                              {p.transaction_id && <div className="dues-entry-txid">Tx: {p.transaction_id}</div>}
+                              <div className="dues-entry-detail">{timeAgo(p.created_at)}</div>
                             </div>
-                          ))}
-                        </>
+                            <div className="dues-entry-amount">{fmt(p.amount_ls)}</div>
+                          </div>
+                        ))}</>
                       )}
-
-                      {/* Sweat equity */}
                       {rec.sweat_equity?.length > 0 && (
-                        <>
-                          <div className="dues-section-title">Sweat Equity</div>
-                          {rec.sweat_equity.map((s:any) => (
-                            <div key={s.id} className="dues-entry">
-                              <div className="dues-entry-main">
-                                <div className="dues-entry-title">{s.contribution}</div>
-                                <div className="dues-entry-detail">{s.category} · {timeAgo(s.created_at)}</div>
-                                {s.value_approved > 0 && <div className="dues-entry-detail" style={{color:'#4ade80'}}>Approved: {fmt(s.value_approved)}</div>}
-                              </div>
-                              <div style={{display:'flex',flexDirection:'column',alignItems:'flex-end',gap:'4px'}}>
-                                <span className={`sweat-tag ${s.status}`}>{s.status}</span>
-                                {s.status==='pending' && (
-                                  <button className="dues-action-btn gold" style={{fontSize:'0.6rem',padding:'2px 8px'}} onClick={()=>setSweatApprove({id:s.id,value:s.value_requested?.toString()||'',notes:''})}>Review</button>
-                                )}
-                              </div>
+                        <><div className="dues-section-title">Sweat Equity</div>
+                        {rec.sweat_equity.map(s => (
+                          <div key={s.id} className="dues-entry">
+                            <div className="dues-entry-main">
+                              <div className="dues-entry-title">{s.contribution}</div>
+                              <div className="dues-entry-detail">{s.category} · {timeAgo(s.created_at)}</div>
+                              {s.value_approved > 0 && <div className="dues-entry-detail" style={{color:'#4ade80'}}>Approved: {fmt(s.value_approved)}</div>}
                             </div>
-                          ))}
-                        </>
+                            <div style={{display:'flex',flexDirection:'column',alignItems:'flex-end',gap:'4px'}}>
+                              <span className={`sweat-tag ${s.status}`}>{s.status}</span>
+                              {s.status==='pending' && <button className="dues-action-btn gold" style={{fontSize:'0.6rem',padding:'2px 8px'}} onClick={()=>setSweatApprove({id:s.id,value:s.value_requested?.toString()||'',notes:''})}>Review</button>}
+                            </div>
+                          </div>
+                        ))}</>
                       )}
-
                       <div className="dues-actions">
                         <button className="dues-action-btn green" onClick={()=>{ setPayForm(f=>({...f,target_member_id:rec.member_id})); setModal('payment'); }}>Log Payment</button>
                         {rec.status !== 'waived' && <button className="dues-action-btn" style={{color:'var(--muted)',borderColor:'var(--border)'}} onClick={()=>waveRecord(rec.id)}>Waive</button>}
@@ -334,7 +308,7 @@ export default function DuesPage() {
             </>
           )}
 
-          {/* ── MY DUES VIEW ── */}
+          {/* My Dues View */}
           {!canManage && (
             <>
               {myRecords.length === 0 && <div style={{textAlign:'center',padding:'3rem',color:'var(--muted)',fontSize:'0.85rem'}}>No dues records yet. Check back when a billing period has been opened.</div>}
@@ -356,52 +330,41 @@ export default function DuesPage() {
                         <Countdown expiresAt={rec.expires_at} />
                       </div>
                     )}
-                    {rec.expires_at && (
-                      <div style={{fontSize:'0.7rem',color:'rgba(240,232,208,0.25)',marginBottom:'0.8rem'}}>
-                        {rec.casper_expiry_text || `Expires ${new Date(rec.expires_at).toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'long',year:'numeric'})}`}
-                      </div>
-                    )}
+                    {rec.casper_expiry_text && <div style={{fontSize:'0.7rem',color:'rgba(240,232,208,0.25)',marginBottom:'0.8rem'}}>{rec.casper_expiry_text}</div>}
                     <div className="dues-progress-bar" style={{marginBottom:'0.8rem'}}>
                       <div className="dues-progress-fill" style={{width:`${progress}%`,background:STATUS_COLOURS[rec.status],height:'4px'}}/>
                     </div>
-                    <div className="dues-breakdown" style={{marginBottom:'1rem'}}>
+                    <div className="dues-breakdown">
                       <div className="dues-breakdown-item"><div className="dues-breakdown-amount" style={{color:'#4ade80'}}>{fmt(rec.linden_paid)}</div><div className="dues-breakdown-label">Linden Paid</div></div>
                       <div className="dues-breakdown-item"><div className="dues-breakdown-amount" style={{color:'#c6930a'}}>{fmt(rec.sweat_equity_value)}</div><div className="dues-breakdown-label">Sweat Equity</div></div>
                       <div className="dues-breakdown-item"><div className="dues-breakdown-amount">{fmt(rec.amount_due)}</div><div className="dues-breakdown-label">Total Due</div></div>
                     </div>
-
                     {rec.payments?.length > 0 && (
-                      <>
-                        <div className="dues-section-title">Your Linden Payments</div>
-                        {rec.payments.map((p:any) => (
-                          <div key={p.id} className="dues-entry">
-                            <div className="dues-entry-main">
-                              <div className="dues-entry-title">{fmt(p.amount_ls)}</div>
-                              {p.transaction_id && <div className="dues-entry-txid">Tx: {p.transaction_id}</div>}
-                              <div className="dues-entry-detail">{timeAgo(p.created_at)}</div>
-                            </div>
-                            <div className="dues-entry-amount">{fmt(p.amount_ls)}</div>
+                      <><div className="dues-section-title">Your Linden Payments</div>
+                      {rec.payments.map(p => (
+                        <div key={p.id} className="dues-entry">
+                          <div className="dues-entry-main">
+                            <div className="dues-entry-title">{fmt(p.amount_ls)}</div>
+                            {p.transaction_id && <div className="dues-entry-txid">Tx: {p.transaction_id}</div>}
+                            <div className="dues-entry-detail">{timeAgo(p.created_at)}</div>
                           </div>
-                        ))}
-                      </>
+                          <div className="dues-entry-amount">{fmt(p.amount_ls)}</div>
+                        </div>
+                      ))}</>
                     )}
-
                     {rec.sweat_equity?.length > 0 && (
-                      <>
-                        <div className="dues-section-title">Your Sweat Equity</div>
-                        {rec.sweat_equity.map((s:any) => (
-                          <div key={s.id} className="dues-entry">
-                            <div className="dues-entry-main">
-                              <div className="dues-entry-title">{s.contribution}</div>
-                              <div className="dues-entry-detail">{s.category} · {timeAgo(s.created_at)}</div>
-                              {s.value_approved > 0 && <div className="dues-entry-detail" style={{color:'#4ade80'}}>Credited: {fmt(s.value_approved)}</div>}
-                            </div>
-                            <span className={`sweat-tag ${s.status}`}>{s.status}</span>
+                      <><div className="dues-section-title">Your Sweat Equity</div>
+                      {rec.sweat_equity.map(s => (
+                        <div key={s.id} className="dues-entry">
+                          <div className="dues-entry-main">
+                            <div className="dues-entry-title">{s.contribution}</div>
+                            <div className="dues-entry-detail">{s.category} · {timeAgo(s.created_at)}</div>
+                            {s.value_approved > 0 && <div className="dues-entry-detail" style={{color:'#4ade80'}}>Credited: {fmt(s.value_approved)}</div>}
                           </div>
-                        ))}
-                      </>
+                          <span className={`sweat-tag ${s.status}`}>{s.status}</span>
+                        </div>
+                      ))}</>
                     )}
-
                     {rec.status !== 'paid' && rec.status !== 'waived' && (
                       <div className="dues-actions">
                         <button className="dues-action-btn green" onClick={()=>{ setActivePeriod(rec.period_id); setModal('payment'); }}>Log Linden Payment</button>
@@ -416,24 +379,17 @@ export default function DuesPage() {
         </div>
       </main>
 
-      {/* ── MODALS ── */}
-
-      {/* New Period */}
+      {/* New Period Modal */}
       {modal==='period' && (
         <div className="dues-modal-overlay" onClick={()=>setModal(null)}>
           <div className="dues-modal" onClick={e=>e.stopPropagation()}>
-            <div className="dues-modal-header">
-              <div className="dues-modal-title">Open New Billing Period</div>
-              <button className="dues-modal-close" onClick={()=>setModal(null)}>✕</button>
-            </div>
+            <div className="dues-modal-header"><div className="dues-modal-title">Open New Billing Period</div><button className="dues-modal-close" onClick={()=>setModal(null)}>✕</button></div>
             <div className="dues-modal-body">
-              {msg && <div style={{padding:'0.6rem 0.8rem',marginBottom:'1rem',borderRadius:'5px',fontSize:'0.8rem',background:'rgba(74,222,128,0.08)',border:'1px solid rgba(74,222,128,0.2)',color:'#4ade80'}}>{msg}</div>}
+              {msg && <div style={{padding:'0.6rem',marginBottom:'1rem',borderRadius:'5px',fontSize:'0.8rem',background:'rgba(74,222,128,0.08)',border:'1px solid rgba(74,222,128,0.2)',color:'#4ade80'}}>{msg}</div>}
               <div className="field-group" style={{marginBottom:'0.9rem'}}>
                 <label className="field-label">Month</label>
                 <select className="field-input" value={periodForm.month} onChange={e=>setPeriodForm(f=>({...f,month:parseInt(e.target.value)}))}>
-                  {['January','February','March','April','May','June','July','August','September','October','November','December'].map((m,i)=>(
-                    <option key={i+1} value={i+1}>{m}</option>
-                  ))}
+                  {['January','February','March','April','May','June','July','August','September','October','November','December'].map((m,i)=><option key={i+1} value={i+1}>{m}</option>)}
                 </select>
               </div>
               <div className="field-group" style={{marginBottom:'0.9rem'}}>
@@ -450,16 +406,13 @@ export default function DuesPage() {
         </div>
       )}
 
-      {/* Log Payment */}
+      {/* Log Payment Modal */}
       {modal==='payment' && (
         <div className="dues-modal-overlay" onClick={()=>{ setModal(null); setMsg(''); }}>
           <div className="dues-modal" onClick={e=>e.stopPropagation()}>
-            <div className="dues-modal-header">
-              <div className="dues-modal-title">Log Linden Payment</div>
-              <button className="dues-modal-close" onClick={()=>{ setModal(null); setMsg(''); }}>✕</button>
-            </div>
+            <div className="dues-modal-header"><div className="dues-modal-title">Log Linden Payment</div><button className="dues-modal-close" onClick={()=>{ setModal(null); setMsg(''); }}>✕</button></div>
             <div className="dues-modal-body">
-              {msg && <div style={{padding:'0.6rem 0.8rem',marginBottom:'1rem',borderRadius:'5px',fontSize:'0.8rem',background:msg.startsWith('Error')?'rgba(178,34,52,0.08)':'rgba(74,222,128,0.08)',border:`1px solid ${msg.startsWith('Error')?'rgba(178,34,52,0.2)':'rgba(74,222,128,0.2)'}`,color:msg.startsWith('Error')?'#e05070':'#4ade80'}}>{msg}</div>}
+              {msg && <div style={{padding:'0.6rem',marginBottom:'1rem',borderRadius:'5px',fontSize:'0.8rem',background:msg.startsWith('Error')?'rgba(178,34,52,0.08)':'rgba(74,222,128,0.08)',border:`1px solid ${msg.startsWith('Error')?'rgba(178,34,52,0.2)':'rgba(74,222,128,0.2)'}`,color:msg.startsWith('Error')?'#e05070':'#4ade80'}}>{msg}</div>}
               {canManage && (
                 <div className="field-group" style={{marginBottom:'0.9rem'}}>
                   <label className="field-label">Brother</label>
@@ -477,6 +430,15 @@ export default function DuesPage() {
                 <label className="field-label">CasperLet Transaction ID (optional)</label>
                 <input className="field-input" placeholder="Paste transaction ID..." value={payForm.transaction_id} onChange={e=>setPayForm(f=>({...f,transaction_id:e.target.value}))} />
               </div>
+              <div className="field-group" style={{marginBottom:'0.9rem'}}>
+                <label className="field-label">CasperLet Expiry Date</label>
+                <input className="field-input" type="datetime-local" value={payForm.expires_at} onChange={e=>setPayForm(f=>({...f,expires_at:e.target.value}))} />
+                <div style={{fontSize:'0.65rem',color:'rgba(240,232,208,0.25)',marginTop:'3px'}}>Set from your CasperLet message — e.g. "expires Wed, 13th May at 5:09 AM"</div>
+              </div>
+              <div className="field-group" style={{marginBottom:'0.9rem'}}>
+                <label className="field-label">CasperLet Expiry Text (paste from message)</label>
+                <input className="field-input" placeholder="e.g. expires Wed, 13th May, at 5:09 AM" value={payForm.casper_expiry_text} onChange={e=>setPayForm(f=>({...f,casper_expiry_text:e.target.value}))} />
+              </div>
               <div className="field-group" style={{marginBottom:'1.2rem'}}>
                 <label className="field-label">Notes (optional)</label>
                 <input className="field-input" placeholder="Any notes..." value={payForm.notes} onChange={e=>setPayForm(f=>({...f,notes:e.target.value}))} />
@@ -487,16 +449,13 @@ export default function DuesPage() {
         </div>
       )}
 
-      {/* Sweat Equity */}
+      {/* Sweat Equity Modal */}
       {modal==='sweat' && (
         <div className="dues-modal-overlay" onClick={()=>{ setModal(null); setMsg(''); }}>
           <div className="dues-modal" onClick={e=>e.stopPropagation()}>
-            <div className="dues-modal-header">
-              <div className="dues-modal-title">Submit Sweat Equity</div>
-              <button className="dues-modal-close" onClick={()=>{ setModal(null); setMsg(''); }}>✕</button>
-            </div>
+            <div className="dues-modal-header"><div className="dues-modal-title">Submit Sweat Equity</div><button className="dues-modal-close" onClick={()=>{ setModal(null); setMsg(''); }}>✕</button></div>
             <div className="dues-modal-body">
-              {msg && <div style={{padding:'0.6rem 0.8rem',marginBottom:'1rem',borderRadius:'5px',fontSize:'0.8rem',background:msg.startsWith('Error')?'rgba(178,34,52,0.08)':'rgba(74,222,128,0.08)',border:`1px solid ${msg.startsWith('Error')?'rgba(178,34,52,0.2)':'rgba(74,222,128,0.2)'}`,color:msg.startsWith('Error')?'#e05070':'#4ade80'}}>{msg}</div>}
+              {msg && <div style={{padding:'0.6rem',marginBottom:'1rem',borderRadius:'5px',fontSize:'0.8rem',background:msg.startsWith('Error')?'rgba(178,34,52,0.08)':'rgba(74,222,128,0.08)',border:`1px solid ${msg.startsWith('Error')?'rgba(178,34,52,0.2)':'rgba(74,222,128,0.2)'}`,color:msg.startsWith('Error')?'#e05070':'#4ade80'}}>{msg}</div>}
               <div className="field-group" style={{marginBottom:'0.9rem'}}>
                 <label className="field-label">Category</label>
                 <select className="field-input" value={sweatForm.category} onChange={e=>setSweatForm(f=>({...f,category:e.target.value}))}>
@@ -515,9 +474,7 @@ export default function DuesPage() {
                 <label className="field-label">Additional notes (optional)</label>
                 <input className="field-input" placeholder="Links, proof, context..." value={sweatForm.notes} onChange={e=>setSweatForm(f=>({...f,notes:e.target.value}))} />
               </div>
-              <div style={{fontSize:'0.72rem',color:'rgba(240,232,208,0.3)',marginBottom:'1rem',lineHeight:'1.6'}}>
-                Your submission will be reviewed by leadership. The approved value will be credited toward your L$4,000 dues.
-              </div>
+              <div style={{fontSize:'0.72rem',color:'rgba(240,232,208,0.3)',marginBottom:'1rem',lineHeight:'1.6'}}>Your submission will be reviewed by leadership. The approved value will be credited toward your L$4,000 dues.</div>
               <button className="btn btn-gold" onClick={submitSweat} disabled={saving}>{saving?'Submitting...':'Submit for Review'}</button>
             </div>
           </div>
