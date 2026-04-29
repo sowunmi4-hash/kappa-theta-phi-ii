@@ -55,7 +55,7 @@ function MemberCard({ frat, role, fraction, title, iron, image }: Member) {
       )}
       <div className="member-frat-name">{frat}</div>
       {role && <div className="member-role">{role}</div>}
-      {fraction && <div className="member-fraction">{fraction} Fraction</div>}
+      {fraction && <div className="member-fraction">{fraction} Faction</div>}
       {title && <div className="member-fraction-title">{title}</div>}
       {iron && <div className="iron-badge">Iron Compass</div>}
     </div>
@@ -140,7 +140,7 @@ export default function BrothersPage() {
           </div>
           <div className="brothers-stat">
             <div className="brothers-stat-num">4</div>
-            <div className="brothers-stat-label">Fractions</div>
+            <div className="brothers-stat-label">Factions</div>
           </div>
           <div className="brothers-stat">
             <div className="brothers-stat-num">4</div>

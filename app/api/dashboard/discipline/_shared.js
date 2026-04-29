@@ -17,11 +17,11 @@ export async function getMember() {
   return m[0] || null;
 }
 
-// Can manage discipline = Ishi No Fraction OR Head Founder OR Co-Founder
+// Can manage discipline = Ishi No Faction OR Head Founder OR Co-Founder
 export function canManage(member) {
   if (!member) return false;
   return (
-    member.fraction === 'Ishi No Fraction' ||
+    member.fraction === 'Ishi No Faction' ||
     member.role === 'Head Founder' ||
     member.role === 'Co-Founder'
   );

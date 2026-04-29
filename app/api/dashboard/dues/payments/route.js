@@ -19,3 +19,14 @@ export async function POST(req) {
   await recalcRecord(period_id, memberId);
   return NextResponse.json({ success: true });
 }
+export async function PATCH(req) {
+  const member = await getMember();
+  if (!member || !CAN_MANAGE(member)) return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+  const { record_id, expires_at, casper_expiry_text } = await req.json();
+  if (!record_id) return NextResponse.json({ error: 'Missing record_id' }, { status: 400 });
+  await fetch(`${S}/rest/v1/dues_records?id=eq.${record_id}`, {
+    method: 'PATCH', headers: ch(),
+    body: JSON.stringify({ expires_at: expires_at||null, casper_expiry_text: casper_expiry_text||null, updated_at: new Date().toISOString() })
+  });
+  return NextResponse.json({ success: true });
+}

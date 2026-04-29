@@ -132,7 +132,7 @@ export default function DuesPage() {
   async function submitSweat() {
     if (!sweatForm.contribution.trim()) { setMsg('Describe your contribution.'); return; }
     setSaving(true);
-    const body = { period_id: activePeriod, ...sweatForm, value_requested: sweatForm.value_requested ? parseInt(sweatForm.value_requested) : null };
+    const body = { period_id: activePeriod, ...sweatForm, value_requested: sweatForm.value_requested ? parseInt(sweatForm.value_requested) : null, target_member_id: sweatTarget||null };
     const res = await fetch('/api/dashboard/dues/sweat-equity', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body) }).then(r=>r.json());
     if (res.error) { setMsg(`Error: ${res.error}`); setSaving(false); return; }
     setMsg('Sweat equity submitted for review.');
@@ -320,6 +320,8 @@ export default function DuesPage() {
 
                       <div className="dues-actions">
                         <button className="dues-action-btn green" onClick={()=>{ setPayForm(f=>({...f,target_member_id:rec.member_id})); setModal('payment'); }}>Log Payment</button>
+                        <button className="dues-action-btn gold" onClick={()=>{ setSweatTarget(rec.member_id); setModal('sweat'); }}>Log Sweat Equity</button>
+                        <button className="dues-action-btn" style={{color:'#4ade80',borderColor:'rgba(74,222,128,0.3)'}} onClick={()=>setTimerEdit({record_id:rec.id,expires_at:rec.expires_at||'',casper_expiry_text:rec.casper_expiry_text||''})}>Edit Timer</button>
                         {rec.status !== 'waived' && <button className="dues-action-btn" style={{color:'var(--muted)',borderColor:'var(--border)'}} onClick={()=>waveRecord(rec.id)}>Waive</button>}
                       </div>
                     </div>
@@ -523,6 +525,27 @@ export default function DuesPage() {
           </div>
         </div>
       )}
+
+      {/* Timer Edit Modal */}
+      {timerEdit && (
+        <div className="dues-modal-overlay" onClick={()=>setTimerEdit(null)}>
+          <div className="dues-modal" onClick={e=>e.stopPropagation()}>
+            <div className="dues-modal-header"><div className="dues-modal-title">Edit CasperLet Timer</div><button className="dues-modal-close" onClick={()=>setTimerEdit(null)}>✕</button></div>
+            <div className="dues-modal-body">
+              <div className="field-group" style={{marginBottom:'0.9rem'}}>
+                <label className="field-label">CasperLet Expiry Date</label>
+                <input className="field-input" type="datetime-local" value={timerEdit.expires_at ? timerEdit.expires_at.slice(0,16) : ''} onChange={e=>setTimerEdit(p=>({...p,expires_at:e.target.value}))} />
+              </div>
+              <div className="field-group" style={{marginBottom:'1.2rem'}}>
+                <label className="field-label">CasperLet Expiry Text</label>
+                <input className="field-input" placeholder="e.g. expires Wed, 13th May, at 5:09 AM" value={timerEdit.casper_expiry_text} onChange={e=>setTimerEdit(p=>({...p,casper_expiry_text:e.target.value}))} />
+              </div>
+              <button className="btn btn-gold" onClick={()=>updateTimer(timerEdit.record_id, timerEdit.expires_at, timerEdit.casper_expiry_text)} disabled={saving}>{saving?'Saving...':'Save Timer'}</button>
+            </div>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 }

@@ -24,7 +24,7 @@ export async function GET() {
   // Only leaders/managers can fetch the full roster
   const canAccess =
     LEADERS.includes(member.role) ||
-    member.fraction === 'Ishi No Fraction';
+    member.fraction === 'Ishi No Faction';
 
   if (!canAccess) return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
 

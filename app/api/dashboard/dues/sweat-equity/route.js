@@ -4,11 +4,16 @@ import { S, h, ch, getMember, CAN_MANAGE, recalcRecord } from '../_shared';
 export async function POST(req) {
   const member = await getMember();
   if (!member) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  const { period_id, contribution, category, value_requested, notes } = await req.json();
+  const { period_id, contribution, category, value_requested, notes, target_member_id } = await req.json();
   if (!period_id || !contribution) return NextResponse.json({ error: 'Missing fields' }, { status: 400 });
+  // Managers can log sweat equity on behalf of any brother
+  const memberId   = (CAN_MANAGE(member) && target_member_id) ? target_member_id : member.id;
+  const memberName = (CAN_MANAGE(member) && target_member_id)
+    ? (await fetch(`${S}/rest/v1/roster?id=eq.${target_member_id}&select=frat_name`, { headers: h() }).then(r => r.json()))[0]?.frat_name
+    : member.frat_name;
   await fetch(`${S}/rest/v1/dues_sweat_equity`, {
     method: 'POST', headers: ch(),
-    body: JSON.stringify({ period_id, member_id: member.id, member_name: member.frat_name, contribution, category: category||'general', value_requested: value_requested||null, notes: notes||null, status: 'pending' })
+    body: JSON.stringify({ period_id, member_id: memberId, member_name: memberName, contribution, category: category||'general', value_requested: value_requested||null, notes: notes||null, status: 'pending' })
   });
   return NextResponse.json({ success: true });
 }
