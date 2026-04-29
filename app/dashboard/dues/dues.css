@@ -1,0 +1,138 @@
+/* ─── DUES SYSTEM ─── */
+.dues-wrap { padding: 2rem 2.5rem 4rem; }
+
+.dues-hero {
+  background: linear-gradient(135deg, #080d14 0%, #0d1008 100%);
+  border-bottom: 1px solid var(--border);
+  padding: 2rem 2.5rem;
+}
+.dues-hero-title { font-size: 1.4rem; font-weight: 800; color: var(--bone); letter-spacing: 2px; font-family: 'Noto Serif JP', serif; }
+.dues-hero-sub { font-size: 0.75rem; color: var(--muted); margin-top: 4px; }
+
+/* Status badges */
+.dues-badge {
+  display: inline-block; padding: 2px 10px; border-radius: 3px;
+  font-size: 0.6rem; letter-spacing: 2px; text-transform: uppercase; font-weight: 700; border: 1px solid;
+}
+.dues-badge.paid     { color: #4ade80; background: rgba(74,222,128,0.08); border-color: rgba(74,222,128,0.25); }
+.dues-badge.partial  { color: #c6930a; background: rgba(198,147,10,0.08); border-color: rgba(198,147,10,0.25); }
+.dues-badge.unpaid   { color: #e05070; background: rgba(178,34,52,0.08); border-color: rgba(178,34,52,0.25); }
+.dues-badge.waived   { color: var(--muted); background: rgba(255,255,255,0.04); border-color: var(--border); }
+
+/* Period selector */
+.dues-period-bar {
+  display: flex; align-items: center; gap: 8px;
+  margin-bottom: 1.5rem; flex-wrap: wrap;
+}
+.dues-period-btn {
+  padding: 5px 14px; border-radius: 20px; font-size: 0.72rem;
+  letter-spacing: 1px; border: 1px solid var(--border);
+  background: var(--surface); color: var(--muted);
+  cursor: pointer; font-family: 'Rajdhani', sans-serif;
+  transition: all 0.15s;
+}
+.dues-period-btn:hover { border-color: rgba(198,147,10,0.3); color: var(--bone); }
+.dues-period-btn.active { background: rgba(198,147,10,0.1); border-color: rgba(198,147,10,0.4); color: var(--gold); }
+
+/* Summary stats */
+.dues-stats { display: grid; grid-template-columns: repeat(4,1fr); gap: 8px; margin-bottom: 1.5rem; }
+.dues-stat { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 1rem; text-align: center; }
+.dues-stat-num { font-size: 1.6rem; font-weight: 800; color: var(--bone); line-height: 1; }
+.dues-stat-label { font-size: 0.6rem; letter-spacing: 2px; color: var(--muted); text-transform: uppercase; margin-top: 4px; }
+
+/* Brother dues card */
+.dues-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 10px; margin-bottom: 6px; overflow: hidden;
+  animation: fadeUp 0.3s both;
+}
+.dues-card.paid    { border-left: 3px solid rgba(74,222,128,0.5); }
+.dues-card.partial { border-left: 3px solid rgba(198,147,10,0.5); }
+.dues-card.unpaid  { border-left: 3px solid rgba(178,34,52,0.4); }
+.dues-card.waived  { border-left: 3px solid rgba(255,255,255,0.1); opacity: 0.6; }
+
+.dues-card-header {
+  padding: 1rem 1.3rem; display: flex; align-items: center;
+  justify-content: space-between; gap: 1rem; cursor: pointer;
+  transition: background 0.15s;
+}
+.dues-card-header:hover { background: var(--raised); }
+.dues-card-name { font-size: 0.95rem; font-weight: 700; color: var(--bone); }
+.dues-card-meta { font-size: 0.7rem; color: var(--muted); margin-top: 2px; }
+.dues-card-right { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+.dues-card-chevron { color: var(--muted); transition: transform 0.2s; }
+.dues-card.open .dues-card-chevron { transform: rotate(90deg); }
+
+/* Progress bar */
+.dues-progress-wrap { padding: 0 1.3rem 4px; }
+.dues-progress-bar { height: 3px; background: var(--raised); border-radius: 2px; overflow: hidden; }
+.dues-progress-fill { height: 100%; border-radius: 2px; transition: width 0.5s; }
+
+.dues-card-body { padding: 0 1.3rem 1.2rem; display: none; }
+.dues-card.open .dues-card-body { display: block; }
+
+/* Balance breakdown */
+.dues-breakdown { display: grid; grid-template-columns: repeat(3,1fr); gap: 6px; margin-bottom: 1rem; }
+.dues-breakdown-item { background: var(--raised); border: 1px solid var(--border); border-radius: 6px; padding: 0.7rem; text-align: center; }
+.dues-breakdown-amount { font-size: 1.1rem; font-weight: 800; }
+.dues-breakdown-label { font-size: 0.58rem; letter-spacing: 2px; color: var(--muted); text-transform: uppercase; margin-top: 2px; }
+
+/* Payment list */
+.dues-section-title { font-size: 0.6rem; letter-spacing: 3px; color: var(--gold-dim); text-transform: uppercase; margin: 1rem 0 0.5rem; }
+.dues-entry {
+  display: flex; align-items: flex-start; justify-content: space-between;
+  padding: 0.6rem 0.8rem; background: var(--raised); border: 1px solid var(--border);
+  border-radius: 6px; margin-bottom: 3px; gap: 1rem;
+}
+.dues-entry-main { flex: 1; }
+.dues-entry-title { font-size: 0.83rem; color: var(--bone); font-weight: 600; }
+.dues-entry-detail { font-size: 0.7rem; color: var(--muted); margin-top: 2px; }
+.dues-entry-txid { font-size: 0.62rem; color: rgba(240,232,208,0.2); font-family: monospace; word-break: break-all; }
+.dues-entry-amount { font-size: 0.9rem; font-weight: 800; color: #4ade80; white-space: nowrap; }
+.dues-entry-amount.debit { color: var(--crimson-c); }
+.dues-entry-amount.pending { color: var(--gold); }
+
+/* Sweat equity status */
+.sweat-tag { font-size: 0.6rem; letter-spacing: 1px; padding: 1px 6px; border-radius: 3px; border: 1px solid; font-weight: 600; }
+.sweat-tag.pending  { color: var(--gold); border-color: rgba(198,147,10,0.3); background: rgba(198,147,10,0.07); }
+.sweat-tag.approved { color: #4ade80; border-color: rgba(74,222,128,0.3); background: rgba(74,222,128,0.07); }
+.sweat-tag.denied   { color: #e05070; border-color: rgba(178,34,52,0.3); background: rgba(178,34,52,0.07); }
+
+/* Action buttons */
+.dues-actions { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 0.8rem; padding-top: 0.8rem; border-top: 1px solid var(--border); }
+.dues-action-btn {
+  padding: 5px 14px; border-radius: 5px; font-size: 0.68rem;
+  letter-spacing: 1px; text-transform: uppercase; cursor: pointer;
+  font-family: 'Rajdhani', sans-serif; font-weight: 700;
+  border: 1px solid; transition: all 0.15s; background: none;
+}
+.dues-action-btn.gold  { color: var(--gold); border-color: rgba(198,147,10,0.35); }
+.dues-action-btn.gold:hover { background: rgba(198,147,10,0.1); }
+.dues-action-btn.green { color: #4ade80; border-color: rgba(74,222,128,0.35); }
+.dues-action-btn.green:hover { background: rgba(74,222,128,0.08); }
+.dues-action-btn.red   { color: #e05070; border-color: rgba(178,34,52,0.35); }
+.dues-action-btn.red:hover { background: rgba(178,34,52,0.08); }
+
+/* Modal */
+.dues-modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 500; display: flex; align-items: center; justify-content: center; padding: 1rem; }
+.dues-modal { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; width: 100%; max-width: 460px; max-height: 90vh; overflow-y: auto; animation: scaleIn 0.2s cubic-bezier(0.22,1,0.36,1) both; }
+.dues-modal-header { padding: 1.2rem 1.4rem; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+.dues-modal-title { font-size: 0.75rem; letter-spacing: 3px; color: var(--gold); text-transform: uppercase; }
+.dues-modal-close { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 1.2rem; }
+.dues-modal-body { padding: 1.4rem; }
+
+/* My own dues view */
+.dues-my-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 12px; padding: 1.5rem; margin-bottom: 1.5rem;
+  animation: fadeUp 0.4s both;
+}
+.dues-my-period { font-size: 0.65rem; letter-spacing: 3px; color: var(--muted); text-transform: uppercase; margin-bottom: 0.5rem; }
+.dues-my-balance { font-size: 2rem; font-weight: 800; color: var(--bone); margin-bottom: 4px; }
+.dues-my-sub { font-size: 0.78rem; color: var(--muted); }
+
+@media (max-width: 768px) {
+  .dues-stats { grid-template-columns: repeat(2,1fr); }
+  .dues-breakdown { grid-template-columns: repeat(3,1fr); }
+  .dues-wrap { padding: 1.5rem 1rem 3rem; }
+}

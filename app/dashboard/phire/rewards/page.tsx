@@ -21,7 +21,8 @@ export default function PhireRewards() {
     { href: '/dashboard/phire', label: 'PHIRE' },
     { href: '/dashboard/discipline', label: 'Discipline' },
     { href: '/dashboard/ssp', label: 'SSP' },
-  { href: '/dashboard/gallery', label: 'My Gallery' },
+  { href: '/dashboard/dues', label: 'Dues' },
+    { href: '/dashboard/gallery', label: 'My Gallery' },
     { href: '/dashboard/edit', label: 'Edit Profile' },
   ];
   const Sidebar = () => (
