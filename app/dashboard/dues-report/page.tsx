@@ -1,7 +1,6 @@
 'use client';
 import { useState, useEffect } from 'react';
-import '../discipline/disc.css';
-
+import '../discipline/discipline.css';
 const NAV = [
   { href:'/dashboard', label:'Dashboard' },
   { href:'/dashboard/phire', label:'PHIRE' },
