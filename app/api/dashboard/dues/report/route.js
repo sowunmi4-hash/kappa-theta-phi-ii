@@ -20,15 +20,20 @@ const canSeeFull = (m) => m && m.frat_name === 'Big Brother Substance';
 
 export async function GET(req) {
   const member = await getMember();
+  console.log('[dues/report] member:', member?.frat_name, '| fraction:', member?.fraction);
   if (!member) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  if (!canSeeDisciplinary(member)) return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+  const canSee = canSeeDisciplinary(member);
+  console.log('[dues/report] canSeeDisciplinary:', canSee);
+  if (!canSee) return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
 
   const { searchParams } = new URL(req.url);
   const period_id = searchParams.get('period_id');
 
+  console.log('[dues/report] fetching periods...');
   const periods = await fetch(`${S}/rest/v1/dues_periods?order=year.desc,month.desc&select=*`, { headers: h() }).then(r => r.json());
   const targetPeriod = period_id ? periods.find(p => p.id === period_id) : (Array.isArray(periods) ? periods[0] : null);
 
+  console.log('[dues/report] periods count:', Array.isArray(periods) ? periods.length : 'NOT ARRAY', '| targetPeriod:', targetPeriod?.id);
   if (!targetPeriod) return NextResponse.json({ periods: Array.isArray(periods) ? periods : [], disciplinary: [], full_records: null, can_see_full: canSeeFull(member), summary: null });
 
   const pid = targetPeriod.id;

@@ -25,6 +25,7 @@ export default function DisciplinePage() {
   const [duesReport, setDuesReport] = useState<any>(null);
   const [duesPeriod, setDuesPeriod] = useState<string>('');
   const [duesLoading, setDuesLoading] = useState(false);
+  const [duesError, setDuesError]       = useState('');
   const [canSeeDues, setCanSeeDues]     = useState(false);
   const [violations, setViolations] = useState<any[]>([]);
   const [roster, setRoster]       = useState<any[]>([]);
@@ -166,7 +167,7 @@ export default function DisciplinePage() {
           </div>
           <div className="disc-tabs">
             <button className={`disc-tab ${tab==='my'?'active':''}`} onClick={()=>setTab('my')}>My Record</button>
-            {canSeeDues && <button className={`disc-tab ${tab==='dues'?'active':''}`} onClick={()=>{ setTab('dues'); if(!duesReport) loadDuesReport(''); }} style={{color: tab==='dues' ? 'var(--gold)' : 'var(--muted)'}}>Dues Report</button>}
+            {canSeeDues && <button className={`disc-tab ${tab==='dues'?'active':''}`} onClick={()=>{ setTab('dues'); loadDuesReport(duesPeriod || ''); }} style={{color: tab==='dues' ? 'var(--gold)' : 'var(--muted)'}}>Dues Report</button>}
           </div>
           {tab === 'my' && (
           <div className="disc-content">
@@ -193,6 +194,7 @@ export default function DisciplinePage() {
             )}
 
             {duesLoading && <div style={{textAlign:'center',padding:'2rem',color:'var(--muted)'}}>Loading report...</div>}
+            {duesError && <div style={{padding:'1rem',background:'rgba(178,34,52,0.08)',border:'1px solid rgba(178,34,52,0.2)',borderRadius:'6px',color:'#e05070',fontSize:'0.8rem',marginBottom:'1rem'}}>Error: {duesError}</div>}
 
             {!duesLoading && duesReport && (
               <>
