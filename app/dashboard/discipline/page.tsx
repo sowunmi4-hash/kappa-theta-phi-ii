@@ -25,6 +25,7 @@ export default function DisciplinePage() {
   const [duesReport, setDuesReport] = useState<any>(null);
   const [duesPeriod, setDuesPeriod] = useState<string>('');
   const [duesLoading, setDuesLoading] = useState(false);
+  const [canSeeDues, setCanSeeDues]     = useState(false);
   const [violations, setViolations] = useState<any[]>([]);
   const [roster, setRoster]       = useState<any[]>([]);
   const [openCards, setOpenCards] = useState<Set<string>>(new Set());
@@ -47,8 +48,9 @@ export default function DisciplinePage() {
       if (d.error) { window.location.href='/login'; return; }
       setMember(d.member);
       // Check if this member can see dues report
-      const canSeeDues = d.member?.fraction === 'Ishi No Fraction' || d.member?.frat_name === 'Big Brother Substance';
-      if (canSeeDues) {
+      const memberCanSeeDues = d.member?.fraction === 'Ishi No Fraction' || d.member?.frat_name === 'Big Brother Substance';
+      setCanSeeDues(memberCanSeeDues);
+      if (memberCanSeeDues) {
         loadDuesReport('');
       }
     });
@@ -56,7 +58,7 @@ export default function DisciplinePage() {
 
   useEffect(() => {
     if (!member) return;
-    const manage = member.fraction==='Ishi No Faction' || member.role==='Head Founder' || member.role==='Co-Founder';
+    const manage = member.fraction==='Ishi No Fraction' || member.role==='Head Founder' || member.role==='Co-Founder';
     setCanManage(manage);
     if (manage) {
       loadAll();
@@ -69,7 +71,7 @@ export default function DisciplinePage() {
   // POLLING: silent background refresh every 30s
   useEffect(() => {
     if (!member) return;
-    const manage = member.fraction==='Ishi No Faction' || member.role==='Head Founder' || member.role==='Co-Founder';
+    const manage = member.fraction==='Ishi No Fraction' || member.role==='Head Founder' || member.role==='Co-Founder';
     const poll = setInterval(() => {
       if (manage) loadAll();
       fetch('/api/dashboard/discipline/my-record').then(r=>r.json()).then(d=>setMyRecord(d.violations||[]));
