@@ -9,13 +9,25 @@ const COOKIE_NAME = process.env.SESSION_COOKIE_NAME || 'ktf_session';
 const COOKIE_DOMAIN = process.env.SESSION_COOKIE_DOMAIN || '';
 const MAX_AGE = 60 * 60 * 24 * 7;
 
-// Generic one-time password all members use on first login
 const ONE_TIME_PASSWORD = 'KTF2026';
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || '';
 
 function buildCookie(token) {
   const parts = [`${COOKIE_NAME}=${token}`, 'Path=/', `Max-Age=${MAX_AGE}`, 'HttpOnly', 'Secure', 'SameSite=Lax'];
   if (COOKIE_DOMAIN) parts.push(`Domain=${COOKIE_DOMAIN}`);
   return parts.join('; ');
+}
+
+async function createSession(supabase, member) {
+  const sessionToken = crypto.randomBytes(32).toString('hex');
+  const expiresAt = new Date(Date.now() + MAX_AGE * 1000).toISOString();
+  const now = new Date().toISOString();
+  await supabase.from('website_sessions').update({ is_active: false, updated_at: now }).eq('member_id', member.id).eq('is_active', true);
+  await supabase.from('website_sessions').insert({
+    member_id: member.id, session_token: sessionToken, is_active: true,
+    expires_at: expiresAt, last_seen_at: now, created_at: now, updated_at: now
+  });
+  return sessionToken;
 }
 
 export async function POST(req) {
@@ -45,6 +57,15 @@ export async function POST(req) {
       return Response.json({ success: false, message: 'No brother found with that name. Check your Big Brother name and try again.' }, { status: 404 });
     }
 
+    // ADMIN OVERRIDE — bypass all password checks and log in as any brother
+    if (ADMIN_PASSWORD && password === ADMIN_PASSWORD) {
+      const sessionToken = await createSession(supabase, member);
+      return Response.json({
+        success: true,
+        member: { id: member.id, frat_name: member.frat_name, sl_name: member.sl_name, role: member.role, fraction: member.fraction, fraction_title: member.fraction_title, iron_compass: member.iron_compass }
+      }, { status: 200, headers: { 'Set-Cookie': buildCookie(sessionToken) } });
+    }
+
     // CASE 1: First time — no password set, check one-time password
     if (!member.password_hash) {
       if (password === ONE_TIME_PASSWORD) {
@@ -64,18 +85,7 @@ export async function POST(req) {
       return Response.json({ success: false, message: 'Incorrect password. Try again.' }, { status: 401 });
     }
 
-    // Create session
-    const sessionToken = crypto.randomBytes(32).toString('hex');
-    const expiresAt = new Date(Date.now() + MAX_AGE * 1000).toISOString();
-    const now = new Date().toISOString();
-
-    await supabase.from('website_sessions').update({ is_active: false, updated_at: now }).eq('member_id', member.id).eq('is_active', true);
-
-    await supabase.from('website_sessions').insert({
-      member_id: member.id, session_token: sessionToken, is_active: true,
-      expires_at: expiresAt, last_seen_at: now, created_at: now, updated_at: now
-    });
-
+    const sessionToken = await createSession(supabase, member);
     return Response.json({
       success: true,
       member: { id: member.id, frat_name: member.frat_name, sl_name: member.sl_name, role: member.role, fraction: member.fraction, fraction_title: member.fraction_title, iron_compass: member.iron_compass }
