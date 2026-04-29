@@ -35,7 +35,7 @@ export async function GET(req) {
   const notifyIds = [...new Set([...ishi, ...founders].map(m => m.id))];
 
   // Group overdue records by period
-  const byPeriod: Record<string, any[]> = {};
+  const byPeriod = {};
   for (const rec of overdueRecords) {
     if (!byPeriod[rec.period_id]) byPeriod[rec.period_id] = [];
     byPeriod[rec.period_id].push(rec);
