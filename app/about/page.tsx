@@ -1,5 +1,5 @@
 'use client';
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import './about.css';
 
 const SLIDES = [
@@ -13,8 +13,72 @@ const SLIDES = [
   { tag: 'Our Legacy', title: 'Built on Vision. Proven by Impact.', kanji: '永' },
 ];
 
+
+const SLIDE_NARRATION = [
+  // Slide 0: Who We Are
+  \`Kappa Theta Phi Chapter Two, known as the Wokou-Corsairs, is a dynamic fraternity rooted in tradition, innovation, and brotherhood. Blending the daring spirit of the legendary Japanese Wokou pirates with the cultural depth of African Yoruba mythology, we are a collective of leaders, creators, and visionaries united by a shared mission: to navigate uncharted waters, build lasting legacies, and uplift our community.
+
+Our identity is shaped by the strength and resilience of the Wokou pirates, who symbolise adaptability and courage. The spiritual wisdom of Olokun, the Yoruba Orisha of the deep sea, whose power connects us to legacy, mystery, and the boundless potential of water. And the commanding force of the Kraken, embodying control over ocean life and representing our fraternity's strength, unity, and influence.
+
+We don't follow waves. We create them.\`,
+
+  // Slide 1: Cultural Foundation
+  \`Once known as the wickedest city on Earth, Port Royal, Jamaica stood as a haven for pirates, privateers, and outlaws during the Golden Age of Piracy. Power was taken, not given. Wealth was earned through risk. Brotherhood formed in the face of danger.
+
+Our cultural foundation rests on four pillars. The Wokou: adaptability, courage, and calculated movement. Olokun: spiritual depth, legacy awareness, and limitless potential. The Kraken: absolute power beneath the surface. And Port Royal: where chaos became empire.\`,
+
+  // Slide 2: Origins
+  \`In the aftermath of the Great Fire War, two rival forces — the Wokou and the Samurai — rose from destruction not as enemies, but as brothers. What began as conflict evolved into an unbreakable alliance, sealed through a sacred blood oath that would transcend generations.
+
+At the heart of this legacy stands Yasuke, the legendary African Samurai whose presence bridged cultures and redefined honour. His son, Nevarious, journeyed across continents to master the sacred traditions of the Yoruba and unlock the mysteries of the Orishas.
+
+That wisdom was passed to Raul Damu, who in 2011 founded Kappa Theta Phi Fraternity of Second Life. By March 2021, Chapter Two was born — an evolution, not just a continuation.\`,
+
+  // Slide 3: The Awakening
+  \`Big Brother Damu, The Visionary, unlocked fragments of forgotten lifetimes through deep meditation. With his power, he awakened Big Brother Tactician — opening his third eye and restoring their connection to a shared past. Together, they began the mission: reunite the lost brothers.
+
+Big Brother Hype, master of interdimensional travel. Big Brother Energy, the Hybrid King with unmatched tracking. Big Brother Smooth Talk, manipulator of minds and words. Big Brother Cool Breeze, Mystic and summoner of unseen forces.
+
+Their journey revealed a deeper truth: their connection to Olokun, the primordial deity of the ocean. They were no longer just brothers. They were chosen.\`,
+
+  // Slide 4: The Battle of the Depths
+  \`Drawn toward the Bermuda Triangle, the brothers sailed into chaos. From the depths emerged the legendary Kraken — a force of destruction beyond imagination. Tentacles tore through their ship. The sea roared. Death loomed.
+
+We are the Sons of Olokun. We do not fear death.
+
+Steel clashed against myth. Power against fate. But even warriors fall. The Kraken dragged them into the abyss.\`,
+
+  // Slide 5: The Next Generation
+  \`At Pirate's Well, a new generation trained under Big Brother Third Degree and Big Brother Sacred. When the call came, they did not hesitate. They rose.
+
+Neo Kimo, the born leader. Neo Jabari, the wise strategist. Neo Tre, the silent enigma. Neo Kash, the fearless youngest. Neo Blake, the unknown variable. Neo Jessy, the relentless spirit.
+
+Gifted with divine power by Olokun, their blades became extensions of the ocean itself. They emerged not as neophytes… but as Sons of Olokun.\`,
+
+  // Slide 6: Principles
+  \`We are more than a fraternity — we are a brotherhood with a purpose.
+
+Adventure: just as the Wokou traversed the seas, we embrace new challenges, opportunities, and creative endeavours.
+
+Heritage: we honour the rich traditions of our influences, blending diverse cultures into a unified identity.
+
+Leadership: we strive to inspire and lead, creating immersive experiences that bring people together.
+
+Purpose: through events and initiatives, we give back, leaving a lasting impact in Second Life and beyond.\`,
+
+  // Slide 7: Legacy
+  \`Our Chapter Two reflects a lineage of innovation, vision, and success. With iconic events like LOONAPALOOSA and philanthropic contributions such as raising one hundred thousand Linden dollars for the Save the Music Foundation, we continue to solidify our place as leaders in the virtual world.
+
+We are adventurers, strategists, and brothers. We embrace the mystery of the ocean, the power of the Kraken, and the wisdom of Olokun. Together, we navigate challenges, celebrate victories, and build a legacy that transcends time.
+
+Where tradition meets innovation, and the past inspires the future.\`,
+];
+
 export default function AboutPage() {
   const [current, setCurrent] = useState(0);
+  const [speaking, setSpeaking] = useState(false);
+  const [paused, setPaused] = useState(false);
+  const utteranceRef = useRef<SpeechSynthesisUtterance|null>(null);
 
   const goTo = useCallback((i: number) => {
     if (i >= 0 && i < SLIDES.length) setCurrent(i);
@@ -28,6 +92,50 @@ export default function AboutPage() {
     window.addEventListener('keydown', handleKey);
     return () => window.removeEventListener('keydown', handleKey);
   }, [current, goTo]);
+
+
+  function speak() {
+    if (typeof window === 'undefined' || !window.speechSynthesis) return;
+    window.speechSynthesis.cancel();
+    const utterance = new SpeechSynthesisUtterance(SLIDE_NARRATION[current]);
+    utterance.rate = 0.95;
+    utterance.pitch = 1;
+    utterance.volume = 1;
+    utterance.onstart  = () => { setSpeaking(true);  setPaused(false); };
+    utterance.onend    = () => { setSpeaking(false); setPaused(false); };
+    utterance.onpause  = () => setPaused(true);
+    utterance.onresume = () => setPaused(false);
+    utteranceRef.current = utterance;
+    window.speechSynthesis.speak(utterance);
+  }
+
+  function togglePause() {
+    if (!window.speechSynthesis) return;
+    if (paused) {
+      window.speechSynthesis.resume();
+      setPaused(false);
+    } else {
+      window.speechSynthesis.pause();
+      setPaused(true);
+    }
+  }
+
+  function stopSpeaking() {
+    if (!window.speechSynthesis) return;
+    window.speechSynthesis.cancel();
+    setSpeaking(false);
+    setPaused(false);
+  }
+
+  // Stop speech when slide changes
+  useEffect(() => {
+    stopSpeaking();
+  }, [current]);
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => { if (window.speechSynthesis) window.speechSynthesis.cancel(); };
+  }, []);
 
   return (
     <>
@@ -246,6 +354,30 @@ export default function AboutPage() {
         </div>
 
         <div className="slide-counter">{String(current + 1).padStart(2, '0')} / {String(SLIDES.length).padStart(2, '0')}</div>
+
+        {/* Text-to-speech controls */}
+        <div className="tts-controls">
+          {!speaking ? (
+            <button className="tts-btn tts-play" onClick={speak} title="Read this slide aloud">
+              <svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><path d="M8 5v14l11-7z"/></svg>
+              <span>Read Aloud</span>
+            </button>
+          ) : (
+            <>
+              <button className="tts-btn tts-pause" onClick={togglePause} title={paused ? 'Resume' : 'Pause'}>
+                {paused
+                  ? <svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><path d="M8 5v14l11-7z"/></svg>
+                  : <svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+                }
+                <span>{paused ? 'Resume' : 'Pause'}</span>
+              </button>
+              <button className="tts-btn tts-stop" onClick={stopSpeaking} title="Stop">
+                <svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><path d="M6 6h12v12H6z"/></svg>
+                <span>Stop</span>
+              </button>
+            </>
+          )}
+        </div>
       </main>
     </>
   );

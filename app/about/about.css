@@ -148,3 +148,69 @@
   .slide-nav { bottom: 1.2rem; gap: 1rem; }
   .slide-counter { display: none; }
 }
+
+/* ─── TEXT TO SPEECH CONTROLS ─── */
+.tts-controls {
+  position: fixed;
+  bottom: 2.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 8px;
+  z-index: 100;
+  animation: fadeUp 0.4s both;
+}
+
+.tts-btn {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 18px;
+  border-radius: 30px;
+  border: 1px solid;
+  cursor: pointer;
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  transition: all 0.2s;
+  backdrop-filter: blur(10px);
+}
+
+.tts-play {
+  background: rgba(198, 147, 10, 0.12);
+  border-color: rgba(198, 147, 10, 0.35);
+  color: #c6930a;
+}
+.tts-play:hover {
+  background: rgba(198, 147, 10, 0.22);
+  transform: translateY(-2px);
+}
+
+.tts-pause {
+  background: rgba(240, 232, 208, 0.08);
+  border-color: rgba(240, 232, 208, 0.2);
+  color: rgba(240, 232, 208, 0.8);
+}
+.tts-pause:hover {
+  background: rgba(240, 232, 208, 0.14);
+}
+
+.tts-stop {
+  background: rgba(178, 34, 52, 0.1);
+  border-color: rgba(178, 34, 52, 0.3);
+  color: #e05070;
+}
+.tts-stop:hover {
+  background: rgba(178, 34, 52, 0.2);
+}
+
+/* Pulse animation when speaking */
+.tts-pause svg {
+  animation: tts-pulse 1.5s ease-in-out infinite;
+}
+@keyframes tts-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
