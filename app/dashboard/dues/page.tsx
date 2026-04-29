@@ -11,6 +11,34 @@ function fmt(n: number) { return `L$${n.toLocaleString()}`; }
 function pct(paid: number, sweat: number, due: number) { return Math.min(100, Math.round(((paid + sweat) / due) * 100)); }
 function timeAgo(d:string){ return new Date(d).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}); }
 
+
+function Countdown({ expiresAt }) {
+  const [time, setTime] = useState('');
+  const [urgent, setUrgent] = useState(false);
+  const [expired, setExpired] = useState(false);
+
+  useEffect(() => {
+    function tick() {
+      const diff = new Date(expiresAt).getTime() - Date.now();
+      if (diff <= 0) { setExpired(true); setTime('Expired'); return; }
+      const days    = Math.floor(diff / 86400000);
+      const hours   = Math.floor((diff % 86400000) / 3600000);
+      const minutes = Math.floor((diff % 3600000) / 60000);
+      const seconds = Math.floor((diff % 60000) / 1000);
+      setUrgent(diff < 86400000 * 3);
+      if (days > 0) setTime(`${days}d ${hours}h ${minutes}m ${seconds}s`);
+      else if (hours > 0) setTime(`${hours}h ${minutes}m ${seconds}s`);
+      else setTime(`${minutes}m ${seconds}s`);
+    }
+    tick();
+    const t = setInterval(tick, 1000);
+    return () => clearInterval(t);
+  }, [expiresAt]);
+
+  if (expired) return <span style={{color:'#e05070',fontSize:'0.78rem',fontWeight:700}}>EXPIRED</span>;
+  return <span style={{color: urgent ? '#e05070' : '#4ade80', fontSize:'0.78rem', fontWeight:700, fontFamily:'monospace'}}>{time}</span>;
+}
+
 export default function DuesPage() {
   const [member, setMember]       = useState<any>(null);
   const [canManage, setCanManage] = useState(false);
@@ -23,7 +51,7 @@ export default function DuesPage() {
   const [loading, setLoading]     = useState(true);
 
   // Form states
-  const [payForm, setPayForm]     = useState({ amount_ls:'', transaction_id:'', notes:'', target_member_id:'' });
+  const [payForm, setPayForm]     = useState({ amount_ls:'', transaction_id:'', expires_at:'', casper_expiry_text:'', notes:'', target_member_id:'' });
   const [sweatForm, setSweatForm] = useState({ contribution:'', category:'General', value_requested:'', notes:'' });
   const [periodForm, setPeriodForm] = useState({ month: new Date().getMonth()+1, year: new Date().getFullYear(), amount_due: 4000 });
   const [sweatApprove, setSweatApprove] = useState<{id:string, value:string, notes:string}|null>(null);
@@ -94,7 +122,7 @@ export default function DuesPage() {
     const res = await fetch('/api/dashboard/dues/payments', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body) }).then(r=>r.json());
     if (res.error) { setMsg(`Error: ${res.error}`); setSaving(false); return; }
     setMsg('Payment logged.');
-    setPayForm({ amount_ls:'', transaction_id:'', notes:'', target_member_id:'' });
+    setPayForm({ amount_ls:'', transaction_id:'', expires_at:'', casper_expiry_text:'', notes:'', target_member_id:'' });
     if (canManage) await loadRecords(activePeriod!);
     await loadMyRecords();
     setSaving(false);
@@ -230,6 +258,11 @@ export default function DuesPage() {
                       <div style={{flex:1}}>
                         <div className="dues-card-name">{rec.member_name}</div>
                         <div className="dues-card-meta">{fmt(totalPaid)} of {fmt(rec.amount_due)} — {fmt(remaining)} remaining</div>
+                        {rec.expires_at && (
+                          <div style={{marginTop:'4px',fontSize:'0.7rem',color:'rgba(240,232,208,0.4)'}}>
+                            Expires: <Countdown expiresAt={rec.expires_at} />
+                          </div>
+                        )}
                       </div>
                       <div className="dues-card-right">
                         <span className={`dues-badge ${rec.status}`}>{rec.status}</span>
@@ -312,6 +345,13 @@ export default function DuesPage() {
                       <div className="dues-my-balance">{fmt(remaining)} remaining</div>
                       <span className={`dues-badge ${rec.status}`}>{rec.status}</span>
                     </div>
+                    {rec.expires_at && (
+                      <div style={{marginBottom:'0.8rem',padding:'0.6rem 0.8rem',background:'var(--raised)',border:'1px solid var(--border)',borderRadius:'6px',display:'flex',justifyContent:'space-between',alignItems:'center'}}>
+                        <span style={{fontSize:'0.65rem',letterSpacing:'2px',color:'var(--muted)',textTransform:'uppercase'}}>Time Remaining</span>
+                        <Countdown expiresAt={rec.expires_at} />
+                      </div>
+                    )}
+                    {rec.casper_expiry_text && <div style={{fontSize:'0.7rem',color:'rgba(240,232,208,0.25)',marginBottom:'0.8rem'}}>{rec.casper_expiry_text}</div>}
                     <div className="dues-progress-bar" style={{marginBottom:'0.8rem'}}>
                       <div className="dues-progress-fill" style={{width:`${progress}%`,background:STATUS_COLOURS[rec.status],height:'4px'}}/>
                     </div>
@@ -427,6 +467,15 @@ export default function DuesPage() {
               <div className="field-group" style={{marginBottom:'0.9rem'}}>
                 <label className="field-label">CasperLet Transaction ID (optional)</label>
                 <input className="field-input" placeholder="Paste transaction ID..." value={payForm.transaction_id} onChange={e=>setPayForm(f=>({...f,transaction_id:e.target.value}))} />
+              </div>
+              <div className="field-group" style={{marginBottom:'0.9rem'}}>
+                <label className="field-label">CasperLet Expiry Date</label>
+                <input className="field-input" type="datetime-local" value={payForm.expires_at} onChange={e=>setPayForm(f=>({...f,expires_at:e.target.value}))} />
+                <div style={{fontSize:'0.65rem',color:'rgba(240,232,208,0.25)',marginTop:'3px'}}>Set from your CasperLet message e.g. "expires Wed, 13th May at 5:09 AM"</div>
+              </div>
+              <div className="field-group" style={{marginBottom:'0.9rem'}}>
+                <label className="field-label">CasperLet Expiry Text (paste from message)</label>
+                <input className="field-input" placeholder="e.g. expires Wed, 13th May, at 5:09 AM" value={payForm.casper_expiry_text} onChange={e=>setPayForm(f=>({...f,casper_expiry_text:e.target.value}))} />
               </div>
               <div className="field-group" style={{marginBottom:'1.2rem'}}>
                 <label className="field-label">Notes (optional)</label>
