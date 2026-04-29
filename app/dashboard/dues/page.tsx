@@ -55,6 +55,8 @@ export default function DuesPage() {
   const [sweatForm, setSweatForm] = useState({ contribution:'', category:'General', value_requested:'', notes:'' });
   const [periodForm, setPeriodForm] = useState({ month: new Date().getMonth()+1, year: new Date().getFullYear(), amount_due: 4000 });
   const [sweatApprove, setSweatApprove] = useState<{id:string, value:string, notes:string}|null>(null);
+  const [timerEdit, setTimerEdit]       = useState<{record_id:string, expires_at:string, casper_expiry_text:string}|null>(null);
+  const [sweatTarget, setSweatTarget]   = useState('');
   const [saving, setSaving]       = useState(false);
   const [msg, setMsg]             = useState('');
 
@@ -148,6 +150,14 @@ export default function DuesPage() {
     setSweatApprove(null);
     if (canManage) await loadRecords(activePeriod!);
     await loadMyRecords();
+    setSaving(false);
+  }
+
+  async function updateTimer(record_id:string, expires_at:string, casper_expiry_text:string) {
+    setSaving(true);
+    await fetch('/api/dashboard/dues/payments', { method:'PATCH', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ record_id, expires_at, casper_expiry_text }) });
+    setTimerEdit(null);
+    if (canManage) await loadRecords(activePeriod!);
     setSaving(false);
   }
 
