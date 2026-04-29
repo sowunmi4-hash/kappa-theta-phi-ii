@@ -142,7 +142,7 @@ export default function DisciplinePage() {
 
   if (!member || loading) return <div className="dash-loading">LOADING...</div>;
 
-  // Non-managers only see their own record
+  // Non-managers: show My Record + Dues Report tab if they have access
   if (!canManage) {
     return (
       <div className="dash-app disc-root">
@@ -157,14 +157,22 @@ export default function DisciplinePage() {
             {NAV.map(n=><a key={n.href} href={n.href} className="dash-nav-item"><span>{n.label}</span></a>)}
             <div className="dash-nav-divider"/><a href="/" className="dash-nav-item"><span>Back to Site</span></a>
             <button onClick={async()=>{await fetch('/api/logout',{method:'POST'});window.location.href='/login';}} className="dash-nav-item" style={{width:'100%',textAlign:'left',background:'none',border:'none',cursor:'pointer',color:'#e05070',fontFamily:'inherit'}}><span>Sign Out</span></button>
-            <button onClick={async()=>{await fetch('/api/logout',{method:'POST'});window.location.href='/login';}} className="dash-nav-item" style={{width:'100%',textAlign:'left',background:'none',border:'none',cursor:'pointer',color:'#e05070',fontFamily:'inherit'}}><span>Sign Out</span></button>
           </nav>
         </aside>
         <main className="dash-main">
-          <div className="disc-hero"><div className="disc-hero-title">My Discipline Record</div><div className="disc-hero-sub">Your personal record — private and visible only to you</div></div>
+          <div className="disc-hero">
+            <div className="disc-hero-title">{canSeeDues ? 'Discipline' : 'My Discipline Record'}</div>
+            <div className="disc-hero-sub">{canSeeDues ? 'KΘΦ II — Discipline & Dues' : 'Your personal record — private and visible only to you'}</div>
+          </div>
+          <div className="disc-tabs">
+            <button className={`disc-tab ${tab==='my'?'active':''}`} onClick={()=>setTab('my')}>My Record</button>
+            {canSeeDues && <button className={`disc-tab ${tab==='dues'?'active':''}`} onClick={()=>{ setTab('dues'); if(!duesReport) loadDuesReport(''); }} style={{color: tab==='dues' ? 'var(--gold)' : 'var(--muted)'}}>Dues Report</button>}
+          </div>
+          {tab === 'my' && (
           <div className="disc-content">
             <MemberRecord violations={myRecord} onReload={async()=>{ const d=await fetch('/api/dashboard/discipline/my-record').then(r=>r.json()); setMyRecord(d.violations||[]); }} />
           </div>
+          )}
         {/* DUES REPORT TAB */}
         {tab === 'dues' && canSeeDues && (
           <div style={{padding:'1.5rem'}}>
