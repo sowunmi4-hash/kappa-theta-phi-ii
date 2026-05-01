@@ -63,7 +63,8 @@ export default function StorePage() {
   if (order) return (
     <div className="store-root">
       <header className="store-header">
-        <div className="store-logo">KΘΦ II STORE</div>
+        <a href="/" style={{textDecoration:"none"}}><div className="store-logo">KΘΦ II STORE</div></a>
+        <a href="/" style={{position:"absolute",left:"1.5rem",top:"50%",transform:"translateY(-50%)",color:"var(--muted,rgba(240,232,208,0.4))",fontSize:"0.7rem",letterSpacing:"2px",textDecoration:"none",textTransform:"uppercase",fontFamily:"Rajdhani,sans-serif"}}>← Home</a>
       </header>
       <div className="store-confirmed">
         <div className="store-confirmed-badge">✓</div>
@@ -105,7 +106,8 @@ export default function StorePage() {
   return (
     <div className="store-root">
       <header className="store-header">
-        <div className="store-logo">KΘΦ II STORE</div>
+        <a href="/" style={{textDecoration:"none"}}><div className="store-logo">KΘΦ II STORE</div></a>
+        <a href="/" style={{position:"absolute",left:"1.5rem",top:"50%",transform:"translateY(-50%)",color:"var(--muted,rgba(240,232,208,0.4))",fontSize:"0.7rem",letterSpacing:"2px",textDecoration:"none",textTransform:"uppercase",fontFamily:"Rajdhani,sans-serif"}}>← Home</a>
         <div className="store-header-sub">Star Wars Plushie Collection · L$200 each</div>
       </header>
 
