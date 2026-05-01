@@ -5,7 +5,8 @@ import './login.css';
 export default function LoginPage() {
   const [step, setStep] = useState<'login' | 'create-password' | 'logged-in'>('login');
   const [fratName, setFratName] = useState('');
-  const [password, setPassword] = useState('');
+  const [password, setPassword]     = useState('');
+  const [rememberMe, setRememberMe] = useState(false);
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
@@ -18,7 +19,7 @@ export default function LoginPage() {
     try {
       const r = await fetch('/api/verify-session', { credentials: 'include' });
       const d = await r.json();
-      if (r.ok && d.authenticated) { setMember(d.member); setStep('logged-in'); }
+      if (r.ok && d.authenticated) { window.location.href = '/dashboard'; return; }
     } catch {}
   }
 
@@ -28,7 +29,7 @@ export default function LoginPage() {
       const r = await fetch('/api/verify-login', {
         method: 'POST', credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ frat_name: fratName, password })
+        body: JSON.stringify({ frat_name: fratName, password, remember_me: rememberMe })
       });
       const d = await r.json();
       if (d.needs_password) {
@@ -101,6 +102,12 @@ export default function LoginPage() {
                 <div className="form-group">
                   <label>Password</label>
                   <input type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="Enter your password" required />
+                </div>
+                <div style={{display:'flex',alignItems:'center',gap:'8px',margin:'0.2rem 0 0.8rem',cursor:'pointer'}} onClick={()=>setRememberMe(r=>!r)}>
+                  <div style={{width:'18px',height:'18px',borderRadius:'4px',border:`1px solid ${rememberMe ? 'var(--gold,#c6930a)' : 'rgba(240,232,208,0.2)'}`,background:rememberMe?'rgba(198,147,10,0.15)':'transparent',display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0,transition:'all 0.15s'}}>
+                    {rememberMe && <span style={{color:'var(--gold,#c6930a)',fontSize:'0.7rem',fontWeight:700}}>✓</span>}
+                  </div>
+                  <span style={{fontSize:'0.78rem',color:'rgba(240,232,208,0.45)',userSelect:'none'}}>Remember me for 30 days</span>
                 </div>
                 <button type="submit" className="gate-submit" disabled={loading}>{loading ? 'Verifying...' : 'Enter'}</button>
               </form>

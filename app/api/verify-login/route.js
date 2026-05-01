@@ -7,13 +7,14 @@ const SUPABASE_URL = process.env.SUPABASE_URL || '';
 const SUPABASE_KEY = process.env.SUPABASE_SECRET_KEY || '';
 const COOKIE_NAME = process.env.SESSION_COOKIE_NAME || 'ktf_session';
 const COOKIE_DOMAIN = process.env.SESSION_COOKIE_DOMAIN || '';
-const MAX_AGE = 60 * 60 * 24 * 7;
+const MAX_AGE_DEFAULT  = 60 * 60 * 24 * 7;  // 7 days
+const MAX_AGE_REMEMBER = 60 * 60 * 24 * 30; // 30 days
 
 const ONE_TIME_PASSWORD = 'KTF2026';
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || '';
 
-function buildCookie(token) {
-  const parts = [`${COOKIE_NAME}=${token}`, 'Path=/', `Max-Age=${MAX_AGE}`, 'HttpOnly', 'Secure', 'SameSite=Lax'];
+function buildCookie(token, maxAge = MAX_AGE_DEFAULT) {
+  const parts = [`${COOKIE_NAME}=${token}`, 'Path=/', `Max-Age=${maxAge}`, 'HttpOnly', 'Secure', 'SameSite=Lax'];
   if (COOKIE_DOMAIN) parts.push(`Domain=${COOKIE_DOMAIN}`);
   return parts.join('; ');
 }
