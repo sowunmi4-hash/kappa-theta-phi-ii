@@ -13,18 +13,18 @@ export async function POST(req) {
 
   // Find order
   const orders = await fetch(`${S}/rest/v1/store_orders?order_number=eq.${order_number}&select=*`, { headers: h() }).then(r => r.json());
-  if (!orders?.length) return NextResponse.json({ error: 'Order not found', deliver: false }, { status: 404 });
+  if (!orders?.length) return NextResponse.json({ error: 'Order not found', deliver: 'no' }, { status: 404 });
 
   const order = orders[0];
 
   // Validate amount
   if (amount_ls < order.total_ls) {
-    return NextResponse.json({ error: `Underpaid. Expected L$${order.total_ls}, got L$${amount_ls}`, deliver: false }, { status: 400 });
+    return NextResponse.json({ error: `Underpaid. Expected L\$${order.total_ls}, got L\$${amount_ls}`, deliver: 'no' }, { status: 400 });
   }
 
   // Check not already paid
   if (order.status === 'delivered') {
-    return NextResponse.json({ error: 'Already delivered', deliver: false }, { status: 400 });
+    return NextResponse.json({ error: 'Already delivered', deliver: 'no' }, { status: 400 });
   }
 
   // Mark as paid + delivered
@@ -35,7 +35,7 @@ export async function POST(req) {
 
   // Tell the terminal to deliver
   return NextResponse.json({
-    deliver: true,
+    deliver: "yes",
     item_name: order.item_name,
     sl_username: order.sl_username,
     order_number: order.order_number,
