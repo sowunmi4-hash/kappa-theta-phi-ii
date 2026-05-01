@@ -407,10 +407,15 @@ export default function DuesPage() {
                       </>
                     )}
 
-                    {rec.status !== 'paid' && rec.status !== 'waived' && (
+                    {rec.status !== 'waived' && (
                       <div className="dues-actions">
                         <button className="dues-action-btn green" onClick={()=>{ setActivePeriod(rec.period_id); setModal('payment'); }}>Log Linden Payment</button>
                         <button className="dues-action-btn gold" onClick={()=>{ setActivePeriod(rec.period_id); setModal('sweat'); }}>Submit Sweat Equity</button>
+                        {rec.status === 'paid' && (
+                          <div style={{fontSize:'0.65rem',color:'rgba(240,232,208,0.3)',marginTop:'6px',width:'100%'}}>
+                            Extra payments will carry forward as credit to your next billing period.
+                          </div>
+                        )}
                       </div>
                     )}
                   </div>
