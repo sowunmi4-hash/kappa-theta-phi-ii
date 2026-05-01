@@ -36,6 +36,7 @@ export async function POST(req) {
     const body = await req.json();
     const fratName = String(body.frat_name || '').trim();
     const password = String(body.password || '').trim();
+    const maxAge = body.remember_me ? MAX_AGE_REMEMBER : MAX_AGE_DEFAULT;
 
     if (!fratName || !password) {
       return Response.json({ success: false, message: 'Please enter your Big Brother name and password.' }, { status: 400 });
@@ -64,7 +65,7 @@ export async function POST(req) {
       return Response.json({
         success: true,
         member: { id: member.id, frat_name: member.frat_name, sl_name: member.sl_name, role: member.role, fraction: member.fraction, fraction_title: member.fraction_title, iron_compass: member.iron_compass }
-      }, { status: 200, headers: { 'Set-Cookie': buildCookie(sessionToken) } });
+      }, { status: 200, headers: { 'Set-Cookie': buildCookie(sessionToken, maxAge) } });
     }
 
     // CASE 1: First time — no password set, check one-time password
@@ -90,7 +91,7 @@ export async function POST(req) {
     return Response.json({
       success: true,
       member: { id: member.id, frat_name: member.frat_name, sl_name: member.sl_name, role: member.role, fraction: member.fraction, fraction_title: member.fraction_title, iron_compass: member.iron_compass }
-    }, { status: 200, headers: { 'Set-Cookie': buildCookie(sessionToken) } });
+    }, { status: 200, headers: { 'Set-Cookie': buildCookie(sessionToken, maxAge) } });
 
   } catch (err) {
     console.error('[verify-login] error:', err);
