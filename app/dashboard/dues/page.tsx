@@ -120,7 +120,7 @@ export default function DuesPage() {
   async function logPayment() {
     if (!payForm.amount_ls) { setMsg('Enter the payment amount.'); return; }
     setSaving(true);
-    const body: any = { period_id: activePeriod, amount_ls: parseInt(payForm.amount_ls), transaction_id: payForm.transaction_id||null, notes: payForm.notes||null };
+    const body: any = { period_id: activePeriod, amount_ls: parseInt(payForm.amount_ls), transaction_id: payForm.transaction_id||null, notes: payForm.notes||null, expires_at: payForm.expires_at||null, casper_expiry_text: payForm.casper_expiry_text||null };
     if (canManage && payForm.target_member_id) body.target_member_id = payForm.target_member_id;
     const res = await fetch('/api/dashboard/dues/payments', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body) }).then(r=>r.json());
     if (res.error) { setMsg(`Error: ${res.error}`); setSaving(false); return; }
