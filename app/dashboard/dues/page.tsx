@@ -66,6 +66,7 @@ export default function DuesPage() {
     { href:'/dashboard/events', label:'Events' },
     { href:'/dashboard/phire', label:'PHIRE' },
     { href:'/dashboard/discipline', label:'Discipline' },
+  { href:'/dashboard/dues-report', label:'Dues Report' },
     { href:'/dashboard/ssp', label:'SSP' },
     { href:'/dashboard/gallery', label:'My Gallery' },
     { href:'/dashboard/edit', label:'Edit Profile' },
@@ -190,8 +191,6 @@ export default function DuesPage() {
         </div>
         <nav className="dash-nav">
           {NAV.map(n=><a key={n.href} href={n.href} className={`dash-nav-item ${n.href==='/dashboard/dues'?'active':''}`}><span>{n.label}</span></a>)}
-          
-          {(member?.fraction === 'Ishi No Fraction' || member?.frat_name === 'Big Brother Substance') && <a href="/dashboard/dues-report" className="dash-nav-item"><span>Dues Report</span></a>}
           <div className="dash-nav-divider"/>
           <a href="/" className="dash-nav-item"><span>Back to Site</span></a>
             <button onClick={async()=>{await fetch('/api/logout',{method:'POST'});window.location.href='/login';}} className="dash-nav-item" style={{width:'100%',textAlign:'left',background:'none',border:'none',cursor:'pointer',color:'#e05070',fontFamily:'inherit'}}><span>Sign Out</span></button>
