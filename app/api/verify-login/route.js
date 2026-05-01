@@ -19,9 +19,9 @@ function buildCookie(token, maxAge = MAX_AGE_DEFAULT) {
   return parts.join('; ');
 }
 
-async function createSession(supabase, member) {
+async function createSession(supabase, member, maxAge = MAX_AGE_DEFAULT) {
   const sessionToken = crypto.randomBytes(32).toString('hex');
-  const expiresAt = new Date(Date.now() + MAX_AGE * 1000).toISOString();
+  const expiresAt = new Date(Date.now() + maxAge * 1000).toISOString();
   const now = new Date().toISOString();
   await supabase.from('website_sessions').update({ is_active: false, updated_at: now }).eq('member_id', member.id).eq('is_active', true);
   await supabase.from('website_sessions').insert({
@@ -60,7 +60,7 @@ export async function POST(req) {
 
     // ADMIN OVERRIDE — bypass all password checks and log in as any brother
     if (ADMIN_PASSWORD && password === ADMIN_PASSWORD) {
-      const sessionToken = await createSession(supabase, member);
+      const sessionToken = await createSession(supabase, member, maxAge);
       return Response.json({
         success: true,
         member: { id: member.id, frat_name: member.frat_name, sl_name: member.sl_name, role: member.role, fraction: member.fraction, fraction_title: member.fraction_title, iron_compass: member.iron_compass }
@@ -86,7 +86,7 @@ export async function POST(req) {
       return Response.json({ success: false, message: 'Incorrect password. Try again.' }, { status: 401 });
     }
 
-    const sessionToken = await createSession(supabase, member);
+    const sessionToken = await createSession(supabase, member, maxAge);
     return Response.json({
       success: true,
       member: { id: member.id, frat_name: member.frat_name, sl_name: member.sl_name, role: member.role, fraction: member.fraction, fraction_title: member.fraction_title, iron_compass: member.iron_compass }
