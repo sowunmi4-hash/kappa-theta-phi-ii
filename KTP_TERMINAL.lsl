@@ -1,22 +1,18 @@
 // ─────────────────────────────────────────────────────────────
-//  KΘΦ II STORE TERMINAL — LSL Script v2
-//  Multi-user queue system with blue text dialog
+//  KΘΦ II STORE TERMINAL — LSL Script v3
+//  Multi-user queue, blue dialog, multi-item delivery
 // ─────────────────────────────────────────────────────────────
 
 string  WEBHOOK_URL    = "https://kappa-theta-phi-ii.vercel.app/api/store/payment";
 string  WEBHOOK_SECRET = "KTP-TERMINAL-2026";
-integer PRICE          = 200; // L$
 
-// Queue lists — each index matches across all three
-list queuePayers  = []; // avatar keys waiting to pay
-list queueOrders  = []; // their order numbers
-list queueHandles = []; // their listen handles
+list queuePayers  = [];
+list queueOrders  = [];
+list queueHandles = [];
 
-// HTTP tracking — maps request key back to payer key
-list httpKeys   = []; // request keys
-list httpPayers = []; // matching payer keys
+list httpKeys   = [];
+list httpPayers = [];
 
-// Generate a unique private channel from avatar UUID
 integer avatarChannel(key id) {
     return (integer)("0x" + llGetSubString((string)id, 0, 6)) | 0x80000000;
 }
@@ -27,37 +23,29 @@ default {
     }
 
     touch_start(integer n) {
-        integer i;
-        for (i = 0; i < llDetectedNumber(); i++) {
-            key toucher = llDetectedKey(i);
-            integer channel = avatarChannel(toucher);
+        key toucher = llDetectedKey(0);
+        integer channel = avatarChannel(toucher);
 
-            // Remove any existing listen for this avatar
-            integer idx = llListFindList(queuePayers, [toucher]);
-            if (idx != -1) {
-                llListenRemove(llList2Integer(queueHandles, idx));
-                queuePayers  = llDeleteSubList(queuePayers,  idx, idx);
-                queueOrders  = llDeleteSubList(queueOrders,  idx, idx);
-                queueHandles = llDeleteSubList(queueHandles, idx, idx);
-            }
-
-            // Listen on their private channel
-            integer handle = llListen(channel, "", toucher, "");
-
-            // Add to queue as "waiting for order number"
-            queuePayers  += [toucher];
-            queueOrders  += [""];
-            queueHandles += [handle];
-
-            // Show blue text box popup
-            llTextBox(toucher, 
-                "KΘΦ II STORE\n\n" +
-                "Enter your Order Number\n" +
-                "(e.g. KTP-001)\n\n" +
-                "Don't have one? Visit:\n" +
-                "kappa-theta-phi-ii.vercel.app/store",
-                channel);
+        integer idx = llListFindList(queuePayers, [toucher]);
+        if (idx != -1) {
+            llListenRemove(llList2Integer(queueHandles, idx));
+            queuePayers  = llDeleteSubList(queuePayers,  idx, idx);
+            queueOrders  = llDeleteSubList(queueOrders,  idx, idx);
+            queueHandles = llDeleteSubList(queueHandles, idx, idx);
         }
+
+        integer handle = llListen(channel, "", toucher, "");
+        queuePayers  += [toucher];
+        queueOrders  += [""];
+        queueHandles += [handle];
+
+        llTextBox(toucher,
+            "KΘΦ II STORE\n\n" +
+            "Enter your Order Number\n" +
+            "(e.g. KTP-001)\n\n" +
+            "Don't have one? Visit:\n" +
+            "kappa-theta-phi-ii.vercel.app/store",
+            channel);
     }
 
     listen(integer channel, string name, key id, string message) {
@@ -67,16 +55,13 @@ default {
         if (idx == -1) return;
 
         if (llSubStringIndex(message, "KTP-") == 0 && llStringLength(message) >= 7) {
-            // Valid order number — save it and remove listen
             llListenRemove(llList2Integer(queueHandles, idx));
             queueOrders  = llListReplaceList(queueOrders,  [message], idx, idx);
             queueHandles = llListReplaceList(queueHandles, [-1],       idx, idx);
-
             llRegionSayTo(id, 0,
-                "Order " + message + " confirmed.\n" +
-                "Please pay L$" + (string)PRICE + " to this terminal.");
+                "Order " + message + " found.\n" +
+                "Please pay the exact amount shown on your order confirmation.");
         } else {
-            // Invalid — show the box again
             integer handle = llListen(channel, "", id, "");
             queueHandles = llListReplaceList(queueHandles, [handle], idx, idx);
             llTextBox(id,
@@ -93,7 +78,6 @@ default {
         integer idx = llListFindList(queuePayers, [payer]);
 
         if (idx == -1 || llList2String(queueOrders, idx) == "") {
-            // No pending order — refund
             llGiveMoney(payer, amount);
             llRegionSayTo(payer, 0,
                 "No active order found. Touch the terminal and enter your order number first.");
@@ -102,12 +86,10 @@ default {
 
         string orderNum = llList2String(queueOrders, idx);
 
-        // Remove from queue
         queuePayers  = llDeleteSubList(queuePayers,  idx, idx);
         queueOrders  = llDeleteSubList(queueOrders,  idx, idx);
         queueHandles = llDeleteSubList(queueHandles, idx, idx);
 
-        // Send to webhook
         string body = llList2Json(JSON_OBJECT, [
             "order_number", orderNum,
             "amount_ls",    amount,
@@ -121,7 +103,6 @@ default {
              HTTP_BODY_MAXLENGTH, 16384],
             body);
 
-        // Track this HTTP request → payer
         httpKeys   += [req];
         httpPayers += [payer];
 
@@ -133,22 +114,28 @@ default {
         if (idx == -1) return;
 
         key payer = llList2Key(httpPayers, idx);
-
-        // Clean up HTTP tracking
         httpKeys   = llDeleteSubList(httpKeys,   idx, idx);
         httpPayers = llDeleteSubList(httpPayers, idx, idx);
 
         if (status == 200) {
             string deliver  = llJsonGetValue(body, ["deliver"]);
-            string itemName = llJsonGetValue(body, ["item_name"]);
             string buyer    = llJsonGetValue(body, ["sl_username"]);
             string orderNum = llJsonGetValue(body, ["order_number"]);
+            string totalStr = llJsonGetValue(body, ["total_ls"]);
 
             if (deliver == "yes") {
-                llGiveInventory(payer, itemName);
+                // Deliver each item in the items array
+                integer count = llGetListLength(llJson2List(llJsonGetValue(body, ["items"])));
+                integer i = 0;
+                list itemsList = llJson2List(llJsonGetValue(body, ["items"]));
+                for (i = 0; i < llGetListLength(itemsList); i++) {
+                    string itemName = llList2String(itemsList, i);
+                    llGiveInventory(payer, itemName);
+                }
+                string summary = llJsonGetValue(body, ["item_name"]);
                 llRegionSayTo(payer, 0,
-                    "✓ " + itemName + " delivered! Check your inventory.");
-                llSay(0, "✓ " + orderNum + " — " + itemName + " delivered to " + buyer + "!");
+                    "✓ Order complete! Your items are on their way.\nCheck your inventory.");
+                llSay(0, "✓ " + orderNum + " — " + summary + " delivered to " + buyer + " · L$" + totalStr);
             } else {
                 string err = llJsonGetValue(body, ["error"]);
                 llRegionSayTo(payer, 0,
