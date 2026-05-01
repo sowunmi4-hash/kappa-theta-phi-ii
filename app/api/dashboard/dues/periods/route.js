@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { S, h, ch, getMember, CAN_MANAGE } from '../_shared';
+import { S, h, ch, getMember, CAN_MANAGE, applyCreditsToNewPeriod } from '../_shared';
 
 export async function GET() {
   const member = await getMember();
@@ -28,6 +28,8 @@ export async function POST(req) {
       body: JSON.stringify({ period_id: period.id, member_id: br.id, member_name: br.frat_name, amount_due: period.amount_due, status: 'unpaid' })
     });
   }
+  // Carry over credits from previous period automatically
+  await applyCreditsToNewPeriod(period.id);
   return NextResponse.json({ success: true, period });
 }
 
