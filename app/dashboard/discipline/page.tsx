@@ -156,6 +156,9 @@ export default function DisciplinePage() {
           </div>
           <nav className="dash-nav">
             {NAV.map(n=><a key={n.href} href={n.href} className="dash-nav-item"><span>{n.label}</span></a>)}
+          {(member?.fraction === 'Ishi No Fraction' || member?.frat_name === 'Big Brother Substance') && (
+            <a href="/dashboard/dues-report" className="dash-nav-item"><span>Dues Report</span></a>
+          )}
             <div className="dash-nav-divider"/><a href="/" className="dash-nav-item"><span>Back to Site</span></a>
             <button onClick={async()=>{await fetch('/api/logout',{method:'POST'});window.location.href='/login';}} className="dash-nav-item" style={{width:'100%',textAlign:'left',background:'none',border:'none',cursor:'pointer',color:'#e05070',fontFamily:'inherit'}}><span>Sign Out</span></button>
           </nav>
@@ -314,6 +317,9 @@ export default function DisciplinePage() {
         </div>
         <nav className="dash-nav">
           {NAV.map(n=><a key={n.href} href={n.href} className="dash-nav-item"><span>{n.label}</span></a>)}
+          {(member?.fraction === 'Ishi No Fraction' || member?.frat_name === 'Big Brother Substance') && (
+            <a href="/dashboard/dues-report" className="dash-nav-item"><span>Dues Report</span></a>
+          )}
           <div className="dash-nav-divider"/><a href="/" className="dash-nav-item"><span>Back to Site</span></a>
             <button onClick={async()=>{await fetch('/api/logout',{method:'POST'});window.location.href='/login';}} className="dash-nav-item" style={{width:'100%',textAlign:'left',background:'none',border:'none',cursor:'pointer',color:'#e05070',fontFamily:'inherit'}}><span>Sign Out</span></button>
             <button onClick={async()=>{await fetch('/api/logout',{method:'POST'});window.location.href='/login';}} className="dash-nav-item" style={{width:'100%',textAlign:'left',background:'none',border:'none',cursor:'pointer',color:'#e05070',fontFamily:'inherit'}}><span>Sign Out</span></button>

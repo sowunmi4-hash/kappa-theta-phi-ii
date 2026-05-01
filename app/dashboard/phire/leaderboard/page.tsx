@@ -16,7 +16,6 @@ export default function PhireLeaderboard() {
     { href: '/dashboard/events', label: 'Events' },
     { href: '/dashboard/phire', label: 'PHIRE' },
     { href: '/dashboard/discipline', label: 'Discipline' },
-    { href: '/dashboard/dues-report', label: 'Dues Report', icon: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg> },
     { href: '/dashboard/ssp', label: 'SSP' },
   { href: '/dashboard/dues', label: 'Dues' },
     { href: '/dashboard/gallery', label: 'My Gallery' },
@@ -31,7 +30,8 @@ export default function PhireLeaderboard() {
         <div className="dash-sidebar-role">{member?.role}</div>
       </div>
       <nav className="dash-nav">
-        {NAV.map(n => <a key={n.href} href={n.href} className={`dash-nav-item ${typeof window !== 'undefined' && window.location.pathname === n.href ? 'active' : ''}`}><span>{n.label}</span></a>)}
+        {NAV.map(n => <a key={n.href}
+          {(member?.fraction === 'Ishi No Fraction' || member?.frat_name === 'Big Brother Substance') && <a href="/dashboard/dues-report" className="dash-nav-item"><span>Dues Report</span></a>} href={n.href} className={`dash-nav-item ${typeof window !== 'undefined' && window.location.pathname === n.href ? 'active' : ''}`}><span>{n.label}</span></a>)}
         <div className="dash-nav-divider"/>
         <a href="/" className="dash-nav-item"><span>Back to Site</span></a>
             <button onClick={async()=>{await fetch('/api/logout',{method:'POST'});window.location.href='/login';}} className="dash-nav-item" style={{width:'100%',textAlign:'left',background:'none',border:'none',cursor:'pointer',color:'#e05070',fontFamily:'inherit'}}><span>Sign Out</span></button>
