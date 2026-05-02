@@ -25,6 +25,7 @@ type Event = {
   location?: string; sl_url?: string; dress_code?: string;
   description?: string; flyer_url?: string; created_by_name?: string;
   rsvp_count: number; attending: boolean; attendees: string[];
+  status?: string; completed_at?: string; completed_by_name?: string;
 };
 
 export default function EventsPage() {
@@ -39,6 +40,7 @@ export default function EventsPage() {
   const [form, setForm] = useState({ title:'', event_date:'', event_time:'', location:'', sl_url:'', dress_code:'', description:'', flyer_url:'' });
   const [saving, setSaving] = useState(false);
   const [editing, setEditing] = useState<Event|null>(null);
+  const [showPast, setShowPast] = useState(false);
   const [editForm, setEditForm] = useState({ title:'', event_date:'', event_time:'', location:'', sl_url:'', dress_code:'', description:'', flyer_url:'' });
   const [editSaving, setEditSaving] = useState(false);
   const flyerRef = useRef<HTMLInputElement>(null);
@@ -155,7 +157,8 @@ export default function EventsPage() {
     return `${hr12}:${m} ${ampm} SLT`;
   }
 
-  const upcomingEvents = events.filter(e => new Date(e.event_date + 'T23:59:59') >= today).slice(0,3);
+  const upcomingEvents = events.filter(e => e.status !== 'completed' && new Date(e.event_date + 'T23:59:59') >= today).slice(0,3);
+  const pastEvents = events.filter(e => e.status === 'completed' || new Date(e.event_date + 'T23:59:59') < today);
 
   if (!member) return <div className="dash-loading">LOADING...</div>;
   const slug = member.frat_name?.toLowerCase().replace(/\s+/g,'-').replace('big-brother-','') || '';
@@ -264,18 +267,25 @@ export default function EventsPage() {
                 <div className="cal-upcoming">
                   <div className="cal-upcoming-title">Upcoming</div>
                   {upcomingEvents.map(ev => (
-                    <div key={ev.id} className="cal-upcoming-item" onClick={()=>setSelected(ev)}>
-                      <div className="cal-upcoming-date">
+                    <div key={ev.id} className="cal-upcoming-item">
+                      <div className="cal-upcoming-date" onClick={()=>setSelected(ev)} style={{cursor:'pointer'}}>
                         <div className="cal-upcoming-day">{new Date(ev.event_date+'T12:00:00').getDate()}</div>
                         <div className="cal-upcoming-mon">{MONTHS[new Date(ev.event_date+'T12:00:00').getMonth()].slice(0,3)}</div>
                       </div>
-                      <div className="cal-upcoming-info">
+                      <div className="cal-upcoming-info" onClick={()=>setSelected(ev)} style={{cursor:'pointer',flex:1}}>
                         <div className="cal-upcoming-name">{ev.title}</div>
                         {ev.event_time && <div className="cal-upcoming-time">{fmtTime(ev.event_time)}</div>}
                         {ev.location && <div className="cal-upcoming-loc">{ev.location}</div>}
                         <div className="cal-upcoming-rsvp">{ev.rsvp_count} attending</div>
                       </div>
                       {ev.attending && <div className="cal-attending-badge">✓</div>}
+                      {canManage && (
+                        <button onClick={(e)=>{ e.stopPropagation(); markDone(ev.id); }}
+                          title="Mark as done"
+                          style={{background:'none',border:'1px solid rgba(74,222,128,0.3)',borderRadius:'6px',color:'#4ade80',cursor:'pointer',fontSize:'0.7rem',padding:'3px 8px',flexShrink:0,fontFamily:'inherit'}}>
+                          ✓ Done
+                        </button>
+                      )}
                     </div>
                   ))}
                 </div>
@@ -286,8 +296,8 @@ export default function EventsPage() {
           {/* ── LIST VIEW ── */}
           {view === 'list' && (
             <div className="events-list">
-              {events.length === 0 && <div className="events-empty">No events yet. Be the first to add one.</div>}
-              {events.map(ev => (
+              {events.filter(e => e.status !== 'completed' && new Date(e.event_date + 'T23:59:59') >= new Date()).length === 0 && pastEvents.length === 0 && <div className="events-empty">No events yet. Be the first to add one.</div>}
+              {events.filter(e => e.status !== 'completed' && new Date(e.event_date + 'T23:59:59') >= new Date()).map(ev => (
                 <div key={ev.id} className={`event-card ${ev.attending?'event-card-attending':''}`} onClick={()=>setSelected(ev)}>
                   {ev.flyer_url && <img src={ev.flyer_url} alt="flyer" className="event-card-flyer" />}
                   <div className="event-card-body">
@@ -310,6 +320,44 @@ export default function EventsPage() {
                   </div>
                 </div>
               ))}
+
+              {/* Past / Completed Events */}
+              {pastEvents.length > 0 && (
+                <div style={{marginTop:'1.5rem'}}>
+                  <button onClick={()=>setShowPast(p=>!p)}
+                    style={{display:'flex',alignItems:'center',gap:'6px',background:'none',border:'none',color:'var(--muted)',cursor:'pointer',fontSize:'0.72rem',letterSpacing:'2px',textTransform:'uppercase',fontFamily:'inherit',marginBottom:'0.8rem'}}>
+                    <span style={{fontSize:'0.7rem'}}>{showPast ? '▼' : '▶'}</span>
+                    {pastEvents.length} Past Event{pastEvents.length !== 1 ? 's' : ''}
+                  </button>
+                  {showPast && pastEvents.map(ev => (
+                    <div key={ev.id} className="event-card" onClick={()=>setSelected(ev)}
+                      style={{opacity:0.55,borderColor:'var(--border)',position:'relative'}}>
+                      <div style={{position:'absolute',top:'10px',right:'10px',fontSize:'0.55rem',letterSpacing:'2px',padding:'2px 8px',borderRadius:'10px',fontWeight:700,textTransform:'uppercase',
+                        ...(ev.status==='completed'
+                          ? {background:'rgba(74,222,128,0.1)',border:'1px solid rgba(74,222,128,0.3)',color:'#4ade80'}
+                          : {background:'rgba(160,160,180,0.1)',border:'1px solid rgba(160,160,180,0.2)',color:'var(--muted)'})
+                      }}>
+                        {ev.status==='completed' ? '✓ Done' : 'Past'}
+                      </div>
+                      {ev.flyer_url && <img src={ev.flyer_url} alt="flyer" className="event-card-flyer" />}
+                      <div className="event-card-body">
+                        <div className="event-card-date">
+                          <div className="event-card-day">{new Date(ev.event_date+'T12:00:00').getDate()}</div>
+                          <div className="event-card-mon">{MONTHS[new Date(ev.event_date+'T12:00:00').getMonth()].slice(0,3).toUpperCase()}</div>
+                        </div>
+                        <div className="event-card-info">
+                          <div className="event-card-title">{ev.title}</div>
+                          <div className="event-card-meta">
+                            {ev.event_time && <span>{fmtTime(ev.event_time)}</span>}
+                            {ev.location && <span>· {ev.location}</span>}
+                          </div>
+                          {ev.completed_by_name && <div style={{fontSize:'0.68rem',color:'var(--muted)',marginTop:'4px'}}>Marked done by {ev.completed_by_name}</div>}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           )}
         </div>

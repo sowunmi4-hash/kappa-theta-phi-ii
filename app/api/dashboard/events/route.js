@@ -96,6 +96,19 @@ export async function PATCH(req) {
 
   const body = await req.json();
 
+  // Mark event as completed/done
+  if (body.action === 'complete') {
+    const { event_id } = body;
+    if (!FOUNDERS.includes(member.role) && member.fraction !== 'Ishi No Fraction') {
+      return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+    }
+    await fetch(`${S}/rest/v1/events?id=eq.${event_id}`, {
+      method: 'PATCH', headers: ch(),
+      body: JSON.stringify({ status: 'completed', completed_at: new Date().toISOString(), completed_by_name: member.frat_name }),
+    });
+    return NextResponse.json({ success: true });
+  }
+
   // Edit event
   if (body.action === 'edit') {
     const { event_id, title, event_date, event_time, location, sl_url, dress_code, description, flyer_url } = body;
