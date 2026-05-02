@@ -113,3 +113,98 @@
   .ssp-layout { grid-template-columns: 1fr; }
   .ssp-wrap { padding: 1.5rem 1rem 3rem; }
 }
+
+/* ─── HERO ─── */
+.ssp-hero { padding: 2rem 2rem 1rem; border-bottom: 1px solid var(--border); }
+.ssp-hero-title { font-family: 'Bebas Neue', cursive; font-size: 2rem; letter-spacing: 4px; color: var(--bone); }
+.ssp-hero-sub { font-size: 0.72rem; letter-spacing: 2px; color: var(--muted); text-transform: uppercase; margin-top: 4px; }
+
+/* ─── BROTHER CARD ─── */
+.ssp-brother-card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 1.5rem; margin-bottom: 1.2rem; }
+.ssp-brother-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.2rem; }
+.ssp-brother-title { font-weight: 700; color: var(--bone); font-size: 1rem; margin-bottom: 4px; }
+.ssp-brother-offense { font-size: 0.65rem; letter-spacing: 2px; font-weight: 700; }
+.ssp-status-badge { font-size: 0.65rem; letter-spacing: 2px; padding: 3px 10px; border-radius: 20px; font-weight: 700; text-transform: uppercase; border: 1px solid; }
+.ssp-status-badge.cleared { color: #4ade80; border-color: rgba(74,222,128,0.3); background: rgba(74,222,128,0.08); }
+.ssp-status-badge.enrolled { color: var(--gold); border-color: rgba(198,147,10,0.3); background: rgba(198,147,10,0.08); }
+.ssp-status-badge.in_progress { color: #60a5fa; border-color: rgba(96,165,250,0.3); background: rgba(96,165,250,0.08); }
+.ssp-brother-progress { display: flex; align-items: center; gap: 10px; margin-bottom: 1.2rem; }
+.ssp-brother-bar { flex: 1; height: 4px; background: var(--raised); border-radius: 2px; overflow: hidden; }
+.ssp-brother-bar-fill { height: 100%; border-radius: 2px; transition: width 0.4s; }
+.ssp-brother-pct { font-size: 0.75rem; color: var(--gold); font-family: 'Space Mono', monospace; min-width: 36px; }
+.ssp-brother-steps { display: flex; flex-direction: column; gap: 8px; margin-bottom: 1.2rem; }
+.ssp-brother-step { display: flex; align-items: center; gap: 10px; font-size: 0.82rem; color: var(--muted); }
+.ssp-brother-step.done { color: var(--bone); }
+.ssp-brother-step-dot { width: 20px; height: 20px; border-radius: 50%; border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 0.65rem; flex-shrink: 0; }
+.ssp-brother-step.done .ssp-brother-step-dot { background: rgba(74,222,128,0.15); border-color: rgba(74,222,128,0.4); color: #4ade80; }
+.ssp-brother-notice { display: flex; gap: 10px; align-items: flex-start; padding: 0.8rem; background: rgba(198,147,10,0.06); border: 1px solid rgba(198,147,10,0.15); border-radius: 8px; font-size: 0.75rem; color: rgba(240,232,208,0.5); line-height: 1.5; }
+
+/* ─── FACILITATOR LAYOUT ─── */
+.ssp-layout { display: grid; grid-template-columns: 220px 1fr; gap: 1.5rem; padding: 1.5rem; }
+@media(max-width: 768px) { .ssp-layout { grid-template-columns: 1fr; } }
+
+/* ─── ROSTER ─── */
+.ssp-roster-label { font-size: 0.6rem; letter-spacing: 3px; color: var(--muted); text-transform: uppercase; margin-bottom: 0.8rem; }
+.ssp-roster-item { padding: 0.8rem; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; margin-bottom: 8px; cursor: pointer; transition: border-color 0.15s; }
+.ssp-roster-item:hover, .ssp-roster-item.active { border-color: var(--gold); }
+.ssp-roster-item.cleared { opacity: 0.6; }
+.ssp-roster-name { font-weight: 700; font-size: 0.85rem; color: var(--bone); margin-bottom: 4px; }
+.ssp-roster-meta { display: flex; justify-content: space-between; font-size: 0.65rem; margin-bottom: 6px; }
+.ssp-roster-bar { height: 3px; background: var(--raised); border-radius: 2px; overflow: hidden; }
+.ssp-roster-bar-fill { height: 100%; border-radius: 2px; }
+
+/* ─── PANEL ─── */
+.ssp-panel { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 1.5rem; }
+.ssp-panel-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 1px solid var(--border); }
+.ssp-panel-name { font-family: 'Bebas Neue', cursive; font-size: 1.6rem; letter-spacing: 3px; color: var(--bone); }
+.ssp-panel-sub { font-size: 0.72rem; color: var(--muted); margin-top: 2px; }
+.ssp-clear-btn { background: rgba(74,222,128,0.1); border: 1px solid rgba(74,222,128,0.3); color: #4ade80; border-radius: 8px; padding: 8px 16px; font-family: 'Rajdhani', sans-serif; font-size: 0.82rem; font-weight: 700; cursor: pointer; letter-spacing: 1px; white-space: nowrap; }
+.ssp-clear-btn:hover { background: rgba(74,222,128,0.2); }
+
+/* ─── LESSON CARDS ─── */
+.ssp-lessons { display: flex; flex-direction: column; gap: 10px; }
+.ssp-lesson-card { background: var(--raised); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; transition: border-color 0.2s; }
+.ssp-lesson-card.done { opacity: 0.75; }
+.ssp-lesson-card.open { border-color: var(--gold); }
+.ssp-lesson-header { display: flex; align-items: center; gap: 12px; padding: 0.9rem 1rem; cursor: pointer; }
+.ssp-lesson-num { width: 28px; height: 28px; border-radius: 50%; background: rgba(198,147,10,0.1); border: 1px solid rgba(198,147,10,0.25); display: flex; align-items: center; justify-content: center; font-size: 0.75rem; color: var(--gold); font-weight: 700; flex-shrink: 0; }
+.ssp-lesson-card.done .ssp-lesson-num { background: rgba(74,222,128,0.1); border-color: rgba(74,222,128,0.3); color: #4ade80; }
+.ssp-lesson-info { flex: 1; }
+.ssp-lesson-title { font-weight: 700; font-size: 0.88rem; color: var(--bone); }
+.ssp-lesson-log { font-size: 0.7rem; color: var(--muted); margin-top: 2px; }
+.ssp-lesson-note { font-size: 0.7rem; color: rgba(240,232,208,0.35); margin-top: 2px; font-style: italic; }
+.ssp-lesson-conduct-btn { background: rgba(198,147,10,0.1); border: 1px solid rgba(198,147,10,0.3); color: var(--gold); border-radius: 6px; padding: 5px 12px; font-family: 'Rajdhani', sans-serif; font-size: 0.75rem; font-weight: 700; cursor: pointer; letter-spacing: 1px; white-space: nowrap; }
+.ssp-lesson-conduct-btn:hover { background: rgba(198,147,10,0.2); }
+
+/* ─── LESSON BODY ─── */
+.ssp-lesson-body { padding: 0 1rem 1rem; border-top: 1px solid var(--border); }
+.ssp-lesson-topics { margin: 1rem 0; padding: 0.8rem; background: var(--surface); border-radius: 8px; }
+.ssp-lesson-topics-label { font-size: 0.6rem; letter-spacing: 3px; color: var(--muted); text-transform: uppercase; margin-bottom: 0.5rem; }
+.ssp-lesson-topic-item { font-size: 0.78rem; color: rgba(240,232,208,0.6); padding: 2px 0; }
+.ssp-lesson-questions { margin: 1rem 0; padding: 1rem; background: rgba(198,147,10,0.04); border: 1px solid rgba(198,147,10,0.15); border-radius: 8px; }
+.ssp-lesson-questions-label { font-size: 0.6rem; letter-spacing: 2px; color: rgba(198,147,10,0.7); text-transform: uppercase; margin-bottom: 0.8rem; font-weight: 700; }
+.ssp-lesson-q { display: flex; gap: 10px; align-items: flex-start; margin-bottom: 0.7rem; font-size: 0.82rem; color: var(--bone); line-height: 1.5; }
+.ssp-lesson-q:last-child { margin-bottom: 0; }
+.ssp-lesson-q-num { min-width: 20px; height: 20px; background: rgba(198,147,10,0.15); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.65rem; color: var(--gold); font-weight: 700; flex-shrink: 0; margin-top: 1px; }
+
+/* ─── CONDUCT FORM ─── */
+.ssp-conduct-form { margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--border); }
+.ssp-conduct-label { font-size: 0.6rem; letter-spacing: 3px; color: var(--muted); text-transform: uppercase; margin-bottom: 0.6rem; }
+.ssp-conduct-pass-row { display: flex; gap: 8px; margin-bottom: 0.8rem; }
+.ssp-conduct-pass, .ssp-conduct-fail { flex: 1; padding: 6px; border-radius: 6px; font-family: 'Rajdhani', sans-serif; font-size: 0.8rem; font-weight: 700; cursor: pointer; border: 1px solid var(--border); background: var(--surface); color: var(--muted); }
+.ssp-conduct-pass.active { background: rgba(74,222,128,0.1); border-color: rgba(74,222,128,0.3); color: #4ade80; }
+.ssp-conduct-fail.active { background: rgba(224,80,112,0.1); border-color: rgba(224,80,112,0.3); color: #e05070; }
+.ssp-conduct-notes { width: 100%; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 0.6rem 0.8rem; color: var(--bone); font-family: 'Rajdhani', sans-serif; font-size: 0.85rem; resize: vertical; margin-bottom: 0.8rem; }
+.ssp-conduct-notes:focus { outline: none; border-color: var(--gold); }
+.ssp-conduct-notes::placeholder { color: var(--muted); }
+.ssp-conduct-submit { width: 100%; background: var(--gold); color: #000; border: none; border-radius: 8px; padding: 0.7rem; font-family: 'Bebas Neue', cursive; font-size: 1rem; letter-spacing: 2px; cursor: pointer; }
+.ssp-conduct-submit:disabled { opacity: 0.4; cursor: not-allowed; }
+
+/* ─── HISTORY ─── */
+.ssp-history { margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid var(--border); }
+.ssp-history-label { font-size: 0.6rem; letter-spacing: 3px; color: var(--muted); text-transform: uppercase; margin-bottom: 0.8rem; }
+.ssp-history-item { padding: 0.6rem 0; border-bottom: 1px solid var(--border); }
+.ssp-history-item:last-child { border-bottom: none; }
+.ssp-history-lesson { font-size: 0.82rem; color: var(--bone); font-weight: 600; }
+.ssp-history-meta { font-size: 0.7rem; color: var(--muted); margin-top: 2px; }
+.ssp-history-note { font-size: 0.7rem; color: rgba(240,232,208,0.35); font-style: italic; margin-top: 2px; }
