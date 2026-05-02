@@ -67,6 +67,32 @@ export default function DashHome() {
     setData((p: any) => p ? { ...p, unread: 0 } : p);
   }
 
+  async function shareToNews() {
+    if (!data) return;
+    const { member, profile } = data;
+    if (!profile?.bio && !profile?.hobbies && !profile?.favourite_quote) {
+      setShareMsg('Add some profile info first.');
+      setTimeout(() => setShareMsg(''), 3000);
+      return;
+    }
+    setSharing(true);
+    const lines: string[] = [];
+    if (profile?.bio)             lines.push(profile.bio);
+    if (profile?.favourite_quote) lines.push('"' + profile.favourite_quote + '"');
+    if (profile?.hobbies)         lines.push('Hobbies: ' + profile.hobbies);
+    const socials = profile?.social_links || {};
+    const socialList = Object.entries(socials).filter(([,v]) => v).map(([k,v]) => k + ': ' + v).join(' · ');
+    if (socialList) lines.push(socialList);
+    const res = await fetch('/api/dashboard/news', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ title: member.frat_name + ' — Profile', content: lines.join('\n\n') })
+    }).then(r => r.json());
+    setSharing(false);
+    setShareMsg(res.error ? 'Failed to share. Try again.' : 'Shared to Wokou News! ✓');
+    setTimeout(() => setShareMsg(''), 3000);
+  }
+
   if (!data) return <div className="dash-loading">LOADING...</div>;
 
   const { member, profile, unread } = data;
