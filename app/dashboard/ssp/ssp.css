@@ -208,3 +208,35 @@
 .ssp-history-lesson { font-size: 0.82rem; color: var(--bone); font-weight: 600; }
 .ssp-history-meta { font-size: 0.7rem; color: var(--muted); margin-top: 2px; }
 .ssp-history-note { font-size: 0.7rem; color: rgba(240,232,208,0.35); font-style: italic; margin-top: 2px; }
+
+/* ─── PANEL HEADER ENHANCEMENTS ─── */
+.ssp-panel-for-label {
+  font-size: 0.55rem;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--gold);
+  opacity: 0.7;
+  margin-bottom: 2px;
+}
+
+/* ─── CONDUCT SESSION BROTHER BANNER ─── */
+.ssp-conduct-brother-banner {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(198,147,10,0.08);
+  border: 1px solid rgba(198,147,10,0.2);
+  border-radius: 8px;
+  padding: 0.6rem 0.9rem;
+  margin-bottom: 1rem;
+  font-size: 0.82rem;
+  color: var(--bone);
+}
+.ssp-conduct-brother-icon {
+  font-size: 1rem;
+  flex-shrink: 0;
+}
+.ssp-conduct-brother-banner strong {
+  color: var(--gold);
+  font-weight: 700;
+}

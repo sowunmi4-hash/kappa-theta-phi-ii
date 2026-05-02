@@ -349,6 +349,7 @@ export default function SSPPage() {
               <div className="ssp-panel">
                 <div className="ssp-panel-header">
                   <div>
+                    <div className="ssp-panel-for-label">Program Participant</div>
                     <div className="ssp-panel-name">{currentSsp.member_name}</div>
                     <div className="ssp-panel-sub">
                       Offer {currentSsp.offer_number} of 3 · {progressPct(currentSsp)}% complete
@@ -415,6 +416,10 @@ export default function SSPPage() {
                             </div>
 
                             <div className="ssp-conduct-form">
+                              <div className="ssp-conduct-brother-banner">
+                                <span className="ssp-conduct-brother-icon">⚓</span>
+                                <span>Conducting session with <strong>{currentSsp.member_name}</strong></span>
+                              </div>
                               <div className="ssp-conduct-label">Session outcome</div>
                               <div className="ssp-conduct-pass-row">
                                 <button className={`ssp-conduct-pass ${sessionPassed ? 'active' : ''}`} onClick={() => setSessionPassed(true)}>✓ Passed</button>
