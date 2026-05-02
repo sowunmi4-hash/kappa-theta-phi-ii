@@ -162,6 +162,7 @@ export default function EventsPage() {
 
   if (!member) return <div className="dash-loading">LOADING...</div>;
   const slug = member.frat_name?.toLowerCase().replace(/\s+/g,'-').replace('big-brother-','') || '';
+  const canManage = member.role === 'Head Founder' || member.role === 'Co-Founder' || member.fraction === 'Ishi No Fraction';
 
   return (
     <div className="dash-app">
