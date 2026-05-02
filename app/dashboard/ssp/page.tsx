@@ -188,7 +188,7 @@ export default function SSPPage() {
     await fetch('/api/dashboard/ssp', {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ ssp_id: sspId, [lessonKey]: true, [`${lessonKey}_notes`]: note })
+      body: JSON.stringify({ ssp_id: sspId, [lessonKey]: true, [lessonKey === 'reflections_done' ? 'reflections_notes' : `${lessonKey}_notes`]: note })
     });
     setSessionLesson(null);
     setSessionNote('');
