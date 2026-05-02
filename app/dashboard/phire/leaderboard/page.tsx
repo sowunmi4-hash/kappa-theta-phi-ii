@@ -16,7 +16,7 @@ export default function PhireLeaderboard() {
     { href: '/dashboard/events', label: 'Events' },
     { href: '/dashboard/phire', label: 'PHIRE' },
     { href: '/dashboard/discipline', label: 'Discipline' },
-    { href: '/dashboard/ssp', label: 'SSP' },
+    { href: '/dashboard/ssp', label: 'Sage Solution' },
   { href: '/dashboard/dues', label: 'Dues' },
     { href: '/dashboard/gallery', label: 'My Gallery' },
     { href: '/dashboard/edit', label: 'Edit Profile' },

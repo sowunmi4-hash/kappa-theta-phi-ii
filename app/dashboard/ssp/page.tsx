@@ -199,7 +199,7 @@ export default function SSPPage() {
   }
 
   async function clearBrother(sspId: string) {
-    if (!confirm('Mark this SSP as fully completed and dismiss all charges?')) return;
+    if (!confirm('Mark this Sage Solution as fully completed and dismiss all charges?')) return;
     setSaving('clear');
     await fetch('/api/dashboard/ssp', {
       method: 'PATCH',
@@ -236,12 +236,12 @@ export default function SSPPage() {
         </aside>
         <main className="dash-main">
           <div className="ssp-hero">
-            <div className="ssp-hero-title">Sea Shadow Program</div>
+            <div className="ssp-hero-title">Sage Solution Program</div>
             <div className="ssp-hero-sub">Your participation is tracked by Ishi No Faction leadership</div>
           </div>
           {ssps.length === 0 ? (
             <div style={{ textAlign: 'center', padding: '4rem', color: 'var(--muted)', fontSize: '0.85rem' }}>
-              You have no active SSP sessions.
+              You have no active Sage sessions.
             </div>
           ) : (
             <div style={{ maxWidth: '560px', margin: '2rem auto', padding: '0 1.5rem' }}>
@@ -249,7 +249,7 @@ export default function SSPPage() {
                 <div key={ssp.id} className="ssp-brother-card">
                   <div className="ssp-brother-header">
                     <div>
-                      <div className="ssp-brother-title">SSP — Offer {ssp.offer_number} of 3</div>
+                      <div className="ssp-brother-title">Sage Solution — Offer {ssp.offer_number} of 3</div>
                       <div className="ssp-brother-offense" style={{ color: COLORS[ssp.violation?.offense_color] || 'var(--muted)' }}>
                         {ssp.violation?.offense_color?.replace('_', ' ').toUpperCase()} CARD
                       </div>
@@ -315,17 +315,17 @@ export default function SSPPage() {
 
       <main className="dash-main">
         <div className="ssp-hero">
-          <div className="ssp-hero-title">Sea Shadow Program</div>
+          <div className="ssp-hero-title">Sage Solution Program</div>
           <div className="ssp-hero-sub">Facilitator View — Conduct sessions in-person, questions are confidential</div>
         </div>
 
         {ssps.length === 0 ? (
-          <div style={{ textAlign: 'center', padding: '4rem', color: 'var(--muted)' }}>No active SSP records.</div>
+          <div style={{ textAlign: 'center', padding: '4rem', color: 'var(--muted)' }}>No active Sage Solution records.</div>
         ) : (
           <div className="ssp-layout">
             {/* LEFT: roster */}
             <div className="ssp-roster">
-              <div className="ssp-roster-label">Active SSPs</div>
+              <div className="ssp-roster-label">Active Programs</div>
               {ssps.map(ssp => (
                 <div key={ssp.id}
                   className={`ssp-roster-item ${active === ssp.id ? 'active' : ''} ${ssp.cleared ? 'cleared' : ''}`}

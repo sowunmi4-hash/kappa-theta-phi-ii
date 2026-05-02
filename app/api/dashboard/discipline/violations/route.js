@@ -50,7 +50,7 @@ export async function POST(req) {
   const v = vRes[0];
   if (!v) return NextResponse.json({ error: 'Failed to create violation' }, { status: 500 });
 
-  // Auto-create SSP record (offered) for non-repeat violations on grey/navy_blue/gold
+  // Auto-create Sage record (offered) for non-repeat violations on grey/navy_blue/gold
   if (!is_repeat && ['grey','navy_blue','gold'].includes(offense_color)) {
     // Count how many times this member has been offered SSP (lifetime)
     const prevSSPs = await fetch(`${S}/rest/v1/discipline_ssp?member_id=eq.${member_id}&select=id`, { headers: h() }).then(r => r.json());

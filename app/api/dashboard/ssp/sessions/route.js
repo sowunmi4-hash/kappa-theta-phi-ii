@@ -33,7 +33,7 @@ export async function POST(req) {
   const { ssp_id, lesson_key, passed, private_notes } = await req.json();
   if (!ssp_id || !lesson_key) return NextResponse.json({ error: 'Missing fields' }, { status: 400 });
 
-  // Get the SSP record to find member info
+  // Get the Sage record to find member info
   const ssps = await fetch(`${S}/rest/v1/discipline_ssp?id=eq.${ssp_id}&select=member_id,member_name`, { headers: h() }).then(r => r.json());
   const ssp = ssps?.[0];
   if (!ssp) return NextResponse.json({ error: 'SSP not found' }, { status: 404 });
