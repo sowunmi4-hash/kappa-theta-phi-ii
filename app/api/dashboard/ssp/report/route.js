@@ -21,9 +21,10 @@ export async function GET() {
   const member = await getMember();
   if (!member || !CAN_MANAGE(member)) return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
 
-  const [ssps, logs] = await Promise.all([
+  const [ssps, logs, roster] = await Promise.all([
     fetch(`${S}/rest/v1/discipline_ssp?order=created_at.desc&select=*`, { headers: h() }).then(r => r.json()),
     fetch(`${S}/rest/v1/ssp_session_logs?order=session_at.asc&select=*`, { headers: h() }).then(r => r.json()),
+    fetch(`${S}/rest/v1/roster?select=id,frat_name&order=frat_name.asc`, { headers: h() }).then(r => r.json()),
   ]);
 
   const violationIds = [...new Set((ssps||[]).map(s => s.violation_id).filter(Boolean))];
@@ -32,11 +33,15 @@ export async function GET() {
     violations = await fetch(`${S}/rest/v1/discipline_violations?id=in.(${violationIds.join(',')})&select=*`, { headers: h() }).then(r => r.json());
   }
 
-  const enriched = (ssps||[]).map(ssp => ({
-    ...ssp,
-    violation: violations.find(v => v.id === ssp.violation_id) || null,
-    sessions: (logs||[]).filter(l => l.ssp_id === ssp.id),
-  }));
+  const enriched = (ssps||[]).map(ssp => {
+    const rosterEntry = (roster||[]).find(r => r.id === ssp.member_id);
+    return {
+      ...ssp,
+      member_name: rosterEntry?.frat_name || 'Unknown Brother',
+      violation: violations.find(v => v.id === ssp.violation_id) || null,
+      sessions: (logs||[]).filter(l => l.ssp_id === ssp.id),
+    };
+  });
 
   const total = enriched.length;
   const completed = enriched.filter(s => s.cleared).length;
