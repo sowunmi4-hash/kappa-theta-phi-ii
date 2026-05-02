@@ -24,7 +24,7 @@ export default function PhireHome() {
 
   // POLLING: silent background refresh every 30s
   useEffect(() => {
-    const poll = setInterval(() => { loadData(); }, 30000);
+    const poll = setInterval(() => { if (document.activeElement instanceof HTMLInputElement || document.activeElement instanceof HTMLTextAreaElement || document.activeElement instanceof HTMLSelectElement) return; loadData(); }, 30000);
     return () => clearInterval(poll);
   }, []);
 

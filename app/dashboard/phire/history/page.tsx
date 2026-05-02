@@ -50,6 +50,7 @@ export default function PhireHistory() {
   // POLLING
   useEffect(() => {
     const poll = setInterval(() => {
+      if (document.activeElement instanceof HTMLInputElement || document.activeElement instanceof HTMLTextAreaElement || document.activeElement instanceof HTMLSelectElement) return;
       fetch('/api/dashboard/phire/submissions?view=own').then(r=>r.json()).then(d=>setSubmissions(d.submissions||[]));
       fetch('/api/dashboard/phire/balance').then(r=>r.json()).then(d=>setTransactions(d.recent_transactions||[]));
     }, 30000);

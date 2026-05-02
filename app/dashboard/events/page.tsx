@@ -53,7 +53,7 @@ export default function EventsPage() {
   }, []);
   // POLLING: silent background refresh every 30s
   useEffect(() => {
-    const poll = setInterval(() => { loadEvents(); }, 30000);
+    const poll = setInterval(() => { if (document.activeElement instanceof HTMLInputElement || document.activeElement instanceof HTMLTextAreaElement || document.activeElement instanceof HTMLSelectElement) return; loadEvents(); }, 30000);
     return () => clearInterval(poll);
   }, []);
 

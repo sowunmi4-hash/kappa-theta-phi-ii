@@ -39,6 +39,7 @@ export default function NewsPage() {
   // POLLING
   useEffect(() => {
     const poll = setInterval(() => {
+      if (document.activeElement instanceof HTMLInputElement || document.activeElement instanceof HTMLTextAreaElement || document.activeElement instanceof HTMLSelectElement) return;
       fetch('/api/dashboard/news').then(r => r.json()).then(d => { setNews(d.news||[]); setRole(d.role||''); });
     }, 30000);
     return () => clearInterval(poll);

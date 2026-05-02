@@ -64,6 +64,7 @@ export default function DisciplinePage() {
     if (!member) return;
     const manage = member.fraction==='Ishi No Fraction' || member.role==='Head Founder' || member.role==='Co-Founder';
     const poll = setInterval(() => {
+      if (document.activeElement instanceof HTMLInputElement || document.activeElement instanceof HTMLTextAreaElement || document.activeElement instanceof HTMLSelectElement) return;
       if (manage) loadAll();
       fetch('/api/dashboard/discipline/my-record').then(r=>r.json()).then(d=>setMyRecord(d.violations||[]));
     }, 30000);

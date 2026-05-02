@@ -59,7 +59,7 @@ export default function PhireManage() {
 
   // POLLING: refresh approval queue every 20s
   useEffect(() => {
-    const poll = setInterval(() => { loadAll(); }, 20000);
+    const poll = setInterval(() => { if (document.activeElement instanceof HTMLInputElement || document.activeElement instanceof HTMLTextAreaElement || document.activeElement instanceof HTMLSelectElement) return; loadAll(); }, 20000);
     return () => clearInterval(poll);
   }, []);
 

@@ -34,6 +34,7 @@ export default function DashHome() {
   // POLLING: refresh unread count and recent data every 30s
   useEffect(() => {
     const poll = setInterval(() => {
+      if (document.activeElement instanceof HTMLInputElement || document.activeElement instanceof HTMLTextAreaElement || document.activeElement instanceof HTMLSelectElement) return;
       fetch('/api/dashboard/profile').then(r=>r.json()).then(d => {
         if (!d.error) setData(d);
       });
