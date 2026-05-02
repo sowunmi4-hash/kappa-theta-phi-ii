@@ -75,6 +75,7 @@ export default function DuesReportPage() {
               <span>{n.label}</span>
             </a>
           ))}
+          {(member?.fraction === 'Ishi No Fraction' || member?.role === 'Head Founder' || member?.role === 'Co-Founder') && <a href="/dashboard/ssp/report" className="dash-nav-item"><span>SSP Report</span></a>}
           <div className="dash-nav-divider"/>
           <a href="/" className="dash-nav-item"><span>Back to Site</span></a>
           <button onClick={async()=>{await fetch('/api/logout',{method:'POST'});window.location.href='/login';}}
