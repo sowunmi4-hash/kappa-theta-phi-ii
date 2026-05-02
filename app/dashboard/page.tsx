@@ -20,6 +20,8 @@ export default function DashHome() {
   const [data, setData] = useState<any>(null);
   const [notifs, setNotifs] = useState<any[]>([]);
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [sharing, setSharing] = useState(false);
+  const [shareMsg, setShareMsg] = useState('');
   const drawerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -68,8 +70,6 @@ export default function DashHome() {
   if (!data) return <div className="dash-loading">LOADING...</div>;
 
   const { member, profile, unread } = data;
-  const [sharing, setSharing] = useState(false);
-  const [shareMsg, setShareMsg] = useState('');
   const slug = member.frat_name?.toLowerCase().replace(/\s+/g, '-').replace('big-brother-', '') || '';
   const portrait = profile?.portrait_url || `/brothers/${slug}.png`;
   const banner = profile?.banner_url;
