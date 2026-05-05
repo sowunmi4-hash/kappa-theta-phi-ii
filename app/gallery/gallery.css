@@ -23,59 +23,50 @@
 /* ── PARTICLE DUST CANVAS ── */
 .gallery-shell #gallery-dust{position:fixed;inset:0;z-index:0;pointer-events:none}
 
-/* ── HERO ── */
+/* ── HERO (compact — sized to content, not viewport) ── */
 .gallery-shell .gh-hero{
-  position:relative;min-height:55vh;
+  position:relative;
   display:flex;align-items:center;justify-content:center;
-  padding:6rem 2rem 3rem;overflow:hidden;text-align:center;
+  padding:4.5rem 2rem 2rem;overflow:hidden;text-align:center;
   border-bottom:1px solid var(--border);
 }
 .gallery-shell .gh-hero::before{
   content:'';position:absolute;inset:0;z-index:0;
-  background:
-    radial-gradient(circle at 30% 20%,rgba(198,147,10,.12) 0%,transparent 50%),
-    radial-gradient(circle at 70% 70%,rgba(198,147,10,.06) 0%,transparent 50%);
+  background:radial-gradient(circle at 50% 30%,rgba(198,147,10,.1) 0%,transparent 60%);
 }
 .gallery-shell .gh-kanji{
   position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
   font-family:'Noto Serif JP',serif;font-weight:700;
-  font-size:26rem;line-height:1;
-  color:rgba(198,147,10,.025);z-index:0;user-select:none;letter-spacing:0;
+  font-size:14rem;line-height:1;
+  color:rgba(198,147,10,.04);z-index:0;user-select:none;letter-spacing:0;
 }
-.gallery-shell .gh-content{position:relative;z-index:2;max-width:880px}
+.gallery-shell .gh-content{position:relative;z-index:2}
 .gallery-shell .gh-tag{
-  display:inline-flex;align-items:center;gap:14px;
-  font-family:'Cinzel',serif;font-size:.65rem;letter-spacing:6px;
-  color:var(--gold);text-transform:uppercase;margin-bottom:1.2rem;opacity:.85;
+  display:inline-flex;align-items:center;gap:12px;
+  font-family:'Cinzel',serif;font-size:.58rem;letter-spacing:5px;
+  color:var(--gold);text-transform:uppercase;margin-bottom:.7rem;opacity:.85;
 }
 .gallery-shell .gh-tag::before,
-.gallery-shell .gh-tag::after{content:'';width:36px;height:1px;background:var(--gold);opacity:.6}
+.gallery-shell .gh-tag::after{content:'';width:28px;height:1px;background:var(--gold);opacity:.6}
 .gallery-shell .gh-title{
   font-family:'Bebas Neue',cursive;
-  font-size:clamp(3rem,8vw,6.5rem);letter-spacing:10px;line-height:.92;
-  color:var(--bone);margin-bottom:1rem;
-  text-shadow:0 0 40px rgba(198,147,10,.18);
+  font-size:clamp(2.4rem,5.5vw,4rem);letter-spacing:7px;line-height:.95;
+  color:var(--bone);margin-bottom:.5rem;
+  text-shadow:0 0 30px rgba(198,147,10,.18);
 }
 .gallery-shell .gh-sub{
-  font-family:'Cinzel',serif;font-size:.72rem;letter-spacing:5px;
+  font-family:'Cinzel',serif;font-size:.62rem;letter-spacing:4px;
   color:var(--bone-dim);text-transform:uppercase;font-weight:500;
 }
 
 /* ── VOLUME PICKER ── */
 .gallery-shell .vol-picker-wrap{
   position:relative;z-index:2;
-  padding:2.5rem 2.4rem 1.5rem;max-width:1500px;margin:0 auto;
+  padding:1.5rem 2.4rem 0;max-width:1500px;margin:0 auto;
 }
-.gallery-shell .section-label{
-  display:flex;align-items:center;gap:18px;
-  font-family:'Cinzel',serif;font-size:.6rem;letter-spacing:5px;
-  color:var(--bone-faint);text-transform:uppercase;margin-bottom:1.2rem;
-}
-.gallery-shell .section-label::before{content:'';width:60px;height:1px;background:var(--gold);opacity:.5}
-.gallery-shell .section-label::after{content:'';flex:1;height:1px;background:var(--border)}
 
 .gallery-shell .volumes{
-  display:flex;gap:1.2rem;
+  display:flex;gap:.8rem;
   overflow-x:auto;padding-bottom:8px;
   scrollbar-width:thin;scrollbar-color:var(--gold-soft) transparent;
 }
@@ -84,8 +75,8 @@
 .gallery-shell .volumes::-webkit-scrollbar-thumb{background:var(--gold-soft);border-radius:2px}
 
 .gallery-shell .volume{
-  flex-shrink:0;min-width:260px;
-  padding:1.1rem 1.4rem;text-align:left;color:var(--bone);
+  flex-shrink:0;min-width:230px;
+  padding:.85rem 1.1rem;text-align:left;color:var(--bone);
   background:linear-gradient(180deg,rgba(8,14,28,.65),rgba(4,6,15,.85));
   border:1px solid var(--border);
   position:relative;cursor:pointer;
@@ -114,66 +105,66 @@
   background:linear-gradient(90deg,transparent,var(--gold),transparent);
 }
 
-.gallery-shell .vol-row{display:flex;align-items:center;gap:1.2rem}
+.gallery-shell .vol-row{display:flex;align-items:center;gap:.9rem}
 .gallery-shell .vol-numeral{
-  font-family:'Bebas Neue',cursive;font-size:2rem;letter-spacing:1px;
-  color:var(--gold);line-height:.9;min-width:36px;text-align:center;
+  font-family:'Bebas Neue',cursive;font-size:1.6rem;letter-spacing:1px;
+  color:var(--gold);line-height:.9;min-width:30px;text-align:center;
   opacity:.7;transition:opacity .35s;
 }
 .gallery-shell .volume.active .vol-numeral,
 .gallery-shell .volume:hover .vol-numeral{opacity:1}
 .gallery-shell .vol-info{flex:1;min-width:0}
 .gallery-shell .vol-name{
-  font-family:'Bebas Neue',cursive;font-size:1.1rem;letter-spacing:3px;
-  color:var(--bone);line-height:1.2;margin-bottom:.3rem;
+  font-family:'Bebas Neue',cursive;font-size:.95rem;letter-spacing:2.5px;
+  color:var(--bone);line-height:1.2;margin-bottom:.2rem;
   text-transform:uppercase;
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
 }
 .gallery-shell .vol-meta{
-  font-family:'Cinzel',serif;font-size:.55rem;letter-spacing:3px;
+  font-family:'Cinzel',serif;font-size:.5rem;letter-spacing:2.5px;
   color:var(--bone-faint);text-transform:uppercase;
 }
 .gallery-shell .vol-meta strong{color:var(--gold);font-weight:500;margin:0 4px}
 
 /* ── VOLUME CONTENT ── */
 .gallery-shell .vol-content{
-  padding:2rem 2.4rem 4rem;max-width:1500px;margin:0 auto;
+  padding:1.5rem 2.4rem 3rem;max-width:1500px;margin:0 auto;
   position:relative;z-index:2;
 }
 .gallery-shell .vol-header{
   display:flex;justify-content:space-between;align-items:flex-end;
-  flex-wrap:wrap;gap:1.5rem;
-  padding-bottom:1.4rem;margin-bottom:2rem;
+  flex-wrap:wrap;gap:1rem;
+  padding-bottom:1rem;margin-bottom:1.4rem;
   border-bottom:1px solid var(--border);position:relative;
 }
 .gallery-shell .vol-header::after{
   content:'';position:absolute;left:0;bottom:-1px;
-  width:140px;height:1px;background:var(--gold);
+  width:100px;height:1px;background:var(--gold);
 }
 .gallery-shell .vh-tag{
-  font-family:'Cinzel',serif;font-size:.6rem;letter-spacing:5px;
-  color:var(--gold);text-transform:uppercase;margin-bottom:.6rem;
-  display:flex;align-items:center;gap:14px;
+  font-family:'Cinzel',serif;font-size:.55rem;letter-spacing:4px;
+  color:var(--gold);text-transform:uppercase;margin-bottom:.4rem;
+  display:flex;align-items:center;gap:12px;
 }
-.gallery-shell .vh-tag::before{content:'';width:24px;height:1px;background:var(--gold)}
+.gallery-shell .vh-tag::before{content:'';width:20px;height:1px;background:var(--gold)}
 .gallery-shell .vh-title{
-  font-family:'Bebas Neue',cursive;font-size:clamp(1.8rem,4vw,3rem);
-  letter-spacing:5px;line-height:1;color:var(--bone);
-  margin-bottom:.7rem;text-transform:uppercase;
+  font-family:'Bebas Neue',cursive;font-size:clamp(1.4rem,3vw,2.2rem);
+  letter-spacing:4px;line-height:1;color:var(--bone);
+  margin-bottom:.5rem;text-transform:uppercase;
 }
 .gallery-shell .vh-meta{
-  font-family:'Cinzel',serif;font-size:.62rem;letter-spacing:3px;
+  font-family:'Cinzel',serif;font-size:.55rem;letter-spacing:3px;
   color:var(--bone-dim);text-transform:uppercase;
   display:flex;flex-wrap:wrap;align-items:center;
 }
 .gallery-shell .vh-meta span:not(:first-child)::before{
-  content:'·';margin:0 12px;color:var(--gold);opacity:.5;
+  content:'·';margin:0 10px;color:var(--gold);opacity:.5;
 }
 .gallery-shell .vh-cta{
-  padding:14px 26px;background:transparent;
+  padding:10px 18px;background:transparent;
   border:1px solid var(--gold-soft);color:var(--gold);
   font-family:'Rajdhani',sans-serif;font-weight:600;
-  font-size:.7rem;letter-spacing:4px;text-transform:uppercase;
+  font-size:.62rem;letter-spacing:3px;text-transform:uppercase;
   cursor:pointer;
   transition:background .3s,border-color .3s,color .3s,letter-spacing .3s;
 }
@@ -183,10 +174,10 @@
 
 /* ── PHOTO GRID ── */
 .gallery-shell .grid{
-  display:grid;grid-template-columns:repeat(4,1fr);gap:1.2rem;
+  display:grid;grid-template-columns:repeat(4,1fr);gap:.9rem;
 }
 @media(max-width:1100px){.gallery-shell .grid{grid-template-columns:repeat(3,1fr)}}
-@media(max-width:700px){.gallery-shell .grid{grid-template-columns:repeat(2,1fr);gap:.8rem}}
+@media(max-width:700px){.gallery-shell .grid{grid-template-columns:repeat(2,1fr);gap:.6rem}}
 
 .gallery-shell .photo{
   position:relative;aspect-ratio:1/1;overflow:hidden;
@@ -448,16 +439,16 @@
 
 /* ── FOOTER inside gallery shell ── */
 .gallery-shell .gallery-footer{
-  padding:2rem 2rem;text-align:center;
+  padding:1.5rem 2rem;text-align:center;
   border-top:1px solid var(--border);
   position:relative;z-index:2;
 }
 .gallery-shell .gf-motto{
-  font-family:'Cinzel',serif;font-size:.7rem;letter-spacing:5px;
-  color:var(--gold);text-transform:uppercase;margin-bottom:.5rem;
+  font-family:'Cinzel',serif;font-size:.6rem;letter-spacing:4px;
+  color:var(--gold);text-transform:uppercase;margin-bottom:.3rem;
 }
 .gallery-shell .gf-sub{
-  font-family:'Cinzel',serif;font-size:.55rem;letter-spacing:3px;
+  font-family:'Cinzel',serif;font-size:.5rem;letter-spacing:2.5px;
   color:var(--bone-faint);text-transform:uppercase;
 }
 
@@ -489,14 +480,15 @@
   .gallery-shell .nav-links{display:none}
   .gallery-shell .nav-links.open{display:flex;position:absolute;top:100%;left:0;right:0;flex-direction:column;background:rgba(4,6,15,.96);padding:1rem 1.2rem;gap:1rem}
   .gallery-shell .mobile-toggle{display:flex}
-  .gallery-shell .gh-hero{padding:6rem 1.2rem 4rem;min-height:70vh}
-  .gallery-shell .gh-kanji{font-size:24rem}
-  .gallery-shell .gh-title{letter-spacing:7px}
-  .gallery-shell .vol-picker-wrap,
-  .gallery-shell .vol-content{padding-left:1.2rem;padding-right:1.2rem}
-  .gallery-shell .volume{min-width:220px;padding:1.1rem 1.2rem}
-  .gallery-shell .vol-numeral{font-size:1.9rem}
-  .gallery-shell .vh-cta{padding:10px 18px;font-size:.65rem}
+  .gallery-shell .gh-hero{padding:4rem 1.2rem 1.6rem}
+  .gallery-shell .gh-kanji{font-size:11rem}
+  .gallery-shell .gh-title{letter-spacing:5px}
+  .gallery-shell .vol-picker-wrap{padding:1rem 1.2rem 0}
+  .gallery-shell .vol-content{padding:1rem 1.2rem 2rem}
+  .gallery-shell .volume{min-width:200px;padding:.7rem 1rem}
+  .gallery-shell .vol-numeral{font-size:1.4rem;min-width:24px}
+  .gallery-shell .vol-name{font-size:.85rem;letter-spacing:2px}
+  .gallery-shell .vh-cta{padding:8px 14px;font-size:.55rem;letter-spacing:2.5px}
   .lb-nav{width:38px;height:38px;font-size:1.2rem}
   .lb-nav.prev{left:.8rem}
   .lb-nav.next{right:.8rem}

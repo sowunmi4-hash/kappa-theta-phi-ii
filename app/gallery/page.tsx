@@ -285,7 +285,6 @@ export default function GalleryPage() {
       {/* ── VOLUME PICKER ── */}
       {volumes.length > 0 && (
         <div className="vol-picker-wrap">
-          <div className="section-label">Select a volume</div>
           <div className="volumes">
             {volumes.map(v => (
               <button key={v.tag}
