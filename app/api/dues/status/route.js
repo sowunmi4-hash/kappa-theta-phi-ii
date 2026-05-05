@@ -12,6 +12,7 @@ export async function GET(req) {
   const sl_uuid     = searchParams.get('sl_uuid') || '';
 
   if (secret !== 'KTP-DUES-2026') return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  console.log('[dues/status] sl_uuid:', sl_uuid, '| sl_username:', sl_username);
 
   // 1. Try UUID lookup first (fastest, most reliable)
   let members = [];
