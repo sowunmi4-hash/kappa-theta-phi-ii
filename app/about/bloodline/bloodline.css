@@ -147,3 +147,6 @@ nav.scrolled{border-color:var(--border)}
   .line-name{letter-spacing:4px}
   .closing-back{font-size:.55rem;padding:.85rem 1.4rem}
 }
+
+/* ── THE TIDES SEAL — kanji instead of Roman numeral, slightly different rendering ── */
+.tides-seal{font-family:'Noto Serif JP',serif !important;font-weight:700;font-size:1.7rem !important;letter-spacing:0 !important;line-height:1}

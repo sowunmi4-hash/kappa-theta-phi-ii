@@ -104,7 +104,7 @@ export default function BloodlinePage() {
       <a href="/about" className="back-link">Return to About</a>
 
       <div id="chapter-nav">
-        {['The Bloodline','Roots','Founding','Kraken','Berserker','Wokou','Abyssal','Closing'].map((title, i) => (
+        {['The Bloodline','Roots','Founding','Kraken','Berserker','Wokou','Abyssal','Tides','Closing'].map((title, i) => (
           <button key={i} className={`ch-dot ${i===0?'active':''}`} data-ch={String(i)} title={title}></button>
         ))}
       </div>
@@ -192,10 +192,24 @@ export default function BloodlinePage() {
         </div>
       ))}
 
+      <div className="ch-divider" data-label="Beyond The Lines"></div>
+
+      {/* ── THE TIDES (separate from the generational lines) ── */}
+      <section className="line-chapter tides-chapter" data-ch="7">
+        <div className="line-kanji-bg">潮</div>
+        <div className="line-numeral-wrap R">
+          <div className="line-numeral tides-seal">潮</div>
+        </div>
+        <p className="line-eyeline R d1">Beyond the lines</p>
+        <h2 className="line-name">{letters('THE TIDES')}</h2>
+        <div className="line-flourish R d3"></div>
+        <p className="line-marking R d4">For some, the line was the open sea</p>
+      </section>
+
       <div className="ch-divider" data-label="The Lineage Endures"></div>
 
       {/* ── CLOSING ── */}
-      <section id="closing" data-ch="7">
+      <section id="closing" data-ch="8">
         <h2 className="closing-mark R">The Bloodline<br/><em>Endures</em></h2>
         <p className="closing-motto R d1">⚓ Death Before Dishonor ⚓</p>
         <a href="/about" className="closing-back R d2">Return to The Story</a>

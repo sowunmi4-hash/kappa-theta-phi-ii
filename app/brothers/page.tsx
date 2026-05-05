@@ -101,7 +101,7 @@ function brotherView(b: Member): View {
     isIron                    ? 'Iron Fleet' :
                                 null;
 
-  const glyph = b.fraction ? FACTION_GLYPH[b.fraction] : (isFounder ? '⚓' : '潮');
+  const glyph = b.fraction ? FACTION_GLYPH[b.fraction] : (isFounder ? '⚓' : null);
 
   let roleLine: string | null = null;
   if (b.role === 'Head Founder') roleLine = 'Founder · Visionary';
@@ -376,7 +376,7 @@ export default function BrothersPage() {
         <FilterPill active={filter==='ishi-no'}    onClick={() => handleFilterClick('ishi-no')}><span className="glyph">石</span> Ishi No <span className="count">{COUNTS['ishi-no']}</span></FilterPill>
         <FilterPill active={filter==='kurofune'}   onClick={() => handleFilterClick('kurofune')}><span className="glyph">船</span> Kurofune <span className="count">{COUNTS.kurofune}</span></FilterPill>
         <FilterPill active={filter==='taido'}      onClick={() => handleFilterClick('taido')}><span className="glyph">体</span> Taidō <span className="count">{COUNTS.taido}</span></FilterPill>
-        <FilterPill active={filter==='unranked'}   onClick={() => handleFilterClick('unranked')}><span className="glyph">潮</span> The Tides <span className="count">{COUNTS.unranked}</span></FilterPill>
+        <FilterPill active={filter==='unranked'}   onClick={() => handleFilterClick('unranked')}>Fleet <span className="count">{COUNTS.unranked}</span></FilterPill>
       </div>
 
       {/* THE WALL */}
@@ -418,7 +418,7 @@ export default function BrothersPage() {
                       <strong>{v.member.fraction}</strong>
                       {v.member.title && v.member.title !== v.roleLine && !v.member.title.includes('—') && <> · {v.member.title}</>}
                     </>
-                  ) : v.isFounder ? 'Founder' : 'The Tides'}
+                  ) : v.isFounder ? 'Founder' : 'Brother'}
                 </div>
               </div>
               <span className="card-cue">→</span>
@@ -479,19 +479,11 @@ export default function BrothersPage() {
                     {spotlight.member.title && !spotlight.member.title.includes('—') && spotlight.member.title !== 'Member' && <> · {spotlight.member.title}</>}
                   </span>
                 )}
-                {!spotlight.member.fraction && spotlight.tierKey === 'unranked' && (
-                  <span className="spotlight-faction">
-                    <strong>The Tides</strong>
-                  </span>
-                )}
                 {spotlight.member.title && (
                   <span className="spotlight-title">{spotlight.member.title.split('—')[0].trim()}</span>
                 )}
                 {spotlight.member.iron && <span className="spotlight-iron">⚓ Iron Compass</span>}
               </div>
-              {spotlight.tierKey === 'unranked' && (
-                <p className="spotlight-tagline">Carried home by the tide</p>
-              )}
             </div>
           </div>
         </div>
