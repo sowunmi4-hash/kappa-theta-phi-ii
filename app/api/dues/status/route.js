@@ -9,18 +9,36 @@ export async function GET(req) {
   const { searchParams } = new URL(req.url);
   const secret      = searchParams.get('secret');
   const sl_username = searchParams.get('sl_username');
+  const sl_uuid     = searchParams.get('sl_uuid');
 
   if (secret !== 'KTP-DUES-2026') return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   if (!sl_username) return NextResponse.json({ error: 'Missing sl_username' }, { status: 400 });
 
-  // Find member by SL name (case-insensitive)
-  const members = await fetch(
-    `${S}/rest/v1/roster?sl_name=ilike.${encodeURIComponent(sl_username)}&select=*`,
-    { headers: h() }
-  ).then(r => r.json());
+  // Find member — try UUID first, fall back to sl_name
+  let members = sl_uuid
+    ? await fetch(`${S}/rest/v1/roster?sl_uuid=eq.${encodeURIComponent(sl_uuid)}&select=*`, { headers: h() }).then(r => r.json())
+    : [];
+
+  if (!members?.length) {
+    // Fallback: try matching username from parentheses in sl_name e.g. "(safareehills)"
+    const usernameMatch = sl_username.match(/\(([^)]+)\)$/);
+    const username = usernameMatch ? usernameMatch[1] : sl_username;
+    members = await fetch(
+      `${S}/rest/v1/roster?sl_name=ilike.*${encodeURIComponent(username)}*&select=*`,
+      { headers: h() }
+    ).then(r => r.json());
+  }
 
   if (!members?.length) return NextResponse.json({ found: 'no' });
   const member = members[0];
+
+  // Auto-save UUID for future lookups if we have it
+  if (sl_uuid && !member.sl_uuid) {
+    await fetch(`${S}/rest/v1/roster?id=eq.${member.id}`, {
+      method: 'PATCH', headers: ch(),
+      body: JSON.stringify({ sl_uuid })
+    });
+  }
 
   // Get active dues period
   const periods = await fetch(

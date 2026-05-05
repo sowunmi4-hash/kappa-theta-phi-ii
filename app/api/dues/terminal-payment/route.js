@@ -7,7 +7,7 @@ const ch = () => h({ 'Content-Type': 'application/json', 'Content-Profile': 'mem
 
 export async function POST(req) {
   const body = await req.json();
-  const { sl_username, amount_ls, secret } = body;
+  const { sl_username, sl_uuid, amount_ls, secret } = body;
 
   if (secret !== 'KTP-DUES-2026') return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   if (!sl_username || !amount_ls) return NextResponse.json({ error: 'Missing fields' }, { status: 400 });
