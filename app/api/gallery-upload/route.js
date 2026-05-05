@@ -53,3 +53,28 @@ export async function POST(req) {
     return Response.json({ success: false, message: 'Server error.' }, { status: 500 });
   }
 }
+
+export async function DELETE(req) {
+  const body = await req.json();
+  const { id, file_url } = body;
+  if (!id) return NextResponse.json({ error: 'Missing id' }, { status: 400 });
+
+  // Delete from storage
+  if (file_url && !file_url.includes('youtube')) {
+    const path = file_url.split('/storage/v1/object/public/gallery/')[1];
+    if (path) {
+      await fetch(`${SUPABASE_URL}/storage/v1/object/gallery/${path}`, {
+        method: 'DELETE',
+        headers: { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${SUPABASE_ANON_KEY}` }
+      });
+    }
+  }
+
+  // Delete from DB
+  await fetch(`${SUPABASE_URL}/rest/v1/gallery_posts?id=eq.${id}`, {
+    method: 'DELETE',
+    headers: { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${SUPABASE_ANON_KEY}`, 'Content-Profile': 'members' }
+  });
+
+  return NextResponse.json({ success: true });
+}

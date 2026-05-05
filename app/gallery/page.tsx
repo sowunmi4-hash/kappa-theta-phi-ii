@@ -32,6 +32,11 @@ export default function GalleryPage() {
   const [name, setName] = useState('');
   const [file, setFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
+  const [tabMode, setTabMode] = useState<'existing'|'new'>('existing');
+  const [newTabName, setNewTabName] = useState('');
+  const [selectedTab, setSelectedTab] = useState('');
+  const [showUploadModal, setShowUploadModal] = useState(false);
+  const [deleting, setDeleting] = useState<string|null>(null);
   const [status, setStatus] = useState<{ msg: string; type: 'error' | 'success' } | null>(null);
   const [lightbox, setLightbox] = useState<{ url: string; type: 'image' | 'youtube' } | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
@@ -48,11 +53,24 @@ export default function GalleryPage() {
         setPosts(d);
         const eventTags = [...new Set(d.map((p: GalleryPost) => p.event_tag).filter(Boolean))] as string[];
         setTabs(eventTags);
+        if (eventTags.length > 0) setSelectedTab(eventTags[0]);
       }
     } catch {}
   }
 
   const filtered = activeTab === 'all' ? posts : posts.filter(p => p.event_tag === activeTab);
+
+  async function deletePost(id: string, fileUrl: string) {
+    if (!confirm('Delete this photo?')) return;
+    setDeleting(id);
+    await fetch('/api/gallery-upload', {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id, file_url: fileUrl })
+    });
+    setDeleting(null);
+    loadGallery();
+  }
 
   async function handleUpload() {
     if (!file) { setStatus({ msg: 'Please select a file.', type: 'error' }); return; }
@@ -61,12 +79,14 @@ export default function GalleryPage() {
       const form = new FormData();
       form.append('file', file);
       form.append('caption', caption);
+      const tab = tabMode === 'new' ? (newTabName.trim() || 'General') : (selectedTab || 'General');
       form.append('uploaded_by', name || 'Anonymous');
+      form.append('event_tag', tab);
       const r = await fetch('/api/gallery-upload', { method: 'POST', body: form });
       const d = await r.json();
       if (d.success) {
         setStatus({ msg: 'Uploaded successfully!', type: 'success' });
-        setFile(null); setCaption(''); setName('');
+        setFile(null); setCaption(''); setName(''); setNewTabName(''); setShowUploadModal(false);
         if (fileRef.current) fileRef.current.value = '';
         loadGallery();
       } else { setStatus({ msg: d.message || 'Upload failed.', type: 'error' }); }
@@ -113,26 +133,70 @@ export default function GalleryPage() {
           ))}
         </div>
 
-        {/* Upload bar */}
-        <div className="upload-bar">
-          <input type="text" placeholder="Your name" value={name} onChange={e => setName(e.target.value)} />
-          <input type="text" placeholder="Add a caption..." value={caption} onChange={e => setCaption(e.target.value)} />
-          <label className="upload-file-btn">
-            {file ? file.name.slice(0, 20) : 'Choose File'}
-            <input ref={fileRef} type="file" accept="image/jpeg,image/png,image/webp,video/mp4" onChange={e => setFile(e.target.files?.[0] || null)} />
-          </label>
-          <button className="upload-submit" onClick={handleUpload} disabled={uploading}>
-            {uploading ? 'Uploading...' : 'Upload'}
+        {/* Upload trigger */}
+        <div style={{textAlign:'center',marginBottom:'1.5rem'}}>
+          <button onClick={() => setShowUploadModal(true)}
+            style={{background:'rgba(198,147,10,0.1)',border:'1px solid rgba(198,147,10,0.3)',color:'#c6930a',borderRadius:'8px',padding:'10px 24px',fontFamily:"'Rajdhani',sans-serif",fontSize:'0.9rem',fontWeight:700,letterSpacing:'2px',cursor:'pointer',textTransform:'uppercase'}}>
+            + Add Photo
           </button>
-          {status && <div className={`upload-status ${status.type}`}>{status.msg}</div>}
         </div>
+
+        {/* Upload Modal */}
+        {showUploadModal && (
+          <div style={{position:'fixed',inset:0,background:'rgba(0,0,0,0.85)',display:'flex',alignItems:'center',justifyContent:'center',zIndex:1000,padding:'1rem'}}>
+            <div style={{background:'#1a1a2e',border:'1px solid #2a2a3e',borderRadius:'14px',padding:'1.5rem',width:'100%',maxWidth:'420px'}}>
+              <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:'1.2rem'}}>
+                <div style={{fontFamily:"'Bebas Neue',cursive",fontSize:'1.4rem',letterSpacing:'3px',color:'#f0e8d0'}}>Add Photo</div>
+                <button onClick={() => {setShowUploadModal(false);setFile(null);}} style={{background:'none',border:'none',color:'#666',cursor:'pointer',fontSize:'1.2rem'}}>✕</button>
+              </div>
+              <input type="text" placeholder="Your name" value={name} onChange={e => setName(e.target.value)}
+                style={{width:'100%',background:'#0d0d1a',border:'1px solid #2a2a3e',borderRadius:'8px',padding:'0.6rem 0.8rem',color:'#f0e8d0',fontFamily:"'Rajdhani',sans-serif",fontSize:'0.9rem',marginBottom:'0.8rem',boxSizing:'border-box'}} />
+              <input type="text" placeholder="Caption (optional)" value={caption} onChange={e => setCaption(e.target.value)}
+                style={{width:'100%',background:'#0d0d1a',border:'1px solid #2a2a3e',borderRadius:'8px',padding:'0.6rem 0.8rem',color:'#f0e8d0',fontFamily:"'Rajdhani',sans-serif",fontSize:'0.9rem',marginBottom:'0.8rem',boxSizing:'border-box'}} />
+              <label style={{display:'block',width:'100%',background:'#0d0d1a',border:'1px dashed #2a2a3e',borderRadius:'8px',padding:'0.8rem',textAlign:'center',cursor:'pointer',color:file?'#c6930a':'#666',marginBottom:'0.8rem',fontFamily:"'Rajdhani',sans-serif",fontSize:'0.85rem',boxSizing:'border-box'}}>
+                {file ? file.name.slice(0,30) : '📷 Choose File'}
+                <input ref={fileRef} type="file" accept="image/jpeg,image/png,image/webp,video/mp4" style={{display:'none'}} onChange={e => setFile(e.target.files?.[0] || null)} />
+              </label>
+              <div style={{marginBottom:'0.8rem'}}>
+                <div style={{fontSize:'0.6rem',letterSpacing:'3px',color:'#666',textTransform:'uppercase',marginBottom:'0.5rem'}}>Album / Tab</div>
+                <div style={{display:'flex',gap:'8px',marginBottom:'0.6rem'}}>
+                  <button onClick={() => setTabMode('existing')} style={{flex:1,padding:'6px',borderRadius:'6px',border:'1px solid',fontFamily:"'Rajdhani',sans-serif",fontSize:'0.78rem',fontWeight:700,cursor:'pointer',background:tabMode==='existing'?'rgba(198,147,10,0.15)':'#0d0d1a',borderColor:tabMode==='existing'?'rgba(198,147,10,0.4)':'#2a2a3e',color:tabMode==='existing'?'#c6930a':'#666'}}>Existing</button>
+                  <button onClick={() => setTabMode('new')} style={{flex:1,padding:'6px',borderRadius:'6px',border:'1px solid',fontFamily:"'Rajdhani',sans-serif",fontSize:'0.78rem',fontWeight:700,cursor:'pointer',background:tabMode==='new'?'rgba(198,147,10,0.15)':'#0d0d1a',borderColor:tabMode==='new'?'rgba(198,147,10,0.4)':'#2a2a3e',color:tabMode==='new'?'#c6930a':'#666'}}>+ New Tab</button>
+                </div>
+                {tabMode === 'existing' ? (
+                  <select value={selectedTab} onChange={e => setSelectedTab(e.target.value)}
+                    style={{width:'100%',background:'#0d0d1a',border:'1px solid #2a2a3e',borderRadius:'8px',padding:'0.6rem 0.8rem',color:'#f0e8d0',fontFamily:"'Rajdhani',sans-serif",fontSize:'0.9rem',boxSizing:'border-box'}}>
+                    {tabs.map(t => <option key={t} value={t}>{t}</option>)}
+                    {tabs.length === 0 && <option value="General">General</option>}
+                  </select>
+                ) : (
+                  <input value={newTabName} onChange={e => setNewTabName(e.target.value)} placeholder="e.g. Birdies For BIFIDA 2026"
+                    style={{width:'100%',background:'#0d0d1a',border:'1px solid #2a2a3e',borderRadius:'8px',padding:'0.6rem 0.8rem',color:'#f0e8d0',fontFamily:"'Rajdhani',sans-serif",fontSize:'0.9rem',boxSizing:'border-box'}} />
+                )}
+              </div>
+              {status && <div style={{fontSize:'0.78rem',color:status.type==='error'?'#e05070':'#4ade80',marginBottom:'0.8rem'}}>{status.msg}</div>}
+              <button onClick={handleUpload} disabled={!file||uploading}
+                style={{width:'100%',background:file?'#c6930a':'#1a1a2e',color:file?'#000':'#666',border:'none',borderRadius:'8px',padding:'0.8rem',fontFamily:"'Bebas Neue',cursive",fontSize:'1rem',letterSpacing:'2px',cursor:file?'pointer':'not-allowed'}}>
+                {uploading ? 'Uploading...' : 'Upload'}
+              </button>
+            </div>
+          </div>
+        )}
 
         <div className="gallery-grid">
           {filtered.length === 0 && (
             <div className="gallery-empty">No posts yet. Be the first to share a moment.</div>
           )}
           {filtered.map(post => (
-            <div className="gallery-item" key={post.id} onClick={() => {
+            <div className="gallery-item" key={post.id} style={{position:'relative'}}>
+              <button onClick={e => { e.stopPropagation(); deletePost(post.id, post.file_url); }}
+                disabled={deleting === post.id}
+                style={{position:'absolute',top:'6px',right:'6px',width:'26px',height:'26px',borderRadius:'50%',background:'rgba(0,0,0,0.75)',border:'1px solid rgba(224,80,112,0.5)',color:'#e05070',cursor:'pointer',fontSize:'0.7rem',display:'flex',alignItems:'center',justifyContent:'center',zIndex:2,opacity:0,transition:'opacity 0.15s'}}
+                onMouseEnter={e => (e.currentTarget.style.opacity='1')}
+                onMouseLeave={e => (e.currentTarget.style.opacity='0')}>
+                {deleting === post.id ? '⏳' : '✕'}
+              </button>
+              <div onClick={() => {
               if (isYouTube(post.file_url)) setLightbox({ url: post.file_url, type: 'youtube' });
               else if (post.file_type === 'image') setLightbox({ url: post.file_url, type: 'image' });
             }}>
@@ -150,6 +214,7 @@ export default function GalleryPage() {
               ) : (
                 <img src={post.file_url} alt={post.caption || 'Gallery'} loading="lazy" />
               )}
+              </div>
               <div className="gallery-item-info">
                 {post.caption && <div className="gallery-item-caption">{post.caption}</div>}
                 <div className="gallery-item-meta">
