@@ -58,17 +58,20 @@ export async function POST(req) {
   const remaining     = Math.max(0, period.amount_due - totalPaid);
   const newStatus     = remaining <= 0 ? 'paid' : totalPaid > 0 ? 'partial' : 'unpaid';
 
+  const credit = totalPaid > period.amount_due ? totalPaid - period.amount_due : 0;
+
   await fetch(`${S}/rest/v1/dues_records?id=eq.${record.id}`, {
     method: 'PATCH', headers: ch(),
-    body: JSON.stringify({ linden_paid: newLindenPaid, status: newStatus, updated_at: new Date().toISOString() })
+    body: JSON.stringify({ linden_paid: newLindenPaid, status: newStatus, credit, updated_at: new Date().toISOString() })
   });
 
   return NextResponse.json({
-    frat_name:  member.frat_name,
-    period:     period.label,
+    frat_name:   member.frat_name,
+    period:      period.label,
     amount_paid: amount_ls,
-    total_paid: totalPaid,
+    total_paid:  totalPaid,
     remaining,
-    new_status: newStatus,
+    credit,
+    new_status:  newStatus,
   });
 }
