@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KΘΦ II — The Story of the Wokou-Corsairs</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Cinzel:wght@400;600;700&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --gold:#c6930a;--gold-lt:#e8b84b;--gold-dim:rgba(198,147,10,0.15);
+  --bone:#f0e8d0;--bone-dim:rgba(240,232,208,0.5);--bone-faint:rgba(240,232,208,0.25);
+  --deep:#04060f;--navy:#07101f;--surface:rgba(8,14,28,0.85);
+  --border:rgba(198,147,10,0.18);
+}
+html{scroll-behavior:smooth;scroll-snap-type:y mandatory}
+body{background:var(--deep);color:var(--bone);font-family:'Rajdhani',sans-serif;overflow-x:hidden;cursor:crosshair}
+
+/* ── CANVAS BACKGROUND ── */
+#bg-canvas{position:fixed;inset:0;z-index:0;pointer-events:none}
+
+/* ── PROGRESS BAR ── */
+#prog{position:fixed;top:0;left:0;height:2px;background:linear-gradient(90deg,var(--gold),var(--gold-lt));z-index:200;width:0;transition:width .12s}
+
+/* ── NAV ── */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:1.2rem 3rem;display:flex;justify-content:space-between;align-items:center;background:linear-gradient(to bottom,rgba(4,6,15,.95),transparent);border-bottom:1px solid transparent;transition:border-color .3s}
+nav.scrolled{border-color:var(--border)}
+.nav-brand{font-family:'Bebas Neue',cursive;font-size:1.5rem;letter-spacing:6px;color:var(--gold);text-decoration:none}
+.nav-links{display:flex;gap:2rem;list-style:none}
+.nav-links a{font-size:.6rem;letter-spacing:3px;text-transform:uppercase;color:var(--bone-dim);text-decoration:none;transition:color .3s}
+.nav-links a:hover{color:var(--gold)}
+.mobile-toggle{display:none;flex-direction:column;gap:5px;cursor:pointer}
+.mobile-toggle span{display:block;width:24px;height:1px;background:var(--bone)}
+@media(max-width:768px){.nav-links{display:none}.mobile-toggle{display:flex}nav{padding:1rem 1.5rem}}
+
+/* ── CHAPTER SECTIONS ── */
+.chapter{position:relative;z-index:1;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:8rem 3rem 5rem;scroll-snap-align:start}
+@media(max-width:768px){.chapter{padding:7rem 1.5rem 4rem}}
+
+/* ── CHAPTER NUMBER (watermark) ── */
+.ch-watermark{position:absolute;top:50%;left:-20px;transform:translateY(-50%);font-family:'Bebas Neue',cursive;font-size:clamp(6rem,15vw,12rem);color:rgba(198,147,10,.04);line-height:1;pointer-events:none;user-select:none;letter-spacing:-5px}
+
+/* ── KANJI DECORATION ── */
+.ch-kanji{position:absolute;right:5%;top:50%;transform:translateY(-50%);font-size:clamp(6rem,12vw,10rem);color:rgba(198,147,10,.06);font-family:'Cinzel',serif;line-height:1;pointer-events:none;user-select:none}
+@media(max-width:768px){.ch-kanji{right:0;font-size:5rem;opacity:.04}}
+
+/* ── DIVIDER LINE ── */
+.ch-divider{width:100%;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);opacity:.2;position:relative;z-index:1}
+.ch-divider::after{content:attr(data-label);position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-size:.5rem;letter-spacing:5px;color:var(--gold);background:var(--deep);padding:0 2rem;text-transform:uppercase;white-space:nowrap}
+
+/* ── REVEAL SYSTEM ── */
+.R{opacity:0;transform:translateY(36px);transition:opacity .9s ease,transform .9s ease}
+.R.in{opacity:1;transform:translateY(0)}
+.R.d1{transition-delay:.1s}.R.d2{transition-delay:.2s}.R.d3{transition-delay:.35s}
+.R.d4{transition-delay:.5s}.R.d5{transition-delay:.65s}.R.d6{transition-delay:.8s}
+
+/* ── LABEL / HEADING SYSTEM ── */
+.label{font-size:.55rem;letter-spacing:5px;color:var(--gold);text-transform:uppercase;display:flex;align-items:center;gap:12px;margin-bottom:1.2rem}
+.label::before{content:'';width:30px;height:1px;background:var(--gold);flex-shrink:0}
+.heading{font-family:'Bebas Neue',cursive;font-size:clamp(2.5rem,6vw,4.5rem);letter-spacing:5px;line-height:.95;margin-bottom:1.5rem}
+.heading em{font-style:normal;color:var(--gold)}
+.body-text{font-size:1rem;line-height:1.85;color:var(--bone-dim);font-weight:300}
+.body-text+.body-text{margin-top:1rem}
+.body-text strong{color:var(--bone);font-weight:600}
+.body-text em{color:var(--gold-lt);font-style:italic}
+
+/* ── HERO (Act I) ── */
+#act1{flex-direction:column;text-align:center;overflow:hidden}
+.skull-wrap{position:relative;width:200px;height:200px;margin:0 auto 3rem}
+.skull-ring{position:absolute;inset:0;border-radius:50%;border:1px solid rgba(198,147,10,.2);animation:ring 4s ease-in-out infinite}
+.skull-ring:nth-child(2){inset:-22px;animation-delay:.6s}
+.skull-ring:nth-child(3){inset:-44px;animation-delay:1.2s;border-color:rgba(198,147,10,.08)}
+@keyframes ring{0%,100%{transform:scale(1);opacity:.5}50%{transform:scale(1.04);opacity:1}}
+.skull-svg{width:100%;height:100%;filter:drop-shadow(0 0 18px rgba(198,147,10,.45));animation:float 6s ease-in-out infinite}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+.hero-eyeline{font-size:.6rem;letter-spacing:8px;color:var(--gold);text-transform:uppercase;opacity:0;animation:fadeUp 1s ease .4s forwards}
+.hero-title{font-family:'Bebas Neue',cursive;font-size:clamp(5rem,14vw,10rem);letter-spacing:10px;line-height:.88;color:var(--bone);opacity:0;animation:revealUp 1.4s cubic-bezier(.16,1,.3,1) .7s forwards;text-shadow:0 0 80px rgba(198,147,10,.15)}
+.hero-title span{color:var(--gold)}
+.hero-sub{font-size:.72rem;letter-spacing:5px;color:var(--bone-faint);text-transform:uppercase;margin-top:1.5rem;opacity:0;animation:fadeUp 1s ease 1.4s forwards}
+.hero-motto{font-family:'Cinzel',serif;font-size:.9rem;letter-spacing:4px;color:var(--gold);margin-top:2.5rem;opacity:0;animation:fadeUp 1s ease 2s forwards}
+.scroll-cue{position:absolute;bottom:2.5rem;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:8px;opacity:0;animation:fadeUp 1s ease 3s forwards}
+.scroll-cue span{font-size:.5rem;letter-spacing:4px;color:var(--bone-faint);text-transform:uppercase}
+.scroll-line{width:1px;height:48px;background:linear-gradient(to bottom,var(--gold),transparent);animation:scrollAnim 2.2s ease-in-out infinite}
+@keyframes scrollAnim{0%{transform:scaleY(0);transform-origin:top}50%{transform:scaleY(1);transform-origin:top}51%{transform-origin:bottom}100%{transform:scaleY(0);transform-origin:bottom}}
+
+/* ── TWO-COL LAYOUT ── */
+.two-col{max-width:1100px;width:100%;display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:center}
+.one-col{max-width:900px;width:100%;display:flex;flex-direction:column;align-items:flex-start}
+.center-col{max-width:900px;width:100%;display:flex;flex-direction:column;align-items:center;text-align:center}
+@media(max-width:768px){.two-col{grid-template-columns:1fr;gap:3rem}}
+
+/* ── FOUNDING CARD ── */
+.found-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:2.5rem 2rem;text-align:center;position:relative;overflow:hidden;backdrop-filter:blur(10px)}
+.found-card::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0,rgba(198,147,10,.07) 0,transparent 70%);pointer-events:none}
+.found-date{font-family:'Cinzel',serif;font-size:3rem;color:var(--gold);letter-spacing:4px;text-shadow:0 0 30px rgba(198,147,10,.5);animation:glow 3s ease-in-out infinite}
+@keyframes glow{0%,100%{text-shadow:0 0 20px rgba(198,147,10,.4)}50%{text-shadow:0 0 50px rgba(198,147,10,.85)}}
+.found-lbl{font-size:.58rem;letter-spacing:3px;color:var(--bone-faint);text-transform:uppercase;margin-top:.4rem}
+.found-hr{width:50px;height:1px;background:rgba(198,147,10,.3);margin:1.2rem auto}
+.found-motto{font-family:'Cinzel',serif;font-size:.7rem;letter-spacing:3px;color:var(--bone-dim)}
+.found-row{display:flex;justify-content:space-between;font-size:.68rem;color:var(--bone-faint);letter-spacing:1px;padding:5px 0;border-bottom:1px solid rgba(198,147,10,.06)}
+.found-row span:last-child{color:rgba(198,147,10,.7)}
+.found-rows{text-align:left;margin-top:1.2rem}
+
+/* ── PILLARS ── */
+.pillars{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-top:2rem;width:100%}
+@media(max-width:900px){.pillars{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:500px){.pillars{grid-template-columns:1fr}}
+.pillar{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1.5rem 1rem;text-align:center;transition:border-color .3s,transform .3s;position:relative;overflow:hidden}
+.pillar:hover{border-color:rgba(198,147,10,.45);transform:translateY(-3px)}
+.pillar::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent);opacity:0;transition:opacity .3s}
+.pillar:hover::after{opacity:1}
+.pillar-kanji{font-size:2.2rem;color:rgba(198,147,10,.25);margin-bottom:.6rem;transition:color .3s}
+.pillar:hover .pillar-kanji{color:rgba(198,147,10,.6)}
+.pillar h3{font-family:'Bebas Neue',cursive;letter-spacing:3px;font-size:1.1rem;color:var(--gold);margin-bottom:.4rem}
+.pillar p{font-size:.75rem;line-height:1.5;color:var(--bone-faint);font-weight:300}
+
+/* ── CARDS GRID ── */
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1rem;margin:1.5rem 0;width:100%}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1.2rem;transition:border-color .3s}
+.card:hover{border-color:rgba(198,147,10,.4)}
+.card-name{font-family:'Bebas Neue',cursive;letter-spacing:3px;font-size:1rem;color:var(--bone);margin-bottom:.3rem}
+.card-role{font-size:.68rem;letter-spacing:2px;color:var(--gold);text-transform:uppercase;margin-bottom:.3rem}
+.card-desc{font-size:.78rem;color:var(--bone-faint);line-height:1.5}
+
+/* ── QUOTE BLOCK ── */
+.quote-block{border-left:2px solid var(--gold);padding:.8rem 1.5rem;margin:1.5rem 0;background:rgba(198,147,10,.04);border-radius:0 8px 8px 0}
+.quote-block p{font-family:'Cinzel',serif;font-size:.95rem;letter-spacing:2px;color:var(--bone-dim);line-height:1.7;font-style:italic}
+
+/* ── MOTTO REVEAL ── */
+#act4-motto{display:flex;flex-direction:column;align-items:center;gap:.4rem}
+.motto-line{overflow:hidden;display:block}
+.motto-word{display:inline-block;font-family:'Cinzel',serif;font-size:clamp(3rem,9vw,7rem);letter-spacing:6px;transform:translateY(110%);opacity:0}
+.motto-word.gold-word{color:var(--gold)}
+.motto-word.in{transform:translateY(0);opacity:1;transition:transform .7s cubic-bezier(.16,1,.3,1),opacity .7s ease}
+.values-row{display:flex;gap:2.5rem;margin-top:4rem;flex-wrap:wrap;justify-content:center}
+.val-item{display:flex;flex-direction:column;align-items:center;gap:.4rem}
+.val-num{font-family:'Bebas Neue',cursive;font-size:2.8rem;color:rgba(198,147,10,.12);line-height:1}
+.val-name{font-size:.58rem;letter-spacing:4px;text-transform:uppercase;color:var(--bone-faint)}
+
+/* ── LEGACY STATS ── */
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1rem;margin:2rem 0;width:100%}
+.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:2rem 1.5rem;text-align:center;position:relative;overflow:hidden}
+.stat-card::before{content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);width:60%;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent)}
+.stat-num{font-family:'Bebas Neue',cursive;font-size:3.2rem;letter-spacing:3px;color:var(--gold);line-height:1;display:block}
+.stat-lbl{font-size:.58rem;letter-spacing:3px;color:var(--bone-faint);text-transform:uppercase;margin-top:.4rem;display:block}
+.legacy-row{display:flex;align-items:center;gap:2rem;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.5rem 2rem;width:100%;margin-top:1rem}
+.legacy-icon{font-size:2.2rem;flex-shrink:0}
+.legacy-name{font-family:'Bebas Neue',cursive;letter-spacing:4px;font-size:1.3rem;color:var(--gold)}
+.legacy-desc{font-size:.8rem;color:var(--bone-faint);margin-top:4px;line-height:1.5}
+
+/* ── CLOSING ── */
+#act8{flex-direction:column;text-align:center;background:radial-gradient(ellipse at center,rgba(198,147,10,.05) 0,transparent 65%)}
+.closing-brand{font-family:'Bebas Neue',cursive;font-size:clamp(3.5rem,12vw,8rem);letter-spacing:8px;color:transparent;-webkit-text-stroke:1px rgba(198,147,10,.35);transition:-webkit-text-stroke .5s,color .5s,text-shadow .5s;cursor:default;margin-bottom:1rem}
+.closing-brand:hover{color:var(--gold);-webkit-text-stroke:1px var(--gold);text-shadow:0 0 60px rgba(198,147,10,.4)}
+.closing-sub{font-size:.65rem;letter-spacing:4px;color:var(--bone-faint);text-transform:uppercase;margin-bottom:3rem}
+.cta{display:inline-block;padding:.9rem 3rem;border:1px solid rgba(198,147,10,.4);border-radius:4px;font-family:'Rajdhani',sans-serif;font-size:.72rem;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:var(--gold);text-decoration:none;position:relative;overflow:hidden;transition:color .3s;margin:.5rem}
+.cta::before{content:'';position:absolute;inset:0;background:var(--gold);transform:translateX(-101%);transition:transform .35s cubic-bezier(.16,1,.3,1)}
+.cta:hover{color:#000}.cta:hover::before{transform:translateX(0)}
+.cta-ghost{border-color:rgba(240,232,208,.15);color:var(--bone-dim)}
+.cta-ghost::before{background:rgba(240,232,208,.08)}
+.cta-ghost:hover{color:var(--bone)}
+
+/* ── CHAPTER NAV DOTS ── */
+#chapter-nav{position:fixed;right:1.5rem;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:10px;z-index:100}
+.ch-dot{width:6px;height:6px;border-radius:50%;border:1px solid rgba(198,147,10,.4);background:transparent;cursor:pointer;transition:background .3s,transform .3s;padding:0}
+.ch-dot.active{background:var(--gold);transform:scale(1.4)}
+@media(max-width:768px){#chapter-nav{display:none}}
+
+/* ── TTS BAR ── */
+#tts-bar{position:fixed;bottom:2rem;left:50%;transform:translateX(-50%);z-index:100;display:flex;align-items:center;gap:8px;background:rgba(4,6,15,.9);border:1px solid var(--border);border-radius:40px;padding:.5rem 1.2rem;backdrop-filter:blur(10px)}
+.tts-btn{display:flex;align-items:center;gap:6px;background:none;border:none;cursor:pointer;font-family:'Rajdhani',sans-serif;font-size:.68rem;letter-spacing:2px;text-transform:uppercase;padding:.4rem .8rem;border-radius:20px;transition:background .2s,color .2s}
+.tts-play{color:var(--gold)}.tts-play:hover{background:var(--gold-dim)}
+.tts-pause{color:var(--bone-dim)}.tts-pause:hover{background:rgba(240,232,208,.07)}
+.tts-stop{color:#e05070}.tts-stop:hover{background:rgba(224,80,112,.1)}
+#tts-track{width:100px;height:2px;background:rgba(198,147,10,.15);border-radius:1px;overflow:hidden}
+#tts-fill{height:100%;background:var(--gold);width:0;transition:width .3s}
+#current-ch-label{font-size:.55rem;letter-spacing:2px;color:var(--bone-faint);white-space:nowrap;max-width:140px;overflow:hidden;text-overflow:ellipsis}
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+@keyframes revealUp{from{opacity:0;transform:translateY(40px) scaleY(.85);clip-path:inset(100% 0 0 0)}to{opacity:1;transform:translateY(0) scaleY(1);clip-path:inset(0% 0 0 0)}}
+</style>
+</head>
+<body>
+
+<canvas id="bg-canvas"></canvas>
+<div id="prog"></div>
+
+<nav id="navbar">
+  <a href="/" class="nav-brand">KΘΦ II</a>
+  <ul class="nav-links">
+    <li><a href="/">Home</a></li>
+    <li><a href="/about">About</a></li>
+    <li><a href="/brothers">Brothers</a></li>
+    <li><a href="/gallery">Gallery</a></li>
+  </ul>
+  <div class="mobile-toggle" onclick="document.querySelector('.nav-links').classList.toggle('open')">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
+
+<!-- Chapter dots -->
+<div id="chapter-nav">
+  <button class="ch-dot active" data-ch="0" title="The Wokou-Corsairs"></button>
+  <button class="ch-dot" data-ch="1" title="Cultural Foundation"></button>
+  <button class="ch-dot" data-ch="2" title="Chapter I — Origins"></button>
+  <button class="ch-dot" data-ch="3" title="Chapter II — Awakening"></button>
+  <button class="ch-dot" data-ch="4" title="Chapter III — The Depths"></button>
+  <button class="ch-dot" data-ch="5" title="Chapter IV — Rebirth"></button>
+  <button class="ch-dot" data-ch="6" title="Our Principles"></button>
+  <button class="ch-dot" data-ch="7" title="Our Legacy"></button>
+</div>
+
+<!-- TTS Bar -->
+<div id="tts-bar">
+  <button class="tts-btn tts-play" id="btn-speak" onclick="speakCurrent()">
+    <svg viewBox="0 0 24 24" fill="currentColor" width="13" height="13"><path d="M8 5v14l11-7z"/></svg>
+    Read Aloud
+  </button>
+  <button class="tts-btn tts-pause" id="btn-pause" style="display:none" onclick="togglePause()">
+    <svg viewBox="0 0 24 24" fill="currentColor" width="13" height="13" id="pause-icon"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+    <span id="pause-label">Pause</span>
+  </button>
+  <button class="tts-btn tts-stop" id="btn-stop" style="display:none" onclick="stopSpeaking()">
+    <svg viewBox="0 0 24 24" fill="currentColor" width="13" height="13"><path d="M6 6h12v12H6z"/></svg>
+    Stop
+  </button>
+  <div id="tts-track"><div id="tts-fill"></div></div>
+  <span id="current-ch-label">Who We Are</span>
+</div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- ACT I — THE WOKOU-CORSAIRS                     -->
+<!-- ═══════════════════════════════════════════════ -->
+<section class="chapter" id="act1" data-ch="0" data-title="Who We Are">
+  <div class="skull-wrap">
+    <div class="skull-ring"></div><div class="skull-ring"></div><div class="skull-ring"></div>
+    <svg class="skull-svg" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M50 8C27 8 13 24 13 43c0 14 8 24 17 28v11c0 2.5 2 4 4 4h32c2 0 4-1.5 4-4V71c9-4 17-14 17-28C87 24 73 8 50 8z" fill="rgba(198,147,10,.12)" stroke="rgba(198,147,10,.65)" stroke-width="1.5"/>
+      <ellipse cx="36" cy="42" rx="9.5" ry="11" fill="rgba(4,6,15,.92)" stroke="rgba(198,147,10,.35)" stroke-width="1"/>
+      <ellipse cx="64" cy="42" rx="9.5" ry="11" fill="rgba(4,6,15,.92)" stroke="rgba(198,147,10,.35)" stroke-width="1"/>
+      <path d="M46 58l4-6 4 6-4 2.5z" fill="rgba(4,6,15,.85)" stroke="rgba(198,147,10,.25)" stroke-width=".5"/>
+      <line x1="36" y1="82" x2="36" y2="70" stroke="rgba(4,6,15,.9)" stroke-width="2.5"/>
+      <line x1="44" y1="82" x2="44" y2="70" stroke="rgba(4,6,15,.9)" stroke-width="2.5"/>
+      <line x1="56" y1="82" x2="56" y2="70" stroke="rgba(4,6,15,.9)" stroke-width="2.5"/>
+      <line x1="64" y1="82" x2="64" y2="70" stroke="rgba(4,6,15,.9)" stroke-width="2.5"/>
+      <line x1="22" y1="90" x2="78" y2="97" stroke="rgba(198,147,10,.25)" stroke-width="2" stroke-linecap="round"/>
+      <line x1="78" y1="90" x2="22" y2="97" stroke="rgba(198,147,10,.25)" stroke-width="2" stroke-linecap="round"/>
+    </svg>
+  </div>
+  <p class="hero-eyeline">The Wokou-Corsairs Present</p>
+  <h1 class="hero-title">Kappa<br><span>Theta</span><br>Phi II</h1>
+  <p class="hero-sub">Chapter II · Second Life · Est. 3·14·21</p>
+  <p class="hero-motto">⚓ &nbsp; Death Before Dishonor &nbsp; ⚓</p>
+  <div class="scroll-cue">
+    <span>Begin the story</span>
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<div class="ch-divider" data-label="Chapter I — The Wokou-Corsairs"></div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- ACT II — CULTURAL FOUNDATION                   -->
+<!-- ═══════════════════════════════════════════════ -->
+<section class="chapter" id="act2" data-ch="1" data-title="Our Cultural Foundation">
+  <div class="ch-watermark">01</div>
+  <div class="ch-kanji">海</div>
+  <div class="two-col">
+    <div>
+      <p class="label R">Who We Are</p>
+      <h2 class="heading R d1">The<br><em>Wokou-Corsairs</em></h2>
+      <p class="body-text R d2"><strong>Kappa Theta Phi Chapter II</strong>, known as the Wokou-Corsairs, is a dynamic fraternity rooted in tradition, innovation, and brotherhood. Blending the daring spirit of the legendary Japanese Wokou pirates with the cultural depth of African Yoruba mythology, we are a collective of leaders, creators, and visionaries united by a shared mission.</p>
+      <p class="body-text R d3">Our identity is shaped by the strength and resilience of the <strong>Wokou pirates</strong>, the spiritual wisdom of <strong>Olokun</strong> — the Yoruba Orisha of the deep sea — and the commanding force of the <strong>Kraken</strong>, embodying control over ocean life and representing our fraternity's strength, unity, and influence.</p>
+      <div class="quote-block R d4"><p>We don't follow waves. We create them.</p></div>
+    </div>
+    <div class="found-card R d2">
+      <div class="found-date">3·14·21</div>
+      <div class="found-lbl">Date of Founding</div>
+      <div class="found-hr"></div>
+      <div class="found-motto">Death Before Dishonor</div>
+      <div class="found-hr"></div>
+      <div class="found-rows">
+        <div class="found-row"><span>Co-Founder</span><span>Boss Sauce</span></div>
+        <div class="found-row"><span>Co-Founder</span><span>Energy</span></div>
+        <div class="found-row"><span>Co-Founder</span><span>Cool Breeze</span></div>
+        <div class="found-row" style="border:none;margin-top:8px;font-size:.6rem;letter-spacing:1px;color:rgba(198,147,10,.4)"><span>Chapter II</span><span>Wokou-Corsairs</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="ch-divider" data-label="Chapter II — Cultural Foundation"></div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- ACT III — WHERE CHAOS BECAME POWER             -->
+<!-- ═══════════════════════════════════════════════ -->
+<section class="chapter" id="act3" data-ch="1" data-title="Where Chaos Became Power">
+  <div class="ch-watermark">02</div>
+  <div class="ch-kanji">冠</div>
+  <div class="one-col">
+    <p class="label R">Our Cultural Foundation</p>
+    <h2 class="heading R d1">Where Chaos<br><em>Became Power</em></h2>
+    <p class="body-text R d2">Once known as the "wickedest city on Earth," <strong>Port Royal, Jamaica</strong> stood as a haven for pirates, privateers, and outlaws during the Golden Age of Piracy. Power was taken, not given. Wealth was earned through risk. Brotherhood formed in the face of danger.</p>
+    <div class="pillars R d3">
+      <div class="pillar">
+        <div class="pillar-kanji">海</div>
+        <h3>The Wokou</h3>
+        <p>Adaptability, courage, and calculated movement</p>
+      </div>
+      <div class="pillar">
+        <div class="pillar-kanji">深</div>
+        <h3>Olokun</h3>
+        <p>Spiritual depth, legacy awareness, limitless potential</p>
+      </div>
+      <div class="pillar">
+        <div class="pillar-kanji">力</div>
+        <h3>The Kraken</h3>
+        <p>Absolute power beneath the surface</p>
+      </div>
+      <div class="pillar">
+        <div class="pillar-kanji">冠</div>
+        <h3>Port Royal</h3>
+        <p>Where chaos became empire</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="ch-divider" data-label="Chapter III — Origins"></div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- ACT IV — THE LEGACY OF KTP                     -->
+<!-- ═══════════════════════════════════════════════ -->
+<section class="chapter" id="act4" data-ch="2" data-title="The Legacy of Kappa Theta Phi">
+  <div class="ch-watermark">03</div>
+  <div class="ch-kanji">火</div>
+  <div class="two-col">
+    <div>
+      <p class="label R">Chapter I — Origins</p>
+      <h2 class="heading R d1">The Legacy of<br><em>Kappa Theta Phi</em></h2>
+      <p class="body-text R d2">In the aftermath of the <em>Great Fire War</em>, two rival forces — the Wokou and the Samurai — rose from destruction not as enemies, but as brothers. What began as conflict evolved into an unbreakable alliance, sealed through a sacred blood oath that would transcend generations.</p>
+      <p class="body-text R d3">At the heart of this legacy stands <strong>Yasuke</strong>, the legendary African Samurai whose presence bridged cultures and redefined honour. His son <strong>Nevarious</strong> journeyed across continents to master the sacred traditions of the Yoruba and unlock the mysteries of the Orishas.</p>
+      <p class="body-text R d4">That wisdom was passed to <strong>Raul Damu</strong>, who in <strong>2011</strong> founded <strong>Kappa Theta Phi Fraternity of Second Life</strong>. By <strong>March 2021</strong>, Chapter II was born — <em>an evolution, not just a continuation.</em></p>
+    </div>
+    <div class="R d2">
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:2rem;text-align:center;position:relative;overflow:hidden">
+        <div style="position:absolute;inset:0;background:radial-gradient(ellipse at center,rgba(198,147,10,.06) 0,transparent 70%)"></div>
+        <div style="font-size:.55rem;letter-spacing:5px;color:var(--gold);text-transform:uppercase;margin-bottom:1.5rem">The Bloodline</div>
+        <div style="display:flex;flex-direction:column;gap:1rem">
+          <div style="display:flex;align-items:center;gap:1rem;padding:.8rem;background:rgba(198,147,10,.04);border-radius:8px;border:1px solid rgba(198,147,10,.08)">
+            <div style="width:36px;height:36px;border-radius:50%;background:rgba(198,147,10,.1);border:1px solid rgba(198,147,10,.3);display:flex;align-items:center;justify-content:center;font-size:.7rem;color:var(--gold);font-family:'Cinzel',serif;flex-shrink:0">Y</div>
+            <div style="text-align:left"><div style="font-family:'Bebas Neue',cursive;letter-spacing:3px;font-size:.95rem;color:var(--bone)">Yasuke</div><div style="font-size:.62rem;color:var(--bone-faint)">The Legendary African Samurai</div></div>
+          </div>
+          <div style="width:1px;height:20px;background:linear-gradient(to bottom,var(--gold),transparent);margin:0 auto;opacity:.4"></div>
+          <div style="display:flex;align-items:center;gap:1rem;padding:.8rem;background:rgba(198,147,10,.04);border-radius:8px;border:1px solid rgba(198,147,10,.08)">
+            <div style="width:36px;height:36px;border-radius:50%;background:rgba(198,147,10,.1);border:1px solid rgba(198,147,10,.3);display:flex;align-items:center;justify-content:center;font-size:.7rem;color:var(--gold);font-family:'Cinzel',serif;flex-shrink:0">N</div>
+            <div style="text-align:left"><div style="font-family:'Bebas Neue',cursive;letter-spacing:3px;font-size:.95rem;color:var(--bone)">Nevarious</div><div style="font-size:.62rem;color:var(--bone-faint)">Yoruba tradition · Orisha mysteries</div></div>
+          </div>
+          <div style="width:1px;height:20px;background:linear-gradient(to bottom,var(--gold),transparent);margin:0 auto;opacity:.4"></div>
+          <div style="display:flex;align-items:center;gap:1rem;padding:.8rem;background:rgba(198,147,10,.04);border-radius:8px;border:1px solid rgba(198,147,10,.08)">
+            <div style="width:36px;height:36px;border-radius:50%;background:rgba(198,147,10,.1);border:1px solid rgba(198,147,10,.3);display:flex;align-items:center;justify-content:center;font-size:.7rem;color:var(--gold);font-family:'Cinzel',serif;flex-shrink:0">RD</div>
+            <div style="text-align:left"><div style="font-family:'Bebas Neue',cursive;letter-spacing:3px;font-size:.95rem;color:var(--bone)">Raul Damu</div><div style="font-size:.62rem;color:var(--bone-faint)">Founded KTP SL — 2011</div></div>
+          </div>
+          <div style="width:1px;height:20px;background:linear-gradient(to bottom,var(--gold),transparent);margin:0 auto;opacity:.4"></div>
+          <div style="padding:.8rem;background:rgba(198,147,10,.07);border-radius:8px;border:1px solid rgba(198,147,10,.2);text-align:center">
+            <div style="font-family:'Bebas Neue',cursive;letter-spacing:4px;font-size:1rem;color:var(--gold)">KΘΦ Chapter II</div>
+            <div style="font-size:.6rem;color:var(--bone-faint);margin-top:3px">Born · 3·14·21</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="ch-divider" data-label="Chapter IV — The Awakening"></div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- ACT V — THE CALL TO AWAKEN                     -->
+<!-- ═══════════════════════════════════════════════ -->
+<section class="chapter" id="act5" data-ch="3" data-title="The Call to Awaken">
+  <div class="ch-watermark">04</div>
+  <div class="ch-kanji">眼</div>
+  <div class="one-col">
+    <p class="label R">Chapter II — The Awakening</p>
+    <h2 class="heading R d1">The Call<br><em>to Awaken</em></h2>
+    <p class="body-text R d2"><strong>Big Brother Damu</strong>, The Visionary, unlocked fragments of forgotten lifetimes through deep meditation. With his power, he awakened <strong>Big Brother Tactician</strong> — opening his third eye and restoring their connection to a shared past. Together, they began the mission: <em>reunite the lost brothers.</em></p>
+    <div class="cards R d3">
+      <div class="card"><div class="card-name">Big Brother Hype</div><div class="card-desc">Master of interdimensional travel</div></div>
+      <div class="card"><div class="card-name">Big Brother Energy</div><div class="card-desc">The Hybrid King — unmatched tracking</div></div>
+      <div class="card"><div class="card-name">Big Brother Smooth Talk</div><div class="card-desc">Manipulator of minds and words</div></div>
+      <div class="card"><div class="card-name">Big Brother Cool Breeze</div><div class="card-desc">Mystic — summoner of unseen forces</div></div>
+    </div>
+    <p class="body-text R d4">Their journey revealed a deeper truth: their connection to <strong>Olokun</strong>, the primordial deity of the ocean. They were no longer just brothers. <em>They were chosen.</em></p>
+  </div>
+</section>
+
+<div class="ch-divider" data-label="Chapter V — The Depths"></div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- ACT VI — THE BATTLE OF THE DEPTHS              -->
+<!-- ═══════════════════════════════════════════════ -->
+<section class="chapter" id="act6" data-ch="4" data-title="The Battle of the Depths">
+  <div class="ch-watermark">05</div>
+  <div class="ch-kanji">淵</div>
+  <div class="one-col" style="align-items:center;text-align:center;max-width:700px">
+    <p class="label R" style="justify-content:center">Chapter III — The Depths</p>
+    <h2 class="heading R d1" style="text-align:center">The Battle of<br><em>the Depths</em></h2>
+    <p class="body-text R d2" style="text-align:center">Drawn toward the Bermuda Triangle, the brothers sailed into chaos. From the depths emerged the legendary <strong>Kraken</strong> — a force of destruction beyond imagination. Tentacles tore through their ship. The sea roared. Death loomed.</p>
+    <div class="quote-block R d3" style="width:100%;text-align:left">
+      <p>"We are the Sons of Olokun. We do not fear death."</p>
+    </div>
+    <p class="body-text R d4" style="text-align:center">Steel clashed against myth. Power against fate. But even warriors fall. The Kraken dragged them into the abyss.</p>
+    <div class="R d5" style="margin-top:2rem;display:flex;flex-direction:column;align-items:center;gap:.8rem">
+      <div style="width:80px;height:1px;background:linear-gradient(90deg,transparent,#e05070,transparent);opacity:.5"></div>
+      <div style="font-size:.58rem;letter-spacing:5px;color:#e05070;text-transform:uppercase;opacity:.7">Into the Abyss</div>
+      <div style="font-size:2.5rem;opacity:.3">🦑</div>
+    </div>
+  </div>
+</section>
+
+<div class="ch-divider" data-label="Chapter VI — Rebirth"></div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- ACT VII — THE RISE OF THE NEXT GENERATION      -->
+<!-- ═══════════════════════════════════════════════ -->
+<section class="chapter" id="act7" data-ch="5" data-title="Rise of the Next Generation">
+  <div class="ch-watermark">06</div>
+  <div class="ch-kanji">生</div>
+  <div class="one-col">
+    <p class="label R">Chapter IV — Rebirth</p>
+    <h2 class="heading R d1">Rise of the<br><em>Next Generation</em></h2>
+    <p class="body-text R d2">At <strong>Pirate's Well</strong>, a new generation trained under <strong>Big Brother 3rd Degree</strong> and <strong>Big Brother Sacred</strong>. When the call came, they did not hesitate. <em>They rose.</em></p>
+    <div class="cards R d3">
+      <div class="card"><div class="card-name">Neo Kimo</div><div class="card-role">Born Leader</div><div class="card-desc">Destined to guide the next chapter forward</div></div>
+      <div class="card"><div class="card-name">Neo Jabari</div><div class="card-role">The Wise Strategist</div><div class="card-desc">Mind of iron, heart of the brotherhood</div></div>
+      <div class="card"><div class="card-name">Neo Tre</div><div class="card-role">The Silent Enigma</div><div class="card-desc">Speaks with action, not words</div></div>
+      <div class="card"><div class="card-name">Neo Kash</div><div class="card-role">The Fearless Youngest</div><div class="card-desc">First into the storm, last to leave</div></div>
+      <div class="card"><div class="card-name">Neo Blake</div><div class="card-role">The Unknown Variable</div><div class="card-desc">Unpredictable. Unbreakable.</div></div>
+      <div class="card"><div class="card-name">Neo Jessy</div><div class="card-role">The Relentless Spirit</div><div class="card-desc">Fuelled by purpose, defined by will</div></div>
+    </div>
+    <p class="body-text R d4">Gifted with divine power by <strong>Olokun</strong>, their blades became extensions of the ocean itself. They emerged not as neophytes — but as <em>Sons of Olokun.</em></p>
+  </div>
+</section>
+
+<div class="ch-divider" data-label="Chapter VII — The Code"></div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- ACT VIII — THE OATH                            -->
+<!-- ═══════════════════════════════════════════════ -->
+<section class="chapter" id="act-oath" data-ch="6" data-title="What We Stand For" style="background:radial-gradient(ellipse at center,rgba(198,147,10,.04) 0,transparent 65%)">
+  <div class="ch-watermark">07</div>
+  <div style="text-align:center;display:flex;flex-direction:column;align-items:center">
+    <p class="label R" style="justify-content:center">The Oath</p>
+    <div id="act4-motto" class="R d1">
+      <div class="motto-line"><span class="motto-word" id="mw1">Death</span></div>
+      <div class="motto-line"><span class="motto-word" id="mw2">Before</span></div>
+      <div class="motto-line"><span class="motto-word gold-word" id="mw3">Dishonor</span></div>
+    </div>
+    <div class="R d2" style="margin-top:2.5rem;max-width:600px">
+      <p class="body-text" style="text-align:center">We are more than a fraternity — we are a brotherhood with a purpose. Adventure, Heritage, Leadership, and Purpose guide everything we do.</p>
+    </div>
+    <div class="values-row R d3">
+      <div class="val-item"><div class="val-num">I</div><div class="val-name">Loyalty</div></div>
+      <div class="val-item"><div class="val-num">II</div><div class="val-name">Honour</div></div>
+      <div class="val-item"><div class="val-num">III</div><div class="val-name">Brotherhood</div></div>
+      <div class="val-item"><div class="val-num">IV</div><div class="val-name">Courage</div></div>
+      <div class="val-item"><div class="val-num">V</div><div class="val-name">Legacy</div></div>
+    </div>
+    <div class="pillars R d4" style="margin-top:3rem;max-width:900px">
+      <div class="pillar"><div class="pillar-kanji">冒</div><h3>Adventure</h3><p>Just as the Wokou traversed the seas, we embrace new challenges and creative endeavours</p></div>
+      <div class="pillar"><div class="pillar-kanji">継</div><h3>Heritage</h3><p>We honour the rich traditions of our influences, blending diverse cultures into a unified identity</p></div>
+      <div class="pillar"><div class="pillar-kanji">導</div><h3>Leadership</h3><p>We strive to inspire and lead, creating immersive experiences that bring people together</p></div>
+      <div class="pillar"><div class="pillar-kanji">志</div><h3>Purpose</h3><p>Through events and initiatives, we give back, leaving a lasting impact in Second Life and beyond</p></div>
+    </div>
+  </div>
+</section>
+
+<div class="ch-divider" data-label="Chapter VIII — The Legacy"></div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- ACT IX — THE LEGACY                            -->
+<!-- ═══════════════════════════════════════════════ -->
+<section class="chapter" id="act8" data-ch="7" data-title="Built on Vision. Proven by Impact.">
+  <div class="ch-watermark">08</div>
+  <div class="ch-kanji">永</div>
+  <div class="one-col">
+    <p class="label R">Our Legacy</p>
+    <h2 class="heading R d1">Built on Vision.<br><em>Proven by Impact.</em></h2>
+    <div class="stats-grid R d2">
+      <div class="stat-card"><span class="stat-num" data-target="3">0</span><span class="stat-lbl">Co-Founders</span></div>
+      <div class="stat-card"><span class="stat-num" data-target="2021">0</span><span class="stat-lbl">Year Founded</span></div>
+      <div class="stat-card"><span class="stat-num">L$100K</span><span class="stat-lbl">Raised for Charity</span></div>
+      <div class="stat-card"><span class="stat-num" data-target="4">0</span><span class="stat-lbl">Years Strong</span></div>
+    </div>
+    <div class="legacy-row R d3">
+      <span class="legacy-icon">🎵</span>
+      <div>
+        <div class="legacy-name">LOONAPALOOSA</div>
+        <div class="legacy-desc">KΘΦ II's landmark charity music event — raising L$100,000 for the Save the Music Foundation and setting the gold standard for Greek Life giving in Second Life.</div>
+      </div>
+    </div>
+    <div class="legacy-row R d4">
+      <span class="legacy-icon">⚓</span>
+      <div>
+        <div class="legacy-name">The Abyssal Line Crossing</div>
+        <div class="legacy-desc">Our signature crossing ritual — where pledges become brothers and the Wokou-Corsair legacy is passed on in the tradition of the deep sea.</div>
+      </div>
+    </div>
+    <div class="quote-block R d5" style="margin-top:2rem">
+      <p>We are adventurers, strategists, and brothers. We embrace the mystery of the ocean, the power of the Kraken, and the wisdom of Olokun. Together, we navigate challenges, celebrate victories, and build a legacy that transcends time.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- CLOSING                                        -->
+<!-- ═══════════════════════════════════════════════ -->
+<section class="chapter" id="act-close" data-ch="7" style="min-height:70vh;flex-direction:column;text-align:center;background:radial-gradient(ellipse at center,rgba(198,147,10,.07) 0,transparent 60%)">
+  <p class="closing-sub R">Est. 3·14·21 · Second Life · Wokou-Corsairs</p>
+  <div class="closing-brand R d1">KΘΦ II</div>
+  <p class="closing-sub R d2">Where tradition meets innovation, and the past inspires the future.</p>
+  <div class="R d3" style="display:flex;gap:1rem;flex-wrap:wrap;justify-content:center;margin-top:2rem">
+    <a href="/" class="cta">⚓ Back to Home</a>
+    <a href="/brothers" class="cta cta-ghost">Meet the Brothers</a>
+    <a href="/gallery" class="cta cta-ghost">Gallery</a>
+  </div>
+  <div class="R d4" style="margin-top:4rem;font-size:.55rem;letter-spacing:3px;color:var(--bone-faint)">© 2026 Kappa Theta Phi II Fraternity. All Rights Reserved.</div>
+</section>
+
+<script>
+/* ─── CANVAS PARTICLES ─────────────────────── */
+const canvas = document.getElementById('bg-canvas');
+const ctx = canvas.getContext('2d');
+let W, H, particles = [];
+function resize(){W=canvas.width=window.innerWidth;H=canvas.height=window.innerHeight}
+resize(); window.addEventListener('resize', resize);
+function mkP(){return{x:Math.random()*W,y:H+10,vx:(Math.random()-.5)*.4,vy:-(Math.random()*.6+.3),a:0,size:Math.random()*1.5+.5,life:0,maxLife:Math.random()*400+200}}
+function animCanvas(){
+  ctx.clearRect(0,0,W,H);
+  if(particles.length<80)particles.push(mkP());
+  particles=particles.filter(p=>{
+    p.x+=p.vx;p.y+=p.vy;p.life++;
+    const pct=p.life/p.maxLife;
+    p.a=pct<.1?pct*10:pct>.8?(1-pct)*5:1;
+    ctx.globalAlpha=p.a*.5;
+    ctx.fillStyle='#c6930a';
+    ctx.beginPath();ctx.arc(p.x,p.y,p.size,0,Math.PI*2);ctx.fill();
+    return p.life<p.maxLife&&p.y>-20;
+  });
+  ctx.globalAlpha=1;
+  requestAnimationFrame(animCanvas);
+}
+animCanvas();
+
+/* ─── SCROLL PROGRESS ──────────────────────── */
+const progBar = document.getElementById('prog');
+window.addEventListener('scroll',()=>{
+  const pct=scrollY/(document.body.scrollHeight-innerHeight)*100;
+  progBar.style.width=pct+'%';
+  document.getElementById('navbar').classList.toggle('scrolled',scrollY>80);
+  updateActiveDot();
+});
+
+/* ─── CHAPTER DOTS ─────────────────────────── */
+const sections=document.querySelectorAll('.chapter');
+const dots=document.querySelectorAll('.ch-dot');
+function updateActiveDot(){
+  let current=0;
+  sections.forEach((s,i)=>{
+    if(scrollY>=s.offsetTop-200)current=parseInt(s.dataset.ch)||0;
+  });
+  dots.forEach((d,i)=>d.classList.toggle('active',parseInt(d.dataset.ch)===current));
+  const title=Array.from(sections).find(s=>parseInt(s.dataset.ch)===current)?.dataset.title||'';
+  document.getElementById('current-ch-label').textContent=title;
+}
+dots.forEach(d=>d.addEventListener('click',()=>{
+  const ch=parseInt(d.dataset.ch);
+  const target=Array.from(sections).find(s=>parseInt(s.dataset.ch)===ch);
+  if(target)target.scrollIntoView({behavior:'smooth'});
+}));
+
+/* ─── INTERSECTION OBSERVER ────────────────── */
+const revealObs=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');revealObs.unobserve(e.target)}});
+},{threshold:.12});
+document.querySelectorAll('.R').forEach(el=>revealObs.observe(el));
+
+/* ─── MOTTO REVEAL ──────────────────────────── */
+const mottoObs=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      ['mw1','mw2','mw3'].forEach((id,i)=>{
+        setTimeout(()=>{const el=document.getElementById(id);if(el){el.style.transitionDelay=i*.22+'s';el.classList.add('in');}},50);
+      });
+      mottoObs.unobserve(e.target);
+    }
+  });
+},{threshold:.4});
+const mottoEl=document.getElementById('act4-motto');
+if(mottoEl)mottoObs.observe(mottoEl);
+
+/* ─── COUNTER ANIMATION ─────────────────────── */
+function animCount(el,target,dur=1600){
+  let start=null;
+  (function step(ts){
+    if(!start)start=ts;
+    const p=Math.min((ts-start)/dur,1);
+    const ease=1-Math.pow(1-p,3);
+    el.textContent=Math.floor(ease*target);
+    if(p<1)requestAnimationFrame(step);else el.textContent=target;
+  })(performance.now());
+}
+const cntObs=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      const t=parseInt(e.target.dataset.target);
+      animCount(e.target,t);
+      cntObs.unobserve(e.target);
+    }
+  });
+},{threshold:.5});
+document.querySelectorAll('[data-target]').forEach(el=>cntObs.observe(el));
+
+/* ─── TEXT-TO-SPEECH ─────────────────────────── */
+const NARRATION=[
+  "Kappa Theta Phi Chapter II, known as the Wokou-Corsairs, is a dynamic fraternity rooted in tradition, innovation, and brotherhood. Blending the daring spirit of the legendary Japanese Wokou pirates with the cultural depth of African Yoruba mythology, we are a collective of leaders, creators, and visionaries united by a shared mission: to navigate uncharted waters, build lasting legacies, and uplift our community. We don't follow waves. We create them.",
+  "Once known as the wickedest city on Earth, Port Royal, Jamaica stood as a haven for pirates, privateers, and outlaws during the Golden Age of Piracy. Power was taken, not given. Wealth was earned through risk. Brotherhood formed in the face of danger. Our four pillars: The Wokou — adaptability, courage, and calculated movement. Olokun — spiritual depth, legacy awareness, and limitless potential. The Kraken — absolute power beneath the surface. And Port Royal — where chaos became empire.",
+  "In the aftermath of the Great Fire War, two rival forces — the Wokou and the Samurai — rose from destruction not as enemies, but as brothers. At the heart of this legacy stands Yasuke, the legendary African Samurai. His son Nevarious journeyed across continents to master the sacred traditions of the Yoruba. That wisdom was passed to Raul Damu, who in 2011 founded Kappa Theta Phi Fraternity of Second Life. By March 2021, Chapter Two was born — an evolution, not just a continuation.",
+  "Big Brother Damu, The Visionary, unlocked fragments of forgotten lifetimes through deep meditation. With his power, he awakened Big Brother Tactician, opening his third eye and restoring their connection to a shared past. Together, they began the mission: reunite the lost brothers. Their journey revealed a deeper truth: their connection to Olokun, the primordial deity of the ocean. They were no longer just brothers. They were chosen.",
+  "Drawn toward the Bermuda Triangle, the brothers sailed into chaos. From the depths emerged the legendary Kraken. Tentacles tore through their ship. The sea roared. Death loomed. We are the Sons of Olokun. We do not fear death. Steel clashed against myth. Power against fate. But even warriors fall. The Kraken dragged them into the abyss.",
+  "At Pirate's Well, a new generation trained under Big Brother Third Degree and Big Brother Sacred. When the call came, they did not hesitate. They rose. Gifted with divine power by Olokun, their blades became extensions of the ocean itself. They emerged not as neophytes — but as Sons of Olokun.",
+  "Death before dishonor. Loyalty. Honour. Brotherhood. Courage. Legacy. We are more than a fraternity — we are a brotherhood with a purpose. Adventure. Heritage. Leadership. Purpose. Through events and initiatives, we give back, leaving a lasting impact in Second Life and beyond.",
+  "Our Chapter Two reflects a lineage of innovation, vision, and success. With iconic events like LOONAPALOOSA and philanthropic contributions such as raising one hundred thousand Linden dollars for the Save the Music Foundation, we continue to solidify our place as leaders in the virtual world. We are adventurers, strategists, and brothers. Where tradition meets innovation, and the past inspires the future."
+];
+
+let speaking=false,paused=false,utterance=null,activeCh=0;
+function currentChapter(){
+  let ch=0;
+  sections.forEach(s=>{if(scrollY>=s.offsetTop-300)ch=parseInt(s.dataset.ch)||0;});
+  return Math.min(ch,NARRATION.length-1);
+}
+function speakCurrent(){
+  stopSpeaking();
+  activeCh=currentChapter();
+  utterance=new SpeechSynthesisUtterance(NARRATION[activeCh]);
+  utterance.rate=.92;utterance.pitch=1;utterance.volume=1;
+  utterance.onstart=()=>{speaking=true;paused=false;updateTTS()};
+  utterance.onend=()=>{speaking=false;paused=false;updateTTS()};
+  utterance.onpause=()=>{paused=true;updateTTS()};
+  utterance.onresume=()=>{paused=false;updateTTS()};
+  speechSynthesis.speak(utterance);
+}
+function togglePause(){
+  if(!speaking)return;
+  if(paused){speechSynthesis.resume();}else{speechSynthesis.pause();}
+}
+function stopSpeaking(){
+  speechSynthesis.cancel();speaking=false;paused=false;updateTTS();
+}
+function updateTTS(){
+  document.getElementById('btn-speak').style.display=speaking?'none':'flex';
+  document.getElementById('btn-pause').style.display=speaking?'flex':'none';
+  document.getElementById('btn-stop').style.display=speaking?'flex':'none';
+  const icon=document.getElementById('pause-icon');
+  const lbl=document.getElementById('pause-label');
+  if(paused){
+    icon.innerHTML='<path d="M8 5v14l11-7z"/>';
+    lbl.textContent='Resume';
+  } else {
+    icon.innerHTML='<path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>';
+    lbl.textContent='Pause';
+  }
+}
+
+/* ─── KEYBOARD NAV ─────────────────────────── */
+document.addEventListener('keydown',e=>{
+  const idx=Array.from(sections).findIndex(s=>parseInt(s.dataset.ch)===Math.round(scrollY/(document.body.scrollHeight-innerHeight)*(sections.length-1)));
+  if(e.key==='ArrowDown'||e.key==='ArrowRight'){
+    const next=Array.from(sections).find(s=>s.offsetTop>scrollY+50);
+    if(next)next.scrollIntoView({behavior:'smooth'});
+  }
+  if(e.key==='ArrowUp'||e.key==='ArrowLeft'){
+    const prev=[...sections].reverse().find(s=>s.offsetTop<scrollY-50);
+    if(prev)prev.scrollIntoView({behavior:'smooth'});
+  }
+});
+</script>
+</body>
+</html>
