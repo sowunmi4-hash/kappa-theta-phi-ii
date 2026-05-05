@@ -92,7 +92,7 @@
 }
 
 /* ── THE WALL ── */
-.brothers-shell #wall{padding:2.5rem 3rem 5rem;max-width:1400px;margin:0 auto;display:grid;grid-template-columns:repeat(6,1fr);gap:1.1rem;position:relative;z-index:1}
+.brothers-shell #wall{padding:2.5rem 3rem 5rem;max-width:1400px;margin:0 auto;display:grid;grid-template-columns:repeat(5,1fr);gap:1.1rem;position:relative;z-index:1}
 @media(max-width:1100px){.brothers-shell #wall{grid-template-columns:repeat(4,1fr)}}
 @media(max-width:768px){.brothers-shell #wall{grid-template-columns:repeat(2,1fr);padding:1.5rem 1rem 4rem}}
 
@@ -120,27 +120,9 @@
   transition:border-color .35s,transform .35s,box-shadow .35s,opacity .35s;
 }
 
-/* Tier-based grid sizing */
-.brothers-shell .card.tier-head{grid-column:span 3;grid-row:span 2}
-.brothers-shell .card.tier-co{grid-column:span 2;grid-row:span 2}
-.brothers-shell .card.tier-iron,
-.brothers-shell .card.tier-officer{grid-column:span 2}
-.brothers-shell .card.tier-member,
-.brothers-shell .card.tier-fleet{grid-column:span 1}
-@media(max-width:1100px){
-  .brothers-shell .card.tier-head{grid-column:span 4;grid-row:span 2}
-  .brothers-shell .card.tier-co{grid-column:span 2;grid-row:span 2}
-  .brothers-shell .card.tier-iron,
-  .brothers-shell .card.tier-officer{grid-column:span 2}
-}
-@media(max-width:768px){
-  .brothers-shell .card.tier-head,
-  .brothers-shell .card.tier-co{grid-column:span 2;grid-row:span 1}
-  .brothers-shell .card.tier-iron,
-  .brothers-shell .card.tier-officer,
-  .brothers-shell .card.tier-member,
-  .brothers-shell .card.tier-fleet{grid-column:span 1}
-}
+/* Uniform card sizing — every brother gets the same tile (Sage-style).
+   Hierarchy is communicated by stamps + Founder accent, not by size. */
+@media(max-width:768px){}
 
 /* Founder embellishment */
 .brothers-shell .card.founder{border-color:rgba(198,147,10,.4)}
@@ -153,30 +135,16 @@
 .brothers-shell .card-stamp{position:absolute;top:14px;left:14px;font-family:'Cinzel',serif;font-size:.5rem;letter-spacing:3px;color:var(--gold);text-transform:uppercase;padding:.3rem .55rem;background:rgba(4,6,15,.78);border:1px solid rgba(198,147,10,.4);z-index:5}
 .brothers-shell .card-glyph{position:absolute;top:14px;right:14px;font-family:'Noto Serif JP',serif;font-weight:700;font-size:1rem;color:var(--gold);line-height:1;z-index:5;padding:.3rem .55rem;background:rgba(4,6,15,.78);border:1px solid rgba(198,147,10,.4);min-width:30px;text-align:center}
 
-.brothers-shell .portrait{flex:1;background:linear-gradient(135deg,rgba(8,14,28,.85),rgba(4,6,15,.95));display:flex;align-items:center;justify-content:center;position:relative;min-height:180px;overflow:hidden}
-.brothers-shell .card.tier-head .portrait,
-.brothers-shell .card.tier-co .portrait{min-height:280px}
+.brothers-shell .portrait{aspect-ratio:4/5;width:100%;background:linear-gradient(135deg,rgba(8,14,28,.85),rgba(4,6,15,.95));display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
 .brothers-shell .portrait::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 35% 25%,rgba(198,147,10,.12),transparent 60%);opacity:.7;z-index:0}
 .brothers-shell .portrait::after{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at center,transparent 35%,rgba(4,6,15,.55) 100%);z-index:1;pointer-events:none}
 .brothers-shell .portrait-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 8%;z-index:2;transition:transform .45s ease}
 .brothers-shell .card:hover .portrait-img{transform:scale(1.04)}
-.brothers-shell .portrait-initial{font-family:'Cinzel',serif;font-size:3.5rem;color:var(--gold);letter-spacing:3px;position:relative;z-index:1;opacity:.78;text-shadow:0 0 30px rgba(198,147,10,.4);pointer-events:none}
-.brothers-shell .card.tier-head .portrait-initial{font-size:5.5rem}
-.brothers-shell .card.tier-co .portrait-initial{font-size:5rem}
-.brothers-shell .card.tier-iron .portrait-initial,
-.brothers-shell .card.tier-officer .portrait-initial{font-size:4rem}
+.brothers-shell .portrait-initial{font-family:'Cinzel',serif;font-size:3rem;color:var(--gold);letter-spacing:3px;position:relative;z-index:1;opacity:.78;text-shadow:0 0 30px rgba(198,147,10,.4);pointer-events:none}
 
 .brothers-shell .card-footer{padding:1rem 1.1rem 1.1rem;border-top:1px solid rgba(198,147,10,.12);background:rgba(4,6,15,.78);position:relative;z-index:3}
-.brothers-shell .card.tier-head .card-footer,
-.brothers-shell .card.tier-co .card-footer{padding:1.4rem 1.4rem 1.5rem}
 .brothers-shell .card-name{font-family:'Bebas Neue',cursive;letter-spacing:3px;font-size:1rem;color:var(--bone);line-height:1.05;margin:0 0 .4rem}
-.brothers-shell .card.tier-head .card-name{font-size:1.7rem;letter-spacing:5px}
-.brothers-shell .card.tier-co .card-name{font-size:1.5rem;letter-spacing:4px}
-.brothers-shell .card.tier-iron .card-name,
-.brothers-shell .card.tier-officer .card-name{font-size:1.15rem;letter-spacing:3.5px}
 .brothers-shell .card-role{font-family:'Cinzel',serif;font-size:.55rem;letter-spacing:3px;color:var(--gold);text-transform:uppercase;margin-bottom:.45rem}
-.brothers-shell .card.tier-head .card-role,
-.brothers-shell .card.tier-co .card-role{font-size:.62rem;letter-spacing:4px}
 .brothers-shell .card-faction{font-size:.55rem;letter-spacing:2.5px;color:var(--bone-faint);text-transform:uppercase}
 .brothers-shell .card-faction strong{color:var(--bone-dim);font-weight:500}
 
