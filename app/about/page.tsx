@@ -1,8 +1,33 @@
 'use client';
-import { useEffect } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import './about.css';
 
 export default function AboutPage() {
+  // ── ANTHEM AUDIO PLAYER (matches /brothers) ──
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const [playing, setPlaying] = useState(false);
+  const [progress, setProgress] = useState(0);
+
+  function togglePlay() {
+    if (!audioRef.current) return;
+    if (playing) audioRef.current.pause();
+    else audioRef.current.play().catch(() => {});
+    setPlaying(!playing);
+  }
+
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+    const update = () => { if (audio.duration) setProgress((audio.currentTime / audio.duration) * 100); };
+    const ended = () => { setPlaying(false); setProgress(0); };
+    audio.addEventListener('timeupdate', update);
+    audio.addEventListener('ended', ended);
+    return () => {
+      audio.removeEventListener('timeupdate', update);
+      audio.removeEventListener('ended', ended);
+    };
+  }, []);
+
   useEffect(() => {
     // ── CANVAS PARTICLES ──
     const canvas = document.getElementById('bg-canvas') as HTMLCanvasElement;
@@ -139,6 +164,16 @@ export default function AboutPage() {
         </ul>
         <div className="mobile-toggle"><span></span><span></span><span></span></div>
       </nav>
+
+      {/* Anthem audio — floating player, matches /brothers */}
+      <audio ref={audioRef} src="/brothers/anthem.mp3" preload="metadata" />
+      <button className={`audio-player${playing ? ' playing' : ''}`} onClick={togglePlay} aria-label="Play anthem">
+        <span className="audio-btn">{playing ? '❚❚' : '▶'}</span>
+        <span className="audio-info">
+          <span className="audio-title">The Wokou Anthem</span>
+          <span className="audio-bar"><span className="audio-bar-fill" style={{ width: `${progress}%` }} /></span>
+        </span>
+      </button>
 
       {/* Chapter dots */}
       <div id="chapter-nav">

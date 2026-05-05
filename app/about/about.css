@@ -191,3 +191,17 @@ nav.scrolled{border-color:var(--border)}
 .bloodline-cta-cta em{font-style:normal;font-size:.95rem;display:inline-block;transition:transform .3s}
 .bloodline-cta:hover .bloodline-cta-cta{letter-spacing:6px}
 .bloodline-cta:hover .bloodline-cta-cta em{transform:translateX(6px)}
+
+/* ── ANTHEM AUDIO PLAYER (mirrored from /brothers) ── */
+.audio-player{position:fixed;bottom:1.5rem;left:1.5rem;z-index:150;display:flex;align-items:center;gap:.85rem;padding:.7rem .9rem .7rem .75rem;background:rgba(4,6,15,.85);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid rgba(198,147,10,.35);border-radius:2px;cursor:crosshair;color:var(--bone);font-family:inherit;transition:border-color .3s,background .3s}
+.audio-player:hover{border-color:var(--gold);background:rgba(8,14,28,.95)}
+.audio-player.playing{border-color:rgba(198,147,10,.55);box-shadow:0 0 24px rgba(198,147,10,.12)}
+.audio-btn{display:flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:50%;background:rgba(198,147,10,.12);border:1px solid rgba(198,147,10,.4);color:var(--gold);font-size:.7rem;font-weight:bold;font-family:'Cinzel',serif;letter-spacing:1px}
+.audio-info{display:flex;flex-direction:column;gap:5px;min-width:140px}
+.audio-title{font-family:'Cinzel',serif;font-size:.55rem;letter-spacing:3px;color:var(--gold);text-transform:uppercase}
+.audio-bar{height:2px;background:rgba(198,147,10,.18);border-radius:1px;overflow:hidden}
+.audio-bar-fill{display:block;height:100%;background:linear-gradient(90deg,var(--gold),var(--gold-lt));transition:width .15s linear}
+@media(max-width:768px){
+  .audio-player{bottom:1rem;left:1rem;padding:.55rem .75rem}
+  .audio-info{min-width:100px}
+}
