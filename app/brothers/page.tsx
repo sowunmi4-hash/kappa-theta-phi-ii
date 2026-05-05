@@ -344,7 +344,7 @@ export default function BrothersPage() {
       <button className={`audio-player${playing ? ' playing' : ''}`} onClick={togglePlay} aria-label="Play anthem">
         <span className="audio-btn">{playing ? '❚❚' : '▶'}</span>
         <span className="audio-info">
-          <span className="audio-title">KTP II · Step Mix</span>
+          <span className="audio-title">The Wokou Anthem</span>
           <span className="audio-bar"><span className="audio-bar-fill" style={{ width: `${progress}%` }} /></span>
         </span>
       </button>
