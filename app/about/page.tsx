@@ -239,24 +239,30 @@ export default function AboutPage() {
             <p className="body-text R d4">That wisdom was passed to <strong>Raul Damu</strong>, who in <strong>2011</strong> founded <strong>Kappa Theta Phi Fraternity of Second Life</strong>. By <strong>March 2021</strong>, Chapter II was born — <em>an evolution, not just a continuation.</em></p>
           </div>
           <div className="R d2">
-            <div style={{background:'var(--surface)',border:'1px solid var(--border)',borderRadius:'16px',padding:'2rem',textAlign:'center',position:'relative',overflow:'hidden'}}>
-              <div style={{position:'absolute',inset:0,background:'radial-gradient(ellipse at center,rgba(198,147,10,.06) 0,transparent 70%)'}}></div>
-              <div style={{fontSize:'.55rem',letterSpacing:'5px',color:'var(--gold)',textTransform:'uppercase',marginBottom:'1.5rem'}}>The Bloodline</div>
-              {[{i:'Y',name:'Yasuke',sub:'The Legendary African Samurai'},{i:'N',name:'Nevarious',sub:'Yoruba tradition · Orisha mysteries'},{i:'RD',name:'Raul Damu',sub:'Founded KTP SL — 2011'}].map((p,idx) => (
-                <div key={p.name}>
-                  <div style={{display:'flex',alignItems:'center',gap:'1rem',padding:'.8rem',background:'rgba(198,147,10,.04)',borderRadius:'8px',border:'1px solid rgba(198,147,10,.08)'}}>
-                    <div style={{width:'36px',height:'36px',borderRadius:'50%',background:'rgba(198,147,10,.1)',border:'1px solid rgba(198,147,10,.3)',display:'flex',alignItems:'center',justifyContent:'center',fontSize:'.7rem',color:'var(--gold)',fontFamily:"'Cinzel',serif",flexShrink:0}}>{p.i}</div>
-                    <div style={{textAlign:'left'}}><div style={{fontFamily:"'Bebas Neue',cursive",letterSpacing:'3px',fontSize:'.95rem',color:'var(--bone)'}}>{p.name}</div><div style={{fontSize:'.62rem',color:'var(--bone-faint)'}}>{p.sub}</div></div>
-                  </div>
-                  {idx < 2 && <div style={{width:'1px',height:'20px',background:'linear-gradient(to bottom,var(--gold),transparent)',margin:'0 auto',opacity:.4}}></div>}
-                </div>
-              ))}
-              <div style={{width:'1px',height:'20px',background:'linear-gradient(to bottom,var(--gold),transparent)',margin:'0 auto',opacity:.4}}></div>
-              <div style={{padding:'.8rem',background:'rgba(198,147,10,.07)',borderRadius:'8px',border:'1px solid rgba(198,147,10,.2)',textAlign:'center'}}>
-                <div style={{fontFamily:"'Bebas Neue',cursive",letterSpacing:'4px',fontSize:'1rem',color:'var(--gold)'}}>KΘΦ Chapter II</div>
-                <div style={{fontSize:'.6rem',color:'var(--bone-faint)',marginTop:'3px'}}>Born · 3·14·21</div>
+            <a href="/about/bloodline" className="bloodline-cta">
+              <div className="bloodline-cta-corner tl"></div>
+              <div className="bloodline-cta-corner tr"></div>
+              <div className="bloodline-cta-corner bl"></div>
+              <div className="bloodline-cta-corner br"></div>
+              <div className="bloodline-cta-eyeline">View The Lineage</div>
+              <div className="bloodline-cta-title">The<br/><em>Bloodline</em></div>
+              <div className="bloodline-cta-chain">
+                <span>Yasuke</span>
+                <i></i>
+                <span>Nevarious</span>
+                <i></i>
+                <span>Raul Damu</span>
+                <i></i>
+                <span className="bloodline-cta-terminal">KΘΦ II</span>
               </div>
-            </div>
+              <div className="bloodline-cta-lines">
+                <span>I · Founding</span>
+                <span>II · Kraken</span>
+                <span>III · Wokou</span>
+                <span>IV · Abyssal</span>
+              </div>
+              <div className="bloodline-cta-cta">Enter The Bloodline <em>→</em></div>
+            </a>
           </div>
         </div>
       </section>
