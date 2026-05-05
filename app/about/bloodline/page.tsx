@@ -12,10 +12,11 @@ function letters(text: string) {
 }
 
 const LINES = [
-  { numeral: 'I',   name: 'FOUNDING LINE', kanji: '火', mark: 'The Spark · Origin' },
-  { numeral: 'II',  name: 'KRAKEN LINE',   kanji: '触', mark: 'From The Depths' },
-  { numeral: 'III', name: 'WOKOU LINE',    kanji: '倭', mark: 'The Raid · Brotherhood' },
-  { numeral: 'IV',  name: 'ABYSSAL LINE',  kanji: '深', mark: 'Into The Deep' },
+  { numeral: 'I',   name: 'FOUNDING LINE',  kanji: '火', mark: 'The Spark · Origin' },
+  { numeral: 'II',  name: 'KRAKEN LINE',    kanji: '触', mark: 'From The Depths' },
+  { numeral: 'III', name: 'BERSERKER LINE', kanji: '狂', mark: 'The Frenzy · Unbound' },
+  { numeral: 'IV',  name: 'WOKOU LINE',     kanji: '倭', mark: 'The Raid · Brotherhood' },
+  { numeral: 'V',   name: 'ABYSSAL LINE',   kanji: '深', mark: 'Into The Deep' },
 ];
 
 export default function BloodlinePage() {
@@ -103,7 +104,7 @@ export default function BloodlinePage() {
       <a href="/about" className="back-link">Return to About</a>
 
       <div id="chapter-nav">
-        {['The Bloodline','Roots','Founding','Kraken','Wokou','Abyssal','Closing'].map((title, i) => (
+        {['The Bloodline','Roots','Founding','Kraken','Berserker','Wokou','Abyssal','Closing'].map((title, i) => (
           <button key={i} className={`ch-dot ${i===0?'active':''}`} data-ch={String(i)} title={title}></button>
         ))}
       </div>
@@ -194,7 +195,7 @@ export default function BloodlinePage() {
       <div className="ch-divider" data-label="The Lineage Endures"></div>
 
       {/* ── CLOSING ── */}
-      <section id="closing" data-ch="6">
+      <section id="closing" data-ch="7">
         <h2 className="closing-mark R">The Bloodline<br/><em>Endures</em></h2>
         <p className="closing-motto R d1">⚓ Death Before Dishonor ⚓</p>
         <a href="/about" className="closing-back R d2">Return to The Story</a>

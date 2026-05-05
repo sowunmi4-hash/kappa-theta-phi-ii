@@ -198,6 +198,9 @@
 .brothers-shell .spotlight-faction strong{color:var(--bone)}
 .brothers-shell .spotlight-title{font-size:.65rem;letter-spacing:4px;color:var(--gold);text-transform:uppercase;padding:.5rem 1rem;border:1px solid rgba(198,147,10,.4)}
 .brothers-shell .spotlight-iron{font-family:'Cinzel',serif;font-size:.65rem;letter-spacing:3px;color:var(--gold);text-transform:uppercase}
+.brothers-shell .spotlight-tagline{font-family:'Cinzel',serif;font-size:.7rem;letter-spacing:4px;color:var(--bone-faint);text-transform:uppercase;font-style:italic;margin:1.6rem 0 0;opacity:0;transition:opacity .7s ease 1.6s;display:flex;align-items:center;gap:14px}
+.brothers-shell .spotlight-tagline::before{content:'';width:24px;height:1px;background:var(--gold);opacity:.5}
+.brothers-shell .spotlight.open .spotlight-tagline{opacity:.85}
 
 @media(max-width:900px){
   .brothers-shell .spotlight{padding:2rem}
