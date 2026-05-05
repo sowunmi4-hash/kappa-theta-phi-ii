@@ -2,24 +2,45 @@ import { NextResponse } from 'next/server';
 
 const S = process.env.SUPABASE_URL;
 const K = process.env.SUPABASE_SECRET_KEY;
-const h = (x={}) => ({ apikey: K, Authorization: `Bearer ${K}`, 'Accept-Profile': 'members', ...x });
-const ch = () => h({ 'Content-Type': 'application/json', 'Content-Profile': 'members' });
+const h  = (x={}) => ({ apikey: K, Authorization: `Bearer ${K}`, 'Accept-Profile': 'members', ...x });
+const ch = ()     => h({ 'Content-Type': 'application/json', 'Content-Profile': 'members' });
 
 export async function POST(req) {
   const body = await req.json();
-  const { sl_username, sl_uuid, amount_ls, secret } = body;
+  const { sl_username = '', sl_uuid = '', amount_ls, secret } = body;
 
   if (secret !== 'KTP-DUES-2026') return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  if (!sl_username || !amount_ls) return NextResponse.json({ error: 'Missing fields' }, { status: 400 });
+  if (!amount_ls) return NextResponse.json({ error: 'Missing amount' }, { status: 400 });
 
-  // Find member
-  const members = await fetch(
-    `${S}/rest/v1/roster?sl_name=ilike.${encodeURIComponent(sl_username)}&select=*`,
-    { headers: h() }
-  ).then(r => r.json());
+  // 1. UUID lookup
+  let members = [];
+  if (sl_uuid) {
+    members = await fetch(
+      `${S}/rest/v1/roster?sl_uuid=eq.${sl_uuid}&select=*`,
+      { headers: h() }
+    ).then(r => r.json());
+  }
+
+  // 2. Username in parens fallback
+  if (!members?.length && sl_username) {
+    const match = sl_username.match(/\(([^)]+)\)\s*$/);
+    const username = match ? match[1] : sl_username;
+    members = await fetch(
+      `${S}/rest/v1/roster?sl_name=ilike.%25${encodeURIComponent(username)}%25&select=*`,
+      { headers: h() }
+    ).then(r => r.json());
+  }
 
   if (!members?.length) return NextResponse.json({ error: 'Member not found' }, { status: 404 });
   const member = members[0];
+
+  // Auto-save UUID
+  if (sl_uuid && !member.sl_uuid) {
+    await fetch(`${S}/rest/v1/roster?id=eq.${member.id}`, {
+      method: 'PATCH', headers: ch(),
+      body: JSON.stringify({ sl_uuid })
+    });
+  }
 
   // Get active period
   const periods = await fetch(
@@ -43,22 +64,21 @@ export async function POST(req) {
   await fetch(`${S}/rest/v1/dues_payments`, {
     method: 'POST', headers: ch(),
     body: JSON.stringify({
-      period_id:       period.id,
-      member_id:       member.id,
-      member_name:     member.frat_name,
-      amount_ls:       amount_ls,
-      notes:           `Terminal payment — L$${amount_ls} via SL dues terminal`,
-      logged_by_name:  'SL Dues Terminal',
+      period_id:      period.id,
+      member_id:      member.id,
+      member_name:    member.frat_name,
+      amount_ls:      amount_ls,
+      notes:          `Terminal payment — L$${amount_ls} via SL dues terminal`,
+      logged_by_name: 'SL Dues Terminal',
     })
   });
 
-  // Update record totals
+  // Update record
   const newLindenPaid = (record.linden_paid || 0) + amount_ls;
   const totalPaid     = newLindenPaid + (record.sweat_paid || 0);
   const remaining     = Math.max(0, period.amount_due - totalPaid);
   const newStatus     = remaining <= 0 ? 'paid' : totalPaid > 0 ? 'partial' : 'unpaid';
-
-  const credit = totalPaid > period.amount_due ? totalPaid - period.amount_due : 0;
+  const credit        = totalPaid > period.amount_due ? totalPaid - period.amount_due : 0;
 
   await fetch(`${S}/rest/v1/dues_records?id=eq.${record.id}`, {
     method: 'PATCH', headers: ch(),

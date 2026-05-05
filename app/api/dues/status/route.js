@@ -2,29 +2,32 @@ import { NextResponse } from 'next/server';
 
 const S = process.env.SUPABASE_URL;
 const K = process.env.SUPABASE_SECRET_KEY;
-const h = (x={}) => ({ apikey: K, Authorization: `Bearer ${K}`, 'Accept-Profile': 'members', ...x });
-const ch = () => h({ 'Content-Type': 'application/json', 'Content-Profile': 'members' });
+const h  = (x={}) => ({ apikey: K, Authorization: `Bearer ${K}`, 'Accept-Profile': 'members', ...x });
+const ch = ()     => h({ 'Content-Type': 'application/json', 'Content-Profile': 'members' });
 
 export async function GET(req) {
   const { searchParams } = new URL(req.url);
   const secret      = searchParams.get('secret');
-  const sl_username = searchParams.get('sl_username');
-  const sl_uuid     = searchParams.get('sl_uuid');
+  const sl_username = searchParams.get('sl_username') || '';
+  const sl_uuid     = searchParams.get('sl_uuid') || '';
 
   if (secret !== 'KTP-DUES-2026') return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  if (!sl_username) return NextResponse.json({ error: 'Missing sl_username' }, { status: 400 });
 
-  // Find member — try UUID first, fall back to sl_name
-  let members = sl_uuid
-    ? await fetch(`${S}/rest/v1/roster?sl_uuid=eq.${encodeURIComponent(sl_uuid)}&select=*`, { headers: h() }).then(r => r.json())
-    : [];
-
-  if (!members?.length) {
-    // Fallback: try matching username from parentheses in sl_name e.g. "(safareehills)"
-    const usernameMatch = sl_username.match(/\(([^)]+)\)$/);
-    const username = usernameMatch ? usernameMatch[1] : sl_username;
+  // 1. Try UUID lookup first (fastest, most reliable)
+  let members = [];
+  if (sl_uuid) {
     members = await fetch(
-      `${S}/rest/v1/roster?sl_name=ilike.*${encodeURIComponent(username)}*&select=*`,
+      `${S}/rest/v1/roster?sl_uuid=eq.${sl_uuid}&select=*`,
+      { headers: h() }
+    ).then(r => r.json());
+  }
+
+  // 2. Extract username from parentheses e.g. "Fancy Name (username123)" → "username123"
+  if (!members?.length && sl_username) {
+    const match = sl_username.match(/\(([^)]+)\)\s*$/);
+    const username = match ? match[1] : sl_username;
+    members = await fetch(
+      `${S}/rest/v1/roster?sl_name=ilike.%25${encodeURIComponent(username)}%25&select=*`,
       { headers: h() }
     ).then(r => r.json());
   }
@@ -32,7 +35,7 @@ export async function GET(req) {
   if (!members?.length) return NextResponse.json({ found: 'no' });
   const member = members[0];
 
-  // Auto-save UUID for future lookups if we have it
+  // Auto-save UUID so future lookups skip name matching
   if (sl_uuid && !member.sl_uuid) {
     await fetch(`${S}/rest/v1/roster?id=eq.${member.id}`, {
       method: 'PATCH', headers: ch(),
@@ -55,7 +58,6 @@ export async function GET(req) {
     { headers: h() }
   ).then(r => r.json());
 
-  // Auto-create if missing
   if (!records?.length) {
     await fetch(`${S}/rest/v1/dues_records`, {
       method: 'POST', headers: ch(),
@@ -63,7 +65,7 @@ export async function GET(req) {
     });
   }
 
-  const record   = records?.[0] || { linden_paid: 0, sweat_paid: 0, status: 'unpaid' };
+  const record    = records?.[0] || { linden_paid: 0, sweat_paid: 0, status: 'unpaid' };
   const totalPaid = (record.linden_paid || 0) + (record.sweat_paid || 0);
   const remaining = Math.max(0, period.amount_due - totalPaid);
 
