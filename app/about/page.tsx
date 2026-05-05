@@ -161,6 +161,7 @@ export default function AboutPage() {
           <li><a href="/about">About</a></li>
           <li><a href="/brothers">Brothers</a></li>
           <li><a href="/gallery">Gallery</a></li>
+          <li><a href="/philanthropy">Philanthropy</a></li>
         </ul>
         <div className="mobile-toggle"><span></span><span></span><span></span></div>
       </nav>

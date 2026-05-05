@@ -16,6 +16,7 @@ export default function HomePage() {
           <li><a href="/about">About</a></li>
           <li><a href="/brothers">Brothers</a></li>
           <li><a href="/gallery">Gallery</a></li>
+          <li><a href="/philanthropy">Philanthropy</a></li>
           <li><a href="/store" style={{color:"var(--gold,#c6930a)",fontWeight:700}}>Store</a></li>
         </ul>
         <div className="mobile-toggle" id="mobileToggle" onClick={() => document.getElementById('navLinks')?.classList.toggle('open')}>

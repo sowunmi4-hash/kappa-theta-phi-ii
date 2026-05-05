@@ -266,6 +266,7 @@ export default function GalleryPage() {
           <li><a href="/about">About</a></li>
           <li><a href="/brothers">Brothers</a></li>
           <li><a href="/gallery" className="active">Gallery</a></li>
+          <li><a href="/philanthropy">Philanthropy</a></li>
         </ul>
         <div className="mobile-toggle" onClick={() => document.getElementById('navLinks')?.classList.toggle('open')}>
           <span></span><span></span><span></span>
