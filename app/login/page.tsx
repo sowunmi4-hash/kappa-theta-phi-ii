@@ -1,19 +1,56 @@
 'use client';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import './login.css';
 
 export default function LoginPage() {
   const [step, setStep] = useState<'login' | 'create-password' | 'logged-in'>('login');
   const [fratName, setFratName] = useState('');
-  const [password, setPassword]     = useState('');
+  const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [member, setMember] = useState<any>(null);
+  const dustRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => { checkSession(); }, []);
+
+  useEffect(() => {
+    // Particle dust drift
+    const canvas = dustRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+    let raf = 0;
+    const resize = () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; };
+    resize();
+    window.addEventListener('resize', resize);
+    const motes = Array.from({ length: 24 }, () => ({
+      x: Math.random() * window.innerWidth,
+      y: Math.random() * window.innerHeight,
+      vx: (Math.random() - 0.5) * 0.1,
+      vy: -(Math.random() * 0.3 + 0.1),
+      r: Math.random() * 1.4 + 0.4,
+      a: Math.random() * 0.4 + 0.1,
+      t: Math.random() * Math.PI * 2,
+    }));
+    const draw = () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      motes.forEach(m => {
+        m.x += m.vx; m.y += m.vy; m.t += 0.008;
+        if (m.y < -10) { m.y = window.innerHeight + 10; m.x = Math.random() * window.innerWidth; }
+        const alpha = m.a * (0.6 + Math.sin(m.t) * 0.4);
+        ctx.fillStyle = `rgba(198,147,10,${alpha})`;
+        ctx.beginPath();
+        ctx.arc(m.x, m.y, m.r, 0, Math.PI * 2);
+        ctx.fill();
+      });
+      raf = requestAnimationFrame(draw);
+    };
+    draw();
+    return () => { cancelAnimationFrame(raf); window.removeEventListener('resize', resize); };
+  }, []);
 
   async function checkSession() {
     try {
@@ -70,9 +107,17 @@ export default function LoginPage() {
 
   return (
     <>
-      <nav>
+      <div className="kanji-watermarks">
+        <span className="k1">門</span>
+        <span className="k2">入</span>
+        <span className="k3">鍵</span>
+      </div>
+
+      <canvas ref={dustRef} id="login-dust"></canvas>
+
+      <nav id="navbar">
         <a href="/" className="nav-brand">KΘΦ <span>II</span></a>
-        <ul className="nav-links">
+        <ul className="nav-links" id="navLinks">
           <li><a href="/">Home</a></li>
           <li><a href="/about">About</a></li>
           <li><a href="/brothers">Brothers</a></li>
@@ -82,79 +127,131 @@ export default function LoginPage() {
       </nav>
 
       <main className="login-page">
-        <div className="gate-card">
-          <img src="/logo.png" alt="KΘΦ II" className="gate-logo" />
 
+        <div className="gate-card">
+          <span className="gc-tl"></span><span className="gc-tr"></span>
+          <span className="gc-bl"></span><span className="gc-br"></span>
+
+          {/* Logo plate */}
+          <div className="gate-logo-wrap">
+            <span className="gl-tl"></span><span className="gl-tr"></span>
+            <span className="gl-bl"></span><span className="gl-br"></span>
+            <img src="/logo.png" alt="KΘΦ II" className="gate-logo" />
+          </div>
+
+          {/* ── STATE 1: LOGIN ── */}
           {step === 'login' && (
             <>
-              <p className="gate-label">Brotherhood Access</p>
+              <div className="gate-label">Brotherhood Access</div>
               <h2 className="gate-title">Enter the Gate</h2>
               <p className="gate-copy">
                 Enter your Big Brother name and password to access the brotherhood.
                 First time logging in? Use the one-time password: <strong>KTF2026</strong>
               </p>
-              <div className="gate-divider" />
-              {error && <div className="login-error">{error}</div>}
+              <div className="gate-divider"></div>
+
+              {error && <div className="login-error">⚠ {error}</div>}
+
               <form className="gate-form" onSubmit={handleLogin}>
                 <div className="form-group">
                   <label>Big Brother Name</label>
-                  <input type="text" value={fratName} onChange={e => setFratName(e.target.value)} placeholder="e.g. Big Brother Tactician" required />
+                  <input
+                    type="text"
+                    value={fratName}
+                    onChange={e => setFratName(e.target.value)}
+                    placeholder="e.g. Big Brother Tactician"
+                    required
+                  />
                 </div>
                 <div className="form-group">
                   <label>Password</label>
-                  <input type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="Enter your password" required />
+                  <input
+                    type="password"
+                    value={password}
+                    onChange={e => setPassword(e.target.value)}
+                    placeholder="Enter your password"
+                    required
+                  />
                 </div>
-                <div style={{display:'flex',alignItems:'center',gap:'8px',margin:'0.2rem 0 0.8rem',cursor:'pointer'}} onClick={()=>setRememberMe(r=>!r)}>
-                  <div style={{width:'18px',height:'18px',borderRadius:'4px',border:`1px solid ${rememberMe ? 'var(--gold,#c6930a)' : 'rgba(240,232,208,0.2)'}`,background:rememberMe?'rgba(198,147,10,0.15)':'transparent',display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0,transition:'all 0.15s'}}>
-                    {rememberMe && <span style={{color:'var(--gold,#c6930a)',fontSize:'0.7rem',fontWeight:700}}>✓</span>}
-                  </div>
-                  <span style={{fontSize:'0.78rem',color:'rgba(240,232,208,0.45)',userSelect:'none'}}>Remember me for 30 days</span>
-                </div>
-                <button type="submit" className="gate-submit" disabled={loading}>{loading ? 'Verifying...' : 'Enter'}</button>
+
+                <label className={`remember${rememberMe ? ' checked' : ''}`} onClick={() => setRememberMe(r => !r)}>
+                  <span className="remember-box"><span>✓</span></span>
+                  <span className="remember-text">Remember me for 30 days</span>
+                </label>
+
+                <button type="submit" className="gate-submit" disabled={loading}>
+                  {loading ? 'Verifying...' : 'Enter →'}
+                </button>
               </form>
+
               <p className="gate-note">Access is granted only to verified brothers of KΘΦ II.</p>
             </>
           )}
 
+          {/* ── STATE 2: CREATE PASSWORD ── */}
           {step === 'create-password' && member && (
             <>
-              <p className="gate-label">First Time Setup</p>
+              <div className="gate-label">First Time Setup</div>
               <h2 className="gate-title">Create Your Password</h2>
               <div className="welcome-name">{member.frat_name}</div>
               <p className="gate-copy">
-                Welcome, brother. The one-time password has been verified. 
+                Welcome, brother. The one-time password has been verified.
                 Now create your personal password to secure your access going forward.
               </p>
-              <div className="gate-divider" />
-              {error && <div className="login-error">{error}</div>}
+              <div className="gate-divider"></div>
+
+              {error && <div className="login-error">⚠ {error}</div>}
+
               <form className="gate-form" onSubmit={handleCreatePassword}>
                 <div className="form-group">
                   <label>New Password</label>
-                  <input type="password" value={newPassword} onChange={e => setNewPassword(e.target.value)} placeholder="Create a password (min 6 chars)" required />
+                  <input
+                    type="password"
+                    value={newPassword}
+                    onChange={e => setNewPassword(e.target.value)}
+                    placeholder="Create a password (min 6 chars)"
+                    required
+                  />
                 </div>
                 <div className="form-group">
                   <label>Confirm Password</label>
-                  <input type="password" value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)} placeholder="Confirm your password" required />
+                  <input
+                    type="password"
+                    value={confirmPassword}
+                    onChange={e => setConfirmPassword(e.target.value)}
+                    placeholder="Confirm your password"
+                    required
+                  />
                 </div>
-                <button type="submit" className="gate-submit" disabled={loading}>{loading ? 'Setting up...' : 'Set Password & Enter'}</button>
+
+                <button type="submit" className="gate-submit" disabled={loading}>
+                  {loading ? 'Setting up...' : 'Set Password & Enter →'}
+                </button>
               </form>
             </>
           )}
 
+          {/* ── STATE 3: LOGGED IN — wax-seal moment ── */}
           {step === 'logged-in' && member && (
             <div className="session-panel">
-              <p className="gate-label">Seal Recognised</p>
+              <div className="seal-wrap">
+                <div className="seal-disc">✓</div>
+              </div>
+              <div className="gate-label">Seal Recognised</div>
               <h2 className="gate-title">The Gate Opens</h2>
               <div className="session-name">{member.frat_name}</div>
               <div className="session-role">{member.role}</div>
-              <p className="gate-copy">{member.sl_name}</p>
+              {member.sl_name && <p className="session-sl">{member.sl_name}</p>}
+
               <div className="session-links">
-                <a href="/dashboard">Dashboard</a>
+                <a href="/dashboard" className="session-cta">Enter Dashboard →</a>
+                <button className="session-logout" onClick={handleLogout}>Sign Out</button>
               </div>
-              <button className="session-logout" onClick={handleLogout}>Sign out</button>
             </div>
           )}
+
         </div>
+
       </main>
     </>
   );
