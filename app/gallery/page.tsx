@@ -48,7 +48,7 @@ function saveTokens(tokens: Record<string, string>) {
 
 export default function GalleryPage() {
   const [posts, setPosts] = useState<GalleryPost[]>([]);
-  const [activeTab, setActiveTab] = useState('all');
+  const [activeTab, setActiveTab] = useState('');
   const [tabs, setTabs] = useState<string[]>([]);
   const [caption, setCaption] = useState('');
   const [name, setName] = useState('');
@@ -103,12 +103,17 @@ export default function GalleryPage() {
         setPosts(d);
         const eventTags = [...new Set(d.map((p: GalleryPost) => p.event_tag).filter(Boolean))] as string[];
         setTabs(eventTags);
-        if (eventTags.length > 0) setSelectedTab(eventTags[0]);
+        if (eventTags.length > 0) {
+          setSelectedTab(eventTags[0]);
+          // Default the active tab to the first event tag — and reset if the
+          // previously-selected tab disappeared (e.g. its last photo was deleted)
+          setActiveTab(prev => (!prev || !eventTags.includes(prev)) ? eventTags[0] : prev);
+        }
       }
     } catch {}
   }
 
-  const filtered = activeTab === 'all' ? posts : posts.filter(p => p.event_tag === activeTab);
+  const filtered = activeTab ? posts.filter(p => p.event_tag === activeTab) : [];
 
   async function deletePost(id: string, fileUrl: string) {
     if (!confirm('Delete this photo?')) return;
@@ -196,7 +201,6 @@ export default function GalleryPage() {
 
         {/* Tabs */}
         <div className="gallery-tabs">
-          <button className={`gallery-tab ${activeTab === 'all' ? 'active' : ''}`} onClick={() => setActiveTab('all')}>All</button>
           {tabs.map(t => (
             <button key={t} className={`gallery-tab ${activeTab === t ? 'active' : ''}`} onClick={() => setActiveTab(t)}>{t}</button>
           ))}
