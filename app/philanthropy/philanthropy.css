@@ -91,6 +91,34 @@ img{display:block;max-width:100%}
 }
 .hero-grid{display:grid;grid-template-columns:1.1fr 1fr;gap:2.5rem;align-items:center}
 
+/* Cause banner — Spina Bifida Awareness logo at top of hero */
+.hero-banner{
+  position:relative;
+  display:flex;align-items:center;justify-content:center;
+  background:#fff;
+  padding:1.4rem 2rem;
+  margin-bottom:2rem;
+  border:1px solid rgba(198,147,10,.4);
+  box-shadow:
+    0 18px 36px -22px rgba(0,0,0,.7),
+    0 0 24px rgba(198,147,10,.06),
+    inset 0 0 30px rgba(198,147,10,.03);
+  transition:border-color .35s,box-shadow .35s;
+}
+.hero-banner:hover{
+  border-color:var(--gold);
+  box-shadow:0 22px 44px -22px rgba(0,0,0,.7),0 0 32px rgba(198,147,10,.12);
+}
+.hero-banner img{
+  max-width:100%;max-height:130px;object-fit:contain;display:block;
+}
+/* Corner notches on the banner — match the rest of the design */
+.hb-corner-tl,.hb-corner-tr,.hb-corner-bl,.hb-corner-br{position:absolute;width:10px;height:10px}
+.hb-corner-tl{top:-3px;left:-3px;border-top:1px solid var(--gold);border-left:1px solid var(--gold)}
+.hb-corner-tr{top:-3px;right:-3px;border-top:1px solid var(--gold);border-right:1px solid var(--gold)}
+.hb-corner-bl{bottom:-3px;left:-3px;border-bottom:1px solid var(--gold);border-left:1px solid var(--gold)}
+.hb-corner-br{bottom:-3px;right:-3px;border-bottom:1px solid var(--gold);border-right:1px solid var(--gold)}
+
 .hero-tag{
   display:inline-flex;align-items:center;gap:12px;
   font-family:'Cinzel',serif;font-size:.55rem;letter-spacing:5px;
@@ -211,15 +239,20 @@ img{display:block;max-width:100%}
 .cc-title{font-family:var(--display);font-weight:400;font-size:1.5rem;letter-spacing:3px;color:var(--bone);line-height:1.1;text-transform:uppercase}
 .cc-org{font-family:'Cinzel',serif;font-size:.55rem;letter-spacing:3.5px;color:var(--gold);text-transform:uppercase}
 
-.cc-logo-slot{
+.cc-logo-img{
   display:flex;align-items:center;justify-content:center;
-  height:64px;
-  background:rgba(255,255,255,.04);
-  border:1px dashed rgba(198,147,10,.28);
-  font-family:'Cinzel',serif;font-size:.48rem;letter-spacing:3px;
-  color:var(--bone-faint);text-transform:uppercase;
-  text-align:center;padding:0 .5rem;
+  height:100px;padding:.6rem;
+  border:1px solid rgba(198,147,10,.18);
+  overflow:hidden;
+  transition:border-color .35s;
 }
+.cc-logo-img.light{background:#fff}
+.cc-logo-img.dark{background:rgba(255,255,255,.02)}
+.cc-logo-img img{
+  max-width:100%;max-height:100%;object-fit:contain;
+  display:block;
+}
+.charity-card:hover .cc-logo-img{border-color:rgba(198,147,10,.4)}
 
 .cc-desc{font-family:'Rajdhani',sans-serif;font-size:.88rem;line-height:1.6;color:var(--bone-dim)}
 

@@ -20,6 +20,8 @@ const PAST_PRIMARIES = [
     statPending: '— pending final confirmation —',
     partner: 'Delta Psi Gamma',
     donateUrl: 'https://www.savethemusic.org',
+    logoSrc: '/philanthropy/savethemusic.jpg',
+    logoBg: 'light' as const,
   },
   {
     year: '2025',
@@ -31,6 +33,8 @@ const PAST_PRIMARIES = [
     statPending: '— pending confirmation —',
     partner: 'Gamma Delta Mu Xi',
     donateUrl: 'https://www.gamersoutreach.org',
+    logoSrc: '/philanthropy/gamersoutreach.png',
+    logoBg: 'dark' as const,
   },
 ];
 
@@ -127,6 +131,19 @@ export default function PhilanthropyPage() {
 
         {/* Hero — Currently Championing */}
         <section className="hero reveal">
+
+          {/* Cause banner — Spina Bifida Awareness logo */}
+          <div className="hero-banner">
+            <span className="hb-corner-tl"></span>
+            <span className="hb-corner-tr"></span>
+            <span className="hb-corner-bl"></span>
+            <span className="hb-corner-br"></span>
+            <img
+              src="/philanthropy/spinabifida.jpg"
+              alt="Spina Bifida Awareness — Supporting The Fight"
+            />
+          </div>
+
           <div className="hero-grid">
 
             <div className="hero-text">
@@ -187,7 +204,9 @@ export default function PhilanthropyPage() {
                 <span key={idx}>{line}{idx < c.title.split('\n').length - 1 ? <br/> : null}</span>
               ))}</h3>
               <div className="cc-org">{c.org}</div>
-              <div className="cc-logo-slot">[ {c.title.split('\n')[0]} · Official Logo ]</div>
+              <div className={`cc-logo-img ${c.logoBg}`}>
+                <img src={c.logoSrc} alt={`${c.title.split('\n')[0]} logo`} loading="lazy" />
+              </div>
               <p className="cc-desc">{c.desc}</p>
               <div className="cc-stat">
                 <span className="cc-stat-value">{c.statValue}</span>
