@@ -1,152 +1,222 @@
-@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Cinzel:wght@400;500;600&family=Rajdhani:wght@300;400;500;600;700&display=swap');
-
-*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+/* ── KΘΦ II BLOODLINE · LINEAGE TREE ── */
 :root{
-  --gold:#c6930a;--gold-lt:#e8b84b;--gold-dim:rgba(198,147,10,.15);
-  --bone:#f0e8d0;--bone-dim:rgba(240,232,208,.5);--bone-faint:rgba(240,232,208,.25);
-  --deep:#04060f;--navy:#07101f;--surface:rgba(8,14,28,.85);
+  --gold:#c6930a;
+  --gold-soft:rgba(198,147,10,.5);
+  --bone:#f0e8d0;
+  --bone-dim:rgba(240,232,208,.6);
+  --bone-faint:rgba(240,232,208,.32);
+  --deep:#04060f;
+  --deep-2:#080d18;
+  --frame:rgba(198,147,10,.45);
   --border:rgba(198,147,10,.18);
 }
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
 html{scroll-behavior:smooth}
 body{background:var(--deep);color:var(--bone);font-family:'Rajdhani',sans-serif;overflow-x:hidden;cursor:crosshair}
+a{color:inherit;text-decoration:none}
+button{font-family:inherit;cursor:pointer}
 
-/* ── CANVAS BACKGROUND ── */
-#bg-canvas{position:fixed;inset:0;z-index:0;pointer-events:none}
+#lineage-canvas{position:fixed;inset:0;z-index:0;pointer-events:none}
 
-/* ── PROGRESS BAR ── */
-#prog{position:fixed;top:0;left:0;height:2px;background:linear-gradient(90deg,var(--gold),var(--gold-lt));z-index:200;width:0;transition:width .12s}
-
-/* ── NAV ── */
-nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:1.2rem 3rem;display:flex;justify-content:space-between;align-items:center;background:linear-gradient(to bottom,rgba(4,6,15,.95),transparent);border-bottom:1px solid transparent;transition:border-color .3s}
-nav.scrolled{border-color:var(--border)}
-.nav-brand{font-family:'Bebas Neue',cursive;font-size:1.5rem;letter-spacing:6px;color:var(--gold);text-decoration:none}
+/* ── NAV (shared visual language) ── */
+#navbar{position:fixed;top:0;left:0;right:0;z-index:100;padding:1rem 2.4rem;display:flex;justify-content:space-between;align-items:center;background:rgba(4,6,15,.78);backdrop-filter:blur(14px);border-bottom:1px solid var(--border)}
+.nav-brand{font-family:'Cinzel',serif;font-weight:700;font-size:1.1rem;letter-spacing:5px;color:var(--bone)}
+.nav-brand span{color:var(--gold);font-style:italic}
 .nav-links{display:flex;gap:2rem;list-style:none}
-.nav-links a{font-size:.6rem;letter-spacing:3px;text-transform:uppercase;color:var(--bone-dim);text-decoration:none;transition:color .3s}
+.nav-links a{font-family:'Rajdhani',sans-serif;font-weight:600;font-size:.78rem;letter-spacing:3px;text-transform:uppercase;color:var(--bone-dim);transition:color .25s}
 .nav-links a:hover{color:var(--gold)}
-.nav-links a.current{color:var(--gold)}
-.mobile-toggle{display:none;flex-direction:column;gap:5px;cursor:pointer}
-.mobile-toggle span{display:block;width:24px;height:1px;background:var(--bone)}
-@media(max-width:768px){.nav-links{display:none}.mobile-toggle{display:flex}nav{padding:1rem 1.5rem}}
+.mobile-toggle{display:none;flex-direction:column;gap:4px;cursor:pointer}
+.mobile-toggle span{width:24px;height:2px;background:var(--bone)}
 
-/* ── BACK LINK ── */
-.back-link{position:fixed;top:5rem;left:3rem;z-index:90;font-size:.55rem;letter-spacing:4px;color:var(--bone-faint);text-transform:uppercase;text-decoration:none;display:flex;align-items:center;gap:10px;transition:color .3s,letter-spacing .3s}
-.back-link:hover{color:var(--gold);letter-spacing:5px}
-.back-link::before{content:'';width:18px;height:1px;background:currentColor;transition:width .3s}
-.back-link:hover::before{width:28px}
-@media(max-width:768px){.back-link{left:1.5rem;top:4.5rem}}
+/* ── MAIN LAYOUT ── */
+.lineage{position:relative;z-index:2;max-width:1200px;margin:0 auto;padding:5rem 2rem 2rem;min-height:100vh;display:flex;flex-direction:column}
 
-/* ── CHAPTER DOT NAV ── */
-#chapter-nav{position:fixed;right:2rem;top:50%;transform:translateY(-50%);z-index:50;display:flex;flex-direction:column;gap:14px}
-.ch-dot{width:6px;height:6px;border-radius:50%;border:1px solid rgba(198,147,10,.4);background:transparent;cursor:pointer;transition:background .3s,transform .3s;padding:0}
-.ch-dot:hover{background:rgba(198,147,10,.5)}
-.ch-dot.active{background:var(--gold);transform:scale(1.4);box-shadow:0 0 12px rgba(198,147,10,.6)}
-@media(max-width:768px){#chapter-nav{display:none}}
-
-/* ── REVEAL ── */
-.R{opacity:0;transform:translateY(36px);transition:opacity 1s ease,transform 1s ease}
-.R.in{opacity:1;transform:translateY(0)}
-.R.d1{transition-delay:.12s}.R.d2{transition-delay:.26s}.R.d3{transition-delay:.42s}
-.R.d4{transition-delay:.6s}.R.d5{transition-delay:.78s}
-
-/* ── HERO ── */
-#hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:8rem 2rem 4rem;position:relative;z-index:1}
-.hero-eyeline{font-size:.6rem;letter-spacing:8px;color:var(--gold);text-transform:uppercase;margin-bottom:2rem;opacity:0;animation:fadeUp 1.2s ease .3s forwards}
-.hero-title{font-family:'Bebas Neue',cursive;font-size:clamp(4rem,13vw,9rem);letter-spacing:clamp(8px,1.5vw,16px);line-height:.92;color:var(--bone);text-shadow:0 0 80px rgba(198,147,10,.18);opacity:0;animation:revealUp 1.6s cubic-bezier(.16,1,.3,1) .8s forwards}
-.hero-title em{font-style:normal;color:var(--gold);display:block;margin-top:.2em}
-.hero-sub{font-family:'Cinzel',serif;font-size:.85rem;letter-spacing:5px;color:var(--bone-faint);text-transform:uppercase;margin-top:2.5rem;opacity:0;animation:fadeUp 1.2s ease 1.8s forwards;max-width:600px}
-.hero-mark{width:1px;height:60px;background:linear-gradient(to bottom,transparent,var(--gold),transparent);margin:3rem auto 0;opacity:0;animation:fadeUp 1.2s ease 2.4s forwards}
-.scroll-cue{position:absolute;bottom:2.5rem;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:8px;opacity:0;animation:fadeUp 1s ease 3s forwards}
-.scroll-cue span{font-size:.5rem;letter-spacing:4px;color:var(--bone-faint);text-transform:uppercase}
-.scroll-line{width:1px;height:48px;background:linear-gradient(to bottom,var(--gold),transparent);animation:scrollAnim 2.2s ease-in-out infinite}
-@keyframes scrollAnim{0%{transform:scaleY(0);transform-origin:top}50%{transform:scaleY(1);transform-origin:top}51%{transform-origin:bottom}100%{transform:scaleY(0);transform-origin:bottom}}
-@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
-@keyframes revealUp{from{opacity:0;transform:translateY(60px) scale(.96);letter-spacing:0}to{opacity:1;transform:translateY(0) scale(1)}}
-
-/* ── DIVIDER ── */
-.ch-divider{width:100%;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);opacity:.2;position:relative;z-index:1}
-.ch-divider::after{content:attr(data-label);position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-size:.5rem;letter-spacing:5px;color:var(--gold);background:var(--deep);padding:0 2rem;text-transform:uppercase;white-space:nowrap}
-
-/* ── ORIGINS (vertical historical chain) ── */
-#origins{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:8rem 2rem 6rem;position:relative;z-index:1}
-.origins-watermark{position:absolute;top:50%;left:-30px;transform:translateY(-50%);font-family:'Bebas Neue',cursive;font-size:clamp(6rem,15vw,12rem);color:rgba(198,147,10,.03);letter-spacing:-5px;line-height:1;pointer-events:none;user-select:none}
-.origins-wrap{max-width:540px;width:100%;text-align:center;position:relative}
-.origins-eyeline{font-size:.55rem;letter-spacing:6px;color:var(--gold);text-transform:uppercase;margin-bottom:1.2rem}
-.origins-heading{font-family:'Bebas Neue',cursive;font-size:clamp(2rem,5vw,3.4rem);letter-spacing:6px;line-height:1;color:var(--bone);margin-bottom:.6rem}
-.origins-heading em{font-style:normal;color:var(--gold)}
-.origins-tag{font-family:'Cinzel',serif;font-size:.7rem;letter-spacing:4px;color:var(--bone-faint);text-transform:uppercase;margin-bottom:4rem}
-
-.origin-node{display:flex;align-items:center;gap:1.4rem;padding:1.1rem 1.4rem;background:rgba(198,147,10,.025);border:1px solid rgba(198,147,10,.12);border-radius:4px;text-align:left;backdrop-filter:blur(2px);position:relative;transition:border-color .4s,background .4s}
-.origin-node:hover{border-color:rgba(198,147,10,.35);background:rgba(198,147,10,.05)}
-.origin-seal{width:42px;height:42px;border-radius:50%;background:rgba(198,147,10,.06);border:1px solid rgba(198,147,10,.4);display:flex;align-items:center;justify-content:center;font-family:'Cinzel',serif;font-size:.78rem;letter-spacing:1px;color:var(--gold);flex-shrink:0;position:relative}
-.origin-seal::before{content:'';position:absolute;inset:-4px;border-radius:50%;border:1px solid rgba(198,147,10,.15)}
-.origin-text{flex:1}
-.origin-name{font-family:'Bebas Neue',cursive;font-size:1rem;letter-spacing:4px;color:var(--bone);line-height:1.1}
-.origin-sub{font-size:.62rem;letter-spacing:1px;color:var(--bone-faint);margin-top:4px;text-transform:uppercase}
-
-.origin-spine{width:1px;height:32px;background:linear-gradient(to bottom,rgba(198,147,10,.5),rgba(198,147,10,.05));margin:0 auto;opacity:.7;position:relative}
-.origin-spine::before{content:'';position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:5px;height:5px;border-radius:50%;border:1px solid var(--gold);background:var(--deep)}
-
-.origin-terminus{padding:1.4rem 1.6rem;background:linear-gradient(180deg,rgba(198,147,10,.1),rgba(198,147,10,.04));border:1px solid rgba(198,147,10,.4);border-radius:4px;text-align:center;position:relative}
-.origin-terminus::before,.origin-terminus::after{content:'';position:absolute;top:-1px;width:14px;height:14px;border:1px solid var(--gold);border-bottom:none}
-.origin-terminus::before{left:-1px;border-right:none}
-.origin-terminus::after{right:-1px;border-left:none}
-.origin-terminus-name{font-family:'Bebas Neue',cursive;letter-spacing:5px;font-size:1.15rem;color:var(--gold);text-shadow:0 0 18px rgba(198,147,10,.4)}
-.origin-terminus-sub{font-family:'Cinzel',serif;font-size:.6rem;letter-spacing:3px;color:var(--bone-faint);margin-top:6px;text-transform:uppercase}
-
-/* ── BRIDGE (transition between origins and lines) ── */
-#bridge{min-height:60vh;display:flex;align-items:center;justify-content:center;padding:6rem 2rem;text-align:center;position:relative;z-index:1}
-.bridge-mark{font-family:'Cinzel',serif;font-size:.6rem;letter-spacing:5px;color:var(--gold);text-transform:uppercase;margin-bottom:2rem}
-.bridge-line{font-family:'Bebas Neue',cursive;font-size:clamp(1.6rem,3.5vw,2.6rem);letter-spacing:4px;color:var(--bone);line-height:1.3;max-width:780px}
-.bridge-line em{font-style:normal;color:var(--gold)}
-.bridge-flourish{margin:3rem auto 0;width:80px;height:1px;background:var(--gold);position:relative;opacity:.5}
-.bridge-flourish::before,.bridge-flourish::after{content:'';position:absolute;top:50%;transform:translateY(-50%);width:5px;height:5px;border-radius:50%;background:var(--gold)}
-.bridge-flourish::before{left:-12px}
-.bridge-flourish::after{right:-12px}
-
-/* ── LINE CHAPTERS ── */
-.line-chapter{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:6rem 2rem;position:relative;z-index:1;overflow:hidden}
-.line-kanji-bg{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-family:'Noto Serif JP',serif;font-weight:900;font-size:clamp(20rem,55vw,42rem);color:rgba(198,147,10,.035);line-height:1;pointer-events:none;user-select:none;z-index:0}
-
-.line-numeral-wrap{position:relative;margin-bottom:3rem}
-.line-numeral{width:88px;height:88px;border-radius:50%;border:1px solid rgba(198,147,10,.55);display:flex;align-items:center;justify-content:center;font-family:'Cinzel',serif;font-size:1.3rem;letter-spacing:3px;color:var(--gold);background:rgba(4,6,15,.6);position:relative;z-index:2}
-.line-numeral-wrap::before,.line-numeral-wrap::after{content:'';position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);border-radius:50%;border:1px solid rgba(198,147,10,.18);pointer-events:none}
-.line-numeral-wrap::before{width:108px;height:108px}
-.line-numeral-wrap::after{width:128px;height:128px;border-color:rgba(198,147,10,.08)}
-
-.line-eyeline{font-size:.55rem;letter-spacing:8px;color:var(--gold);text-transform:uppercase;margin-bottom:1.4rem;opacity:.85}
-
-.line-name{font-family:'Bebas Neue',cursive;font-size:clamp(3.2rem,11vw,8.6rem);letter-spacing:clamp(6px,1.4vw,16px);line-height:.95;color:var(--bone);text-shadow:0 0 70px rgba(198,147,10,.18);text-align:center;position:relative;z-index:1}
-.line-name span{display:inline-block;opacity:0;transform:translateY(50px) rotateX(60deg);transform-origin:bottom;transition:opacity .8s ease,transform 1s cubic-bezier(.16,1,.3,1)}
-.line-name.in span{opacity:1;transform:translateY(0) rotateX(0)}
-.line-name span.space{width:.4em}
-
-.line-flourish{margin-top:2.6rem;width:90px;height:1px;background:var(--gold);position:relative;opacity:.7}
-.line-flourish::before,.line-flourish::after{content:'';position:absolute;top:50%;transform:translateY(-50%);width:5px;height:5px;border:1px solid var(--gold);border-radius:50%;background:var(--deep)}
-.line-flourish::before{left:-12px}
-.line-flourish::after{right:-12px}
-
-.line-marking{font-family:'Cinzel',serif;font-size:.55rem;letter-spacing:6px;color:var(--bone-faint);text-transform:uppercase;margin-top:2rem;opacity:.6}
-
-/* ── CLOSING ── */
-#closing{min-height:90vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:8rem 2rem;position:relative;z-index:1}
-.closing-mark{font-family:'Bebas Neue',cursive;font-size:clamp(2.4rem,6vw,4.4rem);letter-spacing:6px;line-height:1;color:var(--bone);margin-bottom:1.4rem}
-.closing-mark em{font-style:normal;color:var(--gold)}
-.closing-motto{font-family:'Cinzel',serif;font-size:.95rem;letter-spacing:5px;color:var(--gold);text-transform:uppercase;margin:2rem 0 3rem;text-shadow:0 0 24px rgba(198,147,10,.35)}
-.closing-back{display:inline-flex;align-items:center;gap:14px;font-size:.6rem;letter-spacing:5px;color:var(--bone-dim);text-transform:uppercase;text-decoration:none;padding:1rem 1.8rem;border:1px solid rgba(198,147,10,.3);border-radius:2px;transition:color .3s,border-color .3s,background .3s,letter-spacing .3s}
-.closing-back:hover{color:var(--gold);border-color:var(--gold);background:rgba(198,147,10,.05);letter-spacing:6px}
-.closing-back::before{content:'←';font-size:.9rem;line-height:1}
-
-@media(max-width:768px){
-  #hero{padding:6rem 1.2rem 4rem}
-  .hero-title{letter-spacing:4px}
-  #origins{padding:5rem 1.2rem}
-  .line-chapter{padding:5rem 1.2rem}
-  .line-numeral{width:74px;height:74px}
-  .line-numeral-wrap::before{width:90px;height:90px}
-  .line-numeral-wrap::after{width:108px;height:108px}
-  .line-name{letter-spacing:4px}
-  .closing-back{font-size:.55rem;padding:.85rem 1.4rem}
+/* ── COMPACT HERO ── */
+.lh-hero{text-align:center;margin-bottom:2.5rem}
+.lh-tag{
+  display:inline-flex;align-items:center;gap:12px;
+  font-family:'Cinzel',serif;font-size:.58rem;letter-spacing:5px;
+  color:var(--gold);text-transform:uppercase;margin-bottom:.7rem;opacity:.85;
+}
+.lh-tag::before,.lh-tag::after{content:'';width:28px;height:1px;background:var(--gold);opacity:.6}
+.lh-title{
+  font-family:'Bebas Neue',cursive;font-size:clamp(2.4rem,5vw,3.8rem);
+  letter-spacing:8px;line-height:1;color:var(--bone);margin-bottom:.5rem;
+  text-shadow:0 0 30px rgba(198,147,10,.18);
+}
+.lh-sub{
+  font-family:'Cinzel',serif;font-size:.6rem;letter-spacing:4px;
+  color:var(--bone-dim);text-transform:uppercase;font-weight:500;
 }
 
-/* ── THE TIDES SEAL — kanji instead of Roman numeral, slightly different rendering ── */
-.tides-seal{font-family:'Noto Serif JP',serif !important;font-weight:700;font-size:1.7rem !important;letter-spacing:0 !important;line-height:1}
+/* ── THE TREE ── */
+.tree{display:flex;flex-direction:column;align-items:center;flex:1}
+
+/* Animated reveal — every node + link uses --d delay */
+.tree .node, .tree .link, .tree .trunk-stem, .tree .branch-label, .tree .branch-bar, .tree .line-cell, .tree .tides-divider, .tree .tides-wrap, .lineage-foot{
+  opacity:0;
+  animation:lineageIn .7s cubic-bezier(.16,1,.3,1) forwards;
+  animation-delay:var(--d,0s);
+}
+@keyframes lineageIn{
+  from{opacity:0;transform:translateY(8px)}
+  to{opacity:1;transform:translateY(0)}
+}
+
+/* Node — base card style */
+.node{
+  position:relative;
+  background:linear-gradient(180deg,rgba(8,14,28,.7),rgba(4,6,15,.9));
+  border:1px solid var(--border);
+  padding:.7rem 1.4rem;text-align:center;
+  transition:border-color .35s,transform .35s,box-shadow .35s;
+}
+.node::before{
+  content:'';position:absolute;inset:4px;
+  border:1px solid rgba(198,147,10,.08);pointer-events:none;
+  transition:border-color .35s;
+}
+.node:hover{
+  border-color:var(--gold-soft);transform:translateY(-1px);
+  box-shadow:0 14px 28px -18px rgba(0,0,0,.7),0 0 18px rgba(198,147,10,.05);
+}
+.node:hover::before{border-color:rgba(198,147,10,.2)}
+
+.n-label{font-family:'Cinzel',serif;font-size:.5rem;letter-spacing:3px;color:var(--gold);text-transform:uppercase;margin-bottom:.25rem;opacity:.8}
+.n-name{font-family:'Bebas Neue',cursive;font-size:1.05rem;letter-spacing:3px;color:var(--bone);text-transform:uppercase;line-height:1}
+.n-mark{font-family:'Cinzel',serif;font-size:.5rem;letter-spacing:2px;color:var(--bone-faint);text-transform:uppercase;margin-top:.4rem}
+
+/* Ancestor nodes — small, simple */
+.node.ancestor{min-width:200px}
+
+/* Trunk — KTP II — bigger and more ornate */
+.node.trunk{
+  min-width:280px;padding:1rem 1.6rem;
+  background:linear-gradient(180deg,rgba(20,28,46,.9),rgba(8,12,22,.95));
+  border-color:var(--frame);
+  box-shadow:0 18px 36px -22px rgba(0,0,0,.7),0 0 24px rgba(198,147,10,.06);
+}
+.node.trunk::before{border-color:rgba(198,147,10,.4)}
+.node.trunk::after{
+  content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);
+  width:60%;height:2px;
+  background:linear-gradient(90deg,transparent,var(--gold),transparent);
+}
+.node.trunk .n-name{font-size:1.4rem;letter-spacing:4px;margin-top:.2rem}
+
+/* Vertical link between root nodes */
+.link{
+  width:1px;height:30px;
+  background:linear-gradient(to bottom,rgba(198,147,10,.5),rgba(198,147,10,.15));
+}
+
+/* Trunk stem — vertical line from KTP II down to branch bar */
+.trunk-stem{
+  width:1px;height:46px;margin-top:0;
+  background:linear-gradient(to bottom,rgba(198,147,10,.55),rgba(198,147,10,.25));
+}
+
+/* Branch label between trunk and lines */
+.branch-label{
+  font-family:'Cinzel',serif;font-size:.55rem;letter-spacing:4px;
+  color:var(--gold);text-transform:uppercase;
+  margin:.6rem 0 1.4rem;display:flex;align-items:center;gap:14px;
+}
+.branch-label::before,.branch-label::after{content:'';width:50px;height:1px;background:var(--gold);opacity:.45}
+
+/* Lines row — horizontal grid with horizontal branch bar above */
+.lines-row{
+  position:relative;
+  display:grid;grid-template-columns:repeat(5,1fr);
+  gap:1rem;width:100%;max-width:900px;
+  padding-top:30px;
+}
+.branch-bar{
+  position:absolute;top:0;left:10%;right:10%;
+  height:1px;
+  background:linear-gradient(90deg,transparent 0%,rgba(198,147,10,.55) 10%,rgba(198,147,10,.55) 90%,transparent 100%);
+}
+.line-cell{display:flex;flex-direction:column;align-items:center}
+.line-stem{
+  width:1px;height:30px;margin-top:-30px;margin-bottom:0;
+  background:linear-gradient(to bottom,rgba(198,147,10,.55),rgba(198,147,10,.25));
+}
+.line-node{
+  width:100%;display:flex;flex-direction:column;align-items:center;gap:.35rem;
+  padding:1rem .7rem;
+}
+.ln-numeral{
+  font-family:'Bebas Neue',cursive;font-size:.95rem;letter-spacing:2px;
+  color:var(--gold);opacity:.75;
+}
+.ln-kanji{
+  font-family:'Noto Serif JP',serif;font-weight:700;font-size:2.2rem;
+  color:var(--gold);line-height:1;text-shadow:0 0 22px rgba(198,147,10,.25);
+  margin:.15rem 0 .25rem;
+}
+.ln-name{
+  font-family:'Bebas Neue',cursive;font-size:.95rem;letter-spacing:3px;
+  color:var(--bone);text-transform:uppercase;line-height:1.1;
+}
+.ln-name span{font-size:.6rem;color:var(--bone-faint);letter-spacing:2px;font-weight:400;display:inline-block;margin-top:1px}
+.ln-mark{
+  font-family:'Cinzel',serif;font-size:.48rem;letter-spacing:1.5px;
+  color:var(--bone-faint);text-transform:uppercase;margin-top:.3rem;line-height:1.4;
+}
+
+/* ── TIDES — visually separate, no connection ── */
+.tides-divider{
+  margin:2.5rem 0 1.2rem;
+  font-family:'Cinzel',serif;font-size:.55rem;letter-spacing:4px;
+  color:var(--bone-faint);text-transform:uppercase;
+  display:flex;align-items:center;gap:14px;
+}
+.tides-divider::before,.tides-divider::after{content:'';width:50px;height:1px;background:rgba(198,147,10,.3)}
+
+.tides-wrap{display:flex;justify-content:center;width:100%}
+.tides-node{
+  min-width:240px;padding:1.1rem 1.4rem;
+  display:flex;flex-direction:column;align-items:center;gap:.3rem;
+}
+.tides-kanji{font-size:2.4rem !important}
+.tides-node .ln-name{font-size:1.05rem;letter-spacing:4px}
+.tides-node .ln-mark{margin-top:.4rem}
+
+/* ── FOOTER ── */
+.lineage-foot{
+  text-align:center;margin-top:auto;padding:2rem 0 1rem;
+}
+.motto{
+  font-family:'Cinzel',serif;font-size:.7rem;letter-spacing:5px;
+  color:var(--gold);text-transform:uppercase;margin-bottom:1rem;
+}
+.back{
+  display:inline-block;
+  font-family:'Cinzel',serif;font-size:.55rem;letter-spacing:4px;
+  color:var(--bone-dim);text-transform:uppercase;
+  padding:.7rem 1.4rem;border:1px solid rgba(198,147,10,.3);
+  transition:color .3s,border-color .3s,background .3s,letter-spacing .3s;
+}
+.back:hover{color:var(--gold);border-color:var(--gold);background:rgba(198,147,10,.05);letter-spacing:5px}
+
+/* ── RESPONSIVE ── */
+@media(max-width:900px){
+  .lineage{padding:5rem 1rem 2rem}
+  .lh-title{letter-spacing:5px}
+  .lines-row{grid-template-columns:repeat(3,1fr);gap:.8rem;padding-top:0;max-width:680px}
+  .branch-bar{display:none}
+  .line-stem{display:none}
+}
+
+@media(max-width:700px){
+  #navbar{padding:1rem 1.2rem}
+  .nav-links{display:none}
+  .nav-links.open{display:flex;position:absolute;top:100%;left:0;right:0;flex-direction:column;background:rgba(4,6,15,.96);padding:1rem 1.2rem;gap:1rem}
+  .mobile-toggle{display:flex}
+  .lh-hero{margin-bottom:1.5rem}
+  .lines-row{grid-template-columns:repeat(2,1fr);gap:.8rem;max-width:420px}
+  .node.trunk{min-width:240px}
+  .node.ancestor{min-width:180px}
+  .ln-kanji{font-size:1.8rem}
+  .tides-node{min-width:200px}
+}
