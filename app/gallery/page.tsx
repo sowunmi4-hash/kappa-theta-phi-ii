@@ -279,9 +279,7 @@ export default function GalleryPage() {
           <div className="gh-tag">The Archive · Sha</div>
           <h1 className="gh-title">Gallery</h1>
           <p className="gh-sub">Moments captured · Memory made permanent</p>
-          <p className="gh-quote">Every plate a record of what the chapter has done together — kept, catalogued, preserved.</p>
         </div>
-        {volumes.length > 0 && <div className="gh-scroll">Browse the archive</div>}
       </section>
 
       {/* ── VOLUME PICKER ── */}
