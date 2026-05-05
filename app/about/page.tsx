@@ -195,7 +195,7 @@ export default function AboutPage() {
             <div className="found-motto">Death Before Dishonor</div>
             <div className="found-hr"></div>
             <div className="found-rows">
-              <div className="found-row"><span>Head Founder</span><span>Neven</span></div>
+              <div className="found-row"><span>Head Founder</span><span>Tactician</span></div>
               <div className="found-row"><span>Co-Founder</span><span>Boss Sauce</span></div>
               <div className="found-row"><span>Co-Founder</span><span>Energy</span></div>
               <div className="found-row"><span>Co-Founder</span><span>Cool Breeze</span></div>
