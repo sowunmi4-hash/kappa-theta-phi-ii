@@ -55,26 +55,26 @@ export async function POST(req) {
 }
 
 export async function DELETE(req) {
-  const body = await req.json();
-  const { id, file_url } = body;
-  if (!id) return NextResponse.json({ error: 'Missing id' }, { status: 400 });
+  try {
+    const body = await req.json();
+    const { id, file_url } = body;
+    if (!id) return Response.json({ error: 'Missing id' }, { status: 400 });
 
-  // Delete from storage
-  if (file_url && !file_url.includes('youtube')) {
-    const path = file_url.split('/storage/v1/object/public/gallery/')[1];
-    if (path) {
-      await fetch(`${SUPABASE_URL}/storage/v1/object/gallery/${path}`, {
-        method: 'DELETE',
-        headers: { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${SUPABASE_ANON_KEY}` }
-      });
+    const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    // Delete from storage
+    if (file_url && !file_url.includes('youtube')) {
+      const path = file_url.split('/storage/v1/object/public/gallery/')[1];
+      if (path) await supabase.storage.from('gallery').remove([path]);
     }
+
+    // Delete from DB
+    const membersSupabase = createClient(SUPABASE_URL, SUPABASE_KEY, { db: { schema: 'members' } });
+    await membersSupabase.from('gallery_posts').delete().eq('id', id);
+
+    return Response.json({ success: true });
+  } catch (err) {
+    console.error('[gallery DELETE] error:', err);
+    return Response.json({ success: false, message: 'Server error.' }, { status: 500 });
   }
-
-  // Delete from DB
-  await fetch(`${SUPABASE_URL}/rest/v1/gallery_posts?id=eq.${id}`, {
-    method: 'DELETE',
-    headers: { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${SUPABASE_ANON_KEY}`, 'Content-Profile': 'members' }
-  });
-
-  return NextResponse.json({ success: true });
 }
