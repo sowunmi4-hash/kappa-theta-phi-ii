@@ -11,22 +11,18 @@ type Member = {
   image?: string | null;
 };
 
-const FOUNDERS: Member[] = [
+// Roster — single ordered list (Founders → Iron Fleet → faction members → unranked).
+// Stagger entrance follows this order, so it should reflect ceremonial hierarchy.
+const ROSTER: Member[] = [
   { frat: 'Big Brother Tactician', role: 'Head Founder', fraction: 'Kuro Kanda', title: 'Shogun', iron: true, image: '/brothers/tactician.png' },
   { frat: 'Big Brother Boss Sauce', role: 'Co-Founder', fraction: 'Ishi No', title: 'Shogun', iron: true, image: '/brothers/boss-sauce.png' },
   { frat: 'Big Brother Energy', role: 'Co-Founder', fraction: 'Kurofune', title: 'Shogun', iron: true, image: '/brothers/energy.png' },
   { frat: 'Big Brother Cool Breeze', role: 'Co-Founder', iron: true, image: '/brothers/cool-breeze.png' },
-];
-
-const IRON_FLEET: Member[] = [
   { frat: 'Big Brother Substance', role: 'Iron Fleet', fraction: 'Taidō', title: 'Daimyo', iron: true, image: '/brothers/substance.png' },
   { frat: 'Big Brother Noles', role: 'Iron Fleet', fraction: 'Ishi No', title: 'Daimyo', iron: true, image: '/brothers/noles.png' },
   { frat: 'Big Brother Wildwon', role: 'Iron Fleet', fraction: 'Kuro Kanda', title: 'Daimyo', iron: true, image: '/brothers/wildwon.png' },
   { frat: 'Big Brother CATALYST', role: 'Iron Fleet', fraction: 'Kuro Kanda', title: 'KyōKishi — Chief Officer', iron: true, image: '/brothers/catalyst.png' },
   { frat: 'Big Brother Trench', role: 'Iron Fleet', fraction: 'Ishi No', title: 'Kaizoku Kansatsu — Chief Officer', iron: true, image: '/brothers/trench.png' },
-];
-
-const BROTHERS: Member[] = [
   { frat: 'Big Brother Sage', fraction: 'Ishi No', title: 'Member', image: '/brothers/sage.png' },
   { frat: 'Big Brother Fathom', fraction: 'Kuro Kanda', title: 'Member', image: '/brothers/fathom.png' },
   { frat: 'Big Brother Khaos', fraction: 'Kuro Kanda', title: 'Member', image: '/brothers/khaos.png' },
@@ -40,66 +36,301 @@ const BROTHERS: Member[] = [
   { frat: 'Big Brother Wildcard', image: '/brothers/wildcard.png' },
 ];
 
-function getInitials(name: string) {
-  const parts = name.replace(/^Big Bro(ther)?\s*/i, '').trim().split(/\s+/);
+const FACTION_GLYPH: Record<string, string> = {
+  'Kuro Kanda': '黒',
+  'Ishi No':    '石',
+  'Kurofune':   '船',
+  'Taidō':      '体',
+};
+
+const FACTION_FROM_KEY: Record<string, string> = {
+  'kuro-kanda': 'Kuro Kanda',
+  'ishi-no':    'Ishi No',
+  'kurofune':   'Kurofune',
+  'taido':      'Taidō',
+};
+
+function factionKey(f?: string | null): string {
+  if (!f) return '';
+  return f.toLowerCase().replace('ō', 'o').replace(/\s+/g, '-');
+}
+
+function displayName(frat: string): string {
+  return frat.replace(/^Big Brother\s+/i, '');
+}
+
+function getInitial(frat: string): string {
+  const name = displayName(frat);
+  const parts = name.split(/\s+/);
   return parts.map(p => p[0]).join('').slice(0, 2).toUpperCase();
 }
 
-function MemberCard({ frat, role, fraction, title, iron, image }: Member) {
-  return (
-    <div className={`member-card${iron ? ' iron' : ''}`}>
-      {image ? (
-        <img src={image} alt={frat} className="member-portrait" />
-      ) : (
-        <div className="member-avatar">{getInitials(frat)}</div>
-      )}
-      <div className="member-frat-name">{frat}</div>
-      {role && <div className="member-role">{role}</div>}
-      {fraction && <div className="member-fraction">{fraction} Faction</div>}
-      {title && <div className="member-fraction-title">{title}</div>}
-      {iron && <div className="iron-badge">Iron Compass</div>}
-    </div>
-  );
+type View = {
+  tier: string;
+  tierKey: 'founder' | 'iron' | 'member' | 'unranked';
+  isFounder: boolean;
+  stamp: string | null;
+  glyph: string | null;
+  roleLine: string | null;
+  member: Member;
+};
+
+function brotherView(b: Member): View {
+  const isFounder = b.role === 'Head Founder' || b.role === 'Co-Founder';
+  const isIron = b.role === 'Iron Fleet';
+  const isOfficer = !!(isIron && b.title?.includes('Chief Officer'));
+
+  const tier =
+    b.role === 'Head Founder' ? 'tier-head' :
+    b.role === 'Co-Founder'   ? 'tier-co' :
+    isOfficer                 ? 'tier-officer' :
+    isIron                    ? 'tier-iron' :
+    b.fraction                ? 'tier-member' :
+                                'tier-fleet';
+
+  const tierKey: View['tierKey'] =
+    isFounder  ? 'founder' :
+    isIron     ? 'iron' :
+    b.fraction ? 'member' :
+                 'unranked';
+
+  const stamp =
+    b.role === 'Head Founder' ? 'Head Founder' :
+    b.role === 'Co-Founder'   ? 'Co-Founder' :
+    isOfficer                 ? 'Chief Officer' :
+    isIron                    ? 'Iron Fleet' :
+                                null;
+
+  const glyph = b.fraction ? FACTION_GLYPH[b.fraction] : (isFounder ? '⚓' : null);
+
+  let roleLine: string | null = null;
+  if (b.role === 'Head Founder') roleLine = 'Founder · Visionary';
+  else if (b.role === 'Co-Founder') roleLine = 'Co-Founder';
+  else if (isOfficer && b.title) roleLine = b.title.split('—')[0].trim();
+  else if (isIron && b.title) roleLine = b.title;
+
+  return { tier, tierKey, isFounder, stamp, glyph, roleLine, member: b };
+}
+
+const VIEWS: View[] = ROSTER.map(brotherView);
+
+const COUNTS: Record<string, number> = {
+  all: VIEWS.length,
+  founder: VIEWS.filter(v => v.tierKey === 'founder').length,
+  iron: VIEWS.filter(v => v.tierKey === 'iron').length,
+  unranked: VIEWS.filter(v => v.tierKey === 'unranked').length,
+  'kuro-kanda': VIEWS.filter(v => v.member.fraction === 'Kuro Kanda').length,
+  'ishi-no':    VIEWS.filter(v => v.member.fraction === 'Ishi No').length,
+  'kurofune':   VIEWS.filter(v => v.member.fraction === 'Kurofune').length,
+  'taido':      VIEWS.filter(v => v.member.fraction === 'Taidō').length,
+};
+
+function shouldShow(v: View, filter: string): boolean {
+  if (filter === 'all')      return true;
+  if (filter === 'founder')  return v.tierKey === 'founder';
+  if (filter === 'iron')     return v.tierKey === 'iron';
+  if (filter === 'unranked') return v.tierKey === 'unranked';
+  return v.member.fraction === FACTION_FROM_KEY[filter];
 }
 
 export default function BrothersPage() {
-  const audioRef = useRef<HTMLAudioElement>(null);
+  const [filter, setFilter] = useState('all');
+  const [spotlight, setSpotlight] = useState<View | null>(null);
+  const [spotActive, setSpotActive] = useState(false);
+  const [imgErrors, setImgErrors] = useState<Set<string>>(new Set());
+
+  const wallRef = useRef<HTMLElement | null>(null);
+  const cardRefsRef = useRef<Map<string, HTMLElement>>(new Map());
+  const dustCanvasRef = useRef<HTMLCanvasElement | null>(null);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+
   const [playing, setPlaying] = useState(false);
   const [progress, setProgress] = useState(0);
 
   function togglePlay() {
     if (!audioRef.current) return;
-    if (playing) { audioRef.current.pause(); }
-    else { audioRef.current.play(); }
+    if (playing) audioRef.current.pause();
+    else audioRef.current.play().catch(() => {});
     setPlaying(!playing);
   }
 
+  function markImgError(key: string) {
+    setImgErrors(prev => { const n = new Set(prev); n.add(key); return n; });
+  }
+
+  // ── DUST CANVAS ─────────────────────────────────────────
+  useEffect(() => {
+    const canvas = dustCanvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+    let W = 0, H = 0;
+    function resize() { W = canvas!.width = window.innerWidth; H = canvas!.height = window.innerHeight; }
+    resize();
+    window.addEventListener('resize', resize);
+    type Mote = { x:number; y:number; vx:number; vy:number; size:number; a:number; pulse:number };
+    const dust: Mote[] = [];
+    function makeMote(): Mote {
+      return {
+        x: Math.random() * W,
+        y: Math.random() * H,
+        vx: (Math.random() * 0.18 + 0.04) * (Math.random() < 0.5 ? 1 : -1),
+        vy: (Math.random() - 0.5) * 0.04,
+        size: Math.random() * 1.1 + 0.4,
+        a: Math.random() * 0.25 + 0.08,
+        pulse: Math.random() * Math.PI * 2,
+      };
+    }
+    for (let i = 0; i < 28; i++) dust.push(makeMote());
+    let raf = 0;
+    function tick() {
+      ctx!.clearRect(0, 0, W, H);
+      dust.forEach(m => {
+        m.x += m.vx; m.y += m.vy; m.pulse += 0.008;
+        if (m.x < -10) m.x = W + 10;
+        if (m.x > W + 10) m.x = -10;
+        if (m.y < -10) m.y = H + 10;
+        if (m.y > H + 10) m.y = -10;
+        const alpha = m.a * (0.7 + Math.sin(m.pulse) * 0.3);
+        ctx!.globalAlpha = alpha;
+        ctx!.fillStyle = '#c6930a';
+        ctx!.beginPath();
+        ctx!.arc(m.x, m.y, m.size, 0, Math.PI * 2);
+        ctx!.fill();
+      });
+      ctx!.globalAlpha = 1;
+      raf = requestAnimationFrame(tick);
+    }
+    tick();
+    return () => { cancelAnimationFrame(raf); window.removeEventListener('resize', resize); };
+  }, []);
+
+  // ── STAT COUNT-UP ────────────────────────────────────────
+  useEffect(() => {
+    const targets = [
+      { id: 'stat-brothers', val: COUNTS.all },
+      { id: 'stat-founders', val: COUNTS.founder },
+      { id: 'stat-fleet',    val: COUNTS.iron },
+      { id: 'stat-factions', val: 4 },
+    ];
+    function countUp(el: HTMLElement, target: number, duration: number) {
+      const start = performance.now();
+      function step(now: number) {
+        const t = Math.min((now - start) / duration, 1);
+        const eased = 1 - Math.pow(1 - t, 3);
+        const v = Math.round(eased * target);
+        el.textContent = v < 10 ? '0' + v : '' + v;
+        if (t < 1) requestAnimationFrame(step);
+      }
+      requestAnimationFrame(step);
+    }
+    const timer = window.setTimeout(() => {
+      targets.forEach(({ id, val }) => {
+        const el = document.getElementById(id);
+        if (el) countUp(el, val, 1300);
+      });
+    }, 1100);
+    return () => clearTimeout(timer);
+  }, []);
+
+  // ── AUDIO PROGRESS ───────────────────────────────────────
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio) return;
     const update = () => { if (audio.duration) setProgress((audio.currentTime / audio.duration) * 100); };
-    const ended = () => { setPlaying(false); setProgress(0); };
+    const ended  = () => { setPlaying(false); setProgress(0); };
     audio.addEventListener('timeupdate', update);
     audio.addEventListener('ended', ended);
     return () => { audio.removeEventListener('timeupdate', update); audio.removeEventListener('ended', ended); };
   }, []);
 
+  // ── FILTER PILL CLICK + FLIP ─────────────────────────────
+  function handleFilterClick(next: string) {
+    if (next === filter) return;
+
+    // Snapshot current positions of visible cards BEFORE state change
+    const firstRects = new Map<string, DOMRect>();
+    const wasVisibleSet = new Set<string>();
+    cardRefsRef.current.forEach((el, key) => {
+      if (el.classList.contains('is-visible')) {
+        firstRects.set(key, el.getBoundingClientRect());
+        wasVisibleSet.add(key);
+      }
+    });
+
+    setFilter(next);
+
+    // After paint: animate cards
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        cardRefsRef.current.forEach((el, key) => {
+          const isVisible = el.classList.contains('is-visible');
+          const wasVisible = wasVisibleSet.has(key);
+
+          if (isVisible && wasVisible) {
+            // FLIP — slide from old to new position
+            const oldRect = firstRects.get(key)!;
+            const newRect = el.getBoundingClientRect();
+            const dx = oldRect.left - newRect.left;
+            const dy = oldRect.top - newRect.top;
+            if (Math.abs(dx) < 0.5 && Math.abs(dy) < 0.5) return;
+            el.style.transition = 'none';
+            el.style.transform = `translate(${dx}px, ${dy}px)`;
+            // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+            el.offsetHeight;
+            requestAnimationFrame(() => {
+              el.style.transition = 'transform .55s cubic-bezier(.16,1,.3,1)';
+              el.style.transform = '';
+              window.setTimeout(() => { el.style.transition = ''; el.style.transform = ''; }, 600);
+            });
+          } else if (isVisible && !wasVisible) {
+            // ENTERING — fresh fade-in
+            el.style.transition = 'none';
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(16px) scale(.96)';
+            // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+            el.offsetHeight;
+            requestAnimationFrame(() => {
+              el.style.transition = 'opacity .5s ease, transform .55s cubic-bezier(.16,1,.3,1)';
+              el.style.opacity = '';
+              el.style.transform = '';
+              window.setTimeout(() => { el.style.transition = ''; }, 600);
+            });
+          }
+        });
+      });
+    });
+  }
+
+  // ── SPOTLIGHT ─────────────────────────────────────────────
+  function openSpotlight(v: View) {
+    setSpotlight(v);
+    setSpotActive(false);
+    window.setTimeout(() => setSpotActive(true), 350);
+  }
+  function closeSpotlight() {
+    setSpotActive(false);
+    window.setTimeout(() => setSpotlight(null), 500);
+  }
   useEffect(() => {
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); });
-    }, { threshold: 0.1 });
-    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
-    return () => observer.disconnect();
-  }, []);
+    function onKey(e: KeyboardEvent) {
+      if (e.key === 'Escape' && spotlight) closeSpotlight();
+    }
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [spotlight]);
 
   return (
-    <>
+    <div className="brothers-shell">
+      <canvas ref={dustCanvasRef} id="dust-canvas"></canvas>
+
       <nav id="navbar">
         <a href="/" className="nav-brand">KΘΦ <span>II</span></a>
         <ul className="nav-links" id="navLinks">
           <li><a href="/">Home</a></li>
           <li><a href="/about">About</a></li>
-          <li><a href="/brothers">Brothers</a></li>
+          <li><a href="/brothers" className="current">Brothers</a></li>
           <li><a href="/gallery">Gallery</a></li>
         </ul>
         <div className="mobile-toggle" onClick={() => document.getElementById('navLinks')?.classList.toggle('open')}>
@@ -107,76 +338,164 @@ export default function BrothersPage() {
         </div>
       </nav>
 
-      <main className="brothers-page">
+      <audio ref={audioRef} src="/brothers/anthem.mp3" preload="metadata" />
 
-        <audio ref={audioRef} src="/brothers/anthem.mp3" preload="metadata" />
+      {/* Audio player — floating, gold-themed */}
+      <button className={`audio-player${playing ? ' playing' : ''}`} onClick={togglePlay} aria-label="Play anthem">
+        <span className="audio-btn">{playing ? '❚❚' : '▶'}</span>
+        <span className="audio-info">
+          <span className="audio-title">Hoist The Colours</span>
+          <span className="audio-bar"><span className="audio-bar-fill" style={{ width: `${progress}%` }} /></span>
+        </span>
+      </button>
 
-        <div className="audio-player" onClick={togglePlay}>
-          <div className="audio-btn">{playing ? '❚❚' : '▶'}</div>
-          <div className="audio-info">
-            <div className="audio-title">Hoist the Colours</div>
-            <div className="audio-bar"><div className="audio-bar-fill" style={{ width: `${progress}%` }} /></div>
+      {/* HERO BAND */}
+      <section id="hero-band">
+        <div className="hero-glyph">兄</div>
+        <div className="hero-content">
+          <div className="hero-left">
+            <p className="hero-eyeline">Wokou-Corsairs · Chapter II</p>
+            <h1 className="hero-title">The<em>Brotherhood</em></h1>
+            <p className="hero-tag">Death Before Dishonor · Est. 3·14·21</p>
+          </div>
+          <div className="hero-stats">
+            <div><div className="stat-num" id="stat-brothers">00</div><div className="stat-lbl">Brothers</div></div>
+            <div><div className="stat-num" id="stat-founders">00</div><div className="stat-lbl">Founders</div></div>
+            <div><div className="stat-num" id="stat-fleet">00</div><div className="stat-lbl">Iron Fleet</div></div>
+            <div><div className="stat-num" id="stat-factions">00</div><div className="stat-lbl">Factions</div></div>
           </div>
         </div>
+      </section>
 
-        <section className="brothers-hero">
-          <div className="brothers-hero-bg" />
-          <div className="brothers-hero-kanji">兄</div>
-          <div className="brothers-hero-content">
-            <div className="brothers-hero-tag">The Brotherhood</div>
-            <h1 className="brothers-hero-title">Our Brothers</h1>
-            <p className="brothers-hero-sub">20 brothers. One bloodline. One legacy.</p>
-          </div>
-        </section>
+      {/* FILTER BAR */}
+      <div id="filter-bar">
+        <FilterPill active={filter==='all'}        onClick={() => handleFilterClick('all')}>All <span className="count">{COUNTS.all}</span></FilterPill>
+        <FilterPill active={filter==='founder'}    onClick={() => handleFilterClick('founder')}>Founders <span className="count">{COUNTS.founder}</span></FilterPill>
+        <FilterPill active={filter==='iron'}       onClick={() => handleFilterClick('iron')}>Iron Fleet <span className="count">{COUNTS.iron}</span></FilterPill>
+        <FilterPill active={filter==='kuro-kanda'} onClick={() => handleFilterClick('kuro-kanda')}><span className="glyph">黒</span> Kuro Kanda <span className="count">{COUNTS['kuro-kanda']}</span></FilterPill>
+        <FilterPill active={filter==='ishi-no'}    onClick={() => handleFilterClick('ishi-no')}><span className="glyph">石</span> Ishi No <span className="count">{COUNTS['ishi-no']}</span></FilterPill>
+        <FilterPill active={filter==='kurofune'}   onClick={() => handleFilterClick('kurofune')}><span className="glyph">船</span> Kurofune <span className="count">{COUNTS.kurofune}</span></FilterPill>
+        <FilterPill active={filter==='taido'}      onClick={() => handleFilterClick('taido')}><span className="glyph">体</span> Taidō <span className="count">{COUNTS.taido}</span></FilterPill>
+        <FilterPill active={filter==='unranked'}   onClick={() => handleFilterClick('unranked')}>Fleet <span className="count">{COUNTS.unranked}</span></FilterPill>
+      </div>
 
-        <div className="brothers-stats">
-          <div className="brothers-stat">
-            <div className="brothers-stat-num">20</div>
-            <div className="brothers-stat-label">Brothers</div>
-          </div>
-          <div className="brothers-stat">
-            <div className="brothers-stat-num">9</div>
-            <div className="brothers-stat-label">Iron Fleet</div>
-          </div>
-          <div className="brothers-stat">
-            <div className="brothers-stat-num">4</div>
-            <div className="brothers-stat-label">Factions</div>
-          </div>
-          <div className="brothers-stat">
-            <div className="brothers-stat-num">4</div>
-            <div className="brothers-stat-label">Founders</div>
-          </div>
-        </div>
-
-        <section className="roster-section reveal">
-          <div className="roster-section-tag">The Architects</div>
-          <div className="roster-section-title">Founders</div>
-          <div className="roster-grid">
-            {FOUNDERS.map(m => <MemberCard key={m.frat} {...m} />)}
-          </div>
-        </section>
-
-        <section className="roster-section reveal">
-          <div className="roster-section-tag">The Founding Compass</div>
-          <div className="roster-section-title">Iron Fleet</div>
-          <div className="roster-grid">
-            {IRON_FLEET.map(m => <MemberCard key={m.frat} {...m} />)}
-          </div>
-        </section>
-
-        <section className="roster-section reveal">
-          <div className="roster-section-tag">The Brotherhood</div>
-          <div className="roster-section-title">Brothers</div>
-          <div className="roster-grid">
-            {BROTHERS.map(m => <MemberCard key={m.frat} frat={m.frat} role="Member" fraction={m.fraction} title={m.title} image={m.image} />)}
-          </div>
-        </section>
-
-        <footer className="brothers-footer">
-          <div className="footer-brand">KΘΦ II — WOKOU-CORSAIRS</div>
-          <p>&copy; 2026 Kappa Theta Phi II Fraternity. All Rights Reserved.</p>
-        </footer>
+      {/* THE WALL */}
+      <main id="wall" ref={wallRef}>
+        {VIEWS.map((v, i) => {
+          const visible = shouldShow(v, filter);
+          const key = v.member.frat;
+          const showImage = !!v.member.image && !imgErrors.has(key);
+          return (
+            <article
+              key={key}
+              ref={el => { if (el) cardRefsRef.current.set(key, el); else cardRefsRef.current.delete(key); }}
+              className={`card ${v.tier} ${v.isFounder ? 'founder' : ''} ${visible ? 'is-visible' : 'is-hidden'}`}
+              data-tier={v.tierKey}
+              data-faction={factionKey(v.member.fraction)}
+              style={{ ['--idx' as string]: i } as React.CSSProperties}
+              onClick={() => openSpotlight(v)}
+            >
+              {v.stamp && <span className="card-stamp">{v.stamp}</span>}
+              {v.glyph && <span className="card-glyph">{v.glyph}</span>}
+              <div className="card-frame"></div>
+              <div className="portrait">
+                {showImage && (
+                  <img
+                    className="portrait-img"
+                    src={v.member.image as string}
+                    alt={displayName(v.member.frat)}
+                    onError={() => markImgError(key)}
+                  />
+                )}
+                <span className="portrait-initial">{getInitial(v.member.frat)}</span>
+              </div>
+              <div className="card-footer">
+                {v.roleLine && <div className="card-role">{v.roleLine}</div>}
+                <h3 className="card-name">{displayName(v.member.frat)}</h3>
+                <div className="card-faction">
+                  {v.member.fraction ? (
+                    <>
+                      <strong>{v.member.fraction}</strong>
+                      {v.member.title && v.member.title !== v.roleLine && !v.member.title.includes('—') && <> · {v.member.title}</>}
+                    </>
+                  ) : v.isFounder ? 'Founder' : 'Brother'}
+                </div>
+              </div>
+              <span className="card-cue">→</span>
+            </article>
+          );
+        })}
       </main>
-    </>
+
+      {/* CLOSING */}
+      <section id="brothers-closing">
+        <p className="closing-quote">We don&apos;t follow waves.<br/>We <em>create them.</em></p>
+        <p className="closing-motto">⚓ Death Before Dishonor ⚓</p>
+      </section>
+
+      {/* FOOTER */}
+      <footer className="brothers-footer">
+        <div className="footer-brand">KΘΦ II — Wokou-Corsairs</div>
+        <p>&copy; 2026 Kappa Theta Phi II Fraternity · All Rights Reserved</p>
+      </footer>
+
+      {/* SPOTLIGHT MODAL */}
+      {spotlight && (
+        <div
+          className={`spotlight${spotActive ? ' open' : ''}`}
+          onClick={(e) => { if (e.target === e.currentTarget) closeSpotlight(); }}
+        >
+          <button className="spotlight-close" onClick={closeSpotlight}>Close</button>
+          <div className="spotlight-content">
+            {spotlight.glyph && <div className="spotlight-bg-glyph">{spotlight.glyph}</div>}
+            <div className="spotlight-portrait">
+              {spotlight.member.image && !imgErrors.has(spotlight.member.frat) ? (
+                <img
+                  className="spotlight-img"
+                  src={spotlight.member.image}
+                  alt={displayName(spotlight.member.frat)}
+                  onError={() => markImgError(spotlight.member.frat)}
+                />
+              ) : (
+                <span className="spotlight-initial">{getInitial(spotlight.member.frat)}</span>
+              )}
+            </div>
+            <div className="spotlight-text">
+              <p className="spotlight-eyeline">{spotlight.stamp || 'Big Brother'}</p>
+              <h2 className="spotlight-name">
+                {displayName(spotlight.member.frat).split('').map((ch, i) =>
+                  ch === ' '
+                    ? <span key={i}>&nbsp;</span>
+                    : <span key={i} className="letter" style={{ transitionDelay: `${i * 35}ms` }}>{ch}</span>
+                )}
+              </h2>
+              <div className="spotlight-rule"></div>
+              {spotlight.roleLine && <p className="spotlight-role">{spotlight.roleLine}</p>}
+              <div className="spotlight-meta">
+                {spotlight.glyph && <span className="spotlight-faction-glyph">{spotlight.glyph}</span>}
+                {spotlight.member.fraction && (
+                  <span className="spotlight-faction">
+                    <strong>{spotlight.member.fraction}</strong>
+                    {spotlight.member.title && !spotlight.member.title.includes('—') && spotlight.member.title !== 'Member' && <> · {spotlight.member.title}</>}
+                  </span>
+                )}
+                {spotlight.member.title && (
+                  <span className="spotlight-title">{spotlight.member.title.split('—')[0].trim()}</span>
+                )}
+                {spotlight.member.iron && <span className="spotlight-iron">⚓ Iron Compass</span>}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function FilterPill({ active, onClick, children }: { active: boolean; onClick: () => void; children: React.ReactNode }) {
+  return (
+    <button className={`filter-pill${active ? ' active' : ''}`} onClick={onClick}>
+      {children}
+    </button>
   );
 }
