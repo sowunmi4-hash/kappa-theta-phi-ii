@@ -1,0 +1,72 @@
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Rajdhani:wght@300;400;600;700&display=swap');
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+.kraken-root{min-height:100vh;background:#04060f;color:#f0e8d0;font-family:'Rajdhani',sans-serif;padding-bottom:4rem}
+
+/* ── HEADER ── */
+.kraken-header{background:linear-gradient(to bottom,#07101f,#04060f);border-bottom:1px solid rgba(198,147,10,.15);padding:1.5rem 3rem;position:relative}
+.kraken-back{font-size:.65rem;letter-spacing:3px;color:rgba(240,232,208,.4);text-decoration:none;text-transform:uppercase;display:block;margin-bottom:1.5rem;transition:color .2s}
+.kraken-back:hover{color:#c6930a}
+.kraken-logo{display:flex;align-items:center;gap:1rem;margin-bottom:2rem}
+.kraken-logo-icon{font-size:3rem;filter:drop-shadow(0 0 15px rgba(198,147,10,.5))}
+.kraken-title{font-family:'Bebas Neue',cursive;font-size:2.5rem;letter-spacing:6px;color:#f0e8d0;line-height:1}
+.kraken-subtitle{font-size:.6rem;letter-spacing:4px;color:#c6930a;text-transform:uppercase;margin-top:3px}
+.kraken-how{background:rgba(198,147,10,.05);border:1px solid rgba(198,147,10,.12);border-radius:12px;padding:1.2rem 1.5rem;max-width:600px}
+.kraken-how-title{font-size:.55rem;letter-spacing:4px;color:#c6930a;text-transform:uppercase;margin-bottom:.8rem}
+.kraken-how-steps{display:flex;flex-direction:column;gap:.5rem}
+.kraken-step{display:flex;align-items:flex-start;gap:.8rem;font-size:.82rem;color:rgba(240,232,208,.6);line-height:1.4}
+.kraken-step span{min-width:20px;height:20px;border-radius:50%;background:rgba(198,147,10,.15);border:1px solid rgba(198,147,10,.3);display:flex;align-items:center;justify-content:center;font-size:.65rem;color:#c6930a;font-weight:700;flex-shrink:0;margin-top:1px}
+
+/* ── LOOKUP ── */
+.kraken-lookup{max-width:700px;margin:2.5rem auto;padding:0 2rem}
+.kraken-lookup-label{font-size:.6rem;letter-spacing:4px;color:#c6930a;text-transform:uppercase;margin-bottom:.8rem}
+.kraken-lookup-row{display:flex;gap:10px}
+.kraken-input{flex:1;background:rgba(8,14,28,.8);border:1px solid rgba(198,147,10,.2);border-radius:8px;padding:.7rem 1rem;color:#f0e8d0;font-family:'Rajdhani',sans-serif;font-size:.95rem;outline:none;transition:border-color .2s}
+.kraken-input:focus{border-color:rgba(198,147,10,.5)}
+.kraken-input::placeholder{color:rgba(240,232,208,.3)}
+.kraken-btn-lookup{background:rgba(198,147,10,.1);border:1px solid rgba(198,147,10,.35);color:#c6930a;border-radius:8px;padding:.7rem 1.5rem;font-family:'Rajdhani',sans-serif;font-size:.85rem;font-weight:700;letter-spacing:2px;cursor:pointer;white-space:nowrap;transition:background .2s}
+.kraken-btn-lookup:hover{background:rgba(198,147,10,.2)}
+.kraken-btn-lookup:disabled{opacity:.4;cursor:not-allowed}
+.kraken-balance{display:flex;align-items:center;gap:.8rem;margin-top:1.2rem;padding:1rem 1.5rem;background:rgba(198,147,10,.07);border:1px solid rgba(198,147,10,.2);border-radius:10px}
+.kraken-balance-num{font-family:'Bebas Neue',cursive;font-size:2.5rem;color:#c6930a;letter-spacing:3px;line-height:1}
+.kraken-balance-lbl{font-size:.65rem;letter-spacing:3px;color:rgba(240,232,208,.5);text-transform:uppercase}
+
+/* ── MESSAGE ── */
+.kraken-msg{max-width:700px;margin:.5rem auto 0;padding:.8rem 1.2rem;border-radius:8px;font-size:.85rem;font-weight:600;padding-left:2rem;padding-right:2rem}
+.kraken-msg.ok{background:rgba(74,222,128,.08);border:1px solid rgba(74,222,128,.25);color:#4ade80}
+.kraken-msg.err{background:rgba(224,80,112,.08);border:1px solid rgba(224,80,112,.25);color:#e05070}
+
+/* ── STORE ── */
+.kraken-store{max-width:1100px;margin:2.5rem auto;padding:0 2rem}
+.kraken-store-label{font-size:.6rem;letter-spacing:4px;color:rgba(240,232,208,.3);text-transform:uppercase;margin-bottom:1.2rem}
+
+/* ── EMPTY ── */
+.kraken-empty{text-align:center;padding:5rem 2rem;border:1px dashed rgba(198,147,10,.12);border-radius:16px}
+.kraken-empty-icon{font-size:3.5rem;margin-bottom:1rem;opacity:.4}
+.kraken-empty-text{font-family:'Bebas Neue',cursive;font-size:1.5rem;letter-spacing:4px;color:rgba(240,232,208,.3);margin-bottom:.5rem}
+.kraken-empty-sub{font-size:.78rem;color:rgba(240,232,208,.2)}
+
+/* ── GRID ── */
+.kraken-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:1.2rem}
+.kraken-card{background:rgba(8,14,28,.8);border:1px solid rgba(198,147,10,.12);border-radius:12px;overflow:hidden;transition:border-color .2s,transform .2s}
+.kraken-card:hover{border-color:rgba(198,147,10,.35);transform:translateY(-2px)}
+.kraken-card-img{width:100%;aspect-ratio:1;object-fit:cover}
+.kraken-card-placeholder{width:100%;aspect-ratio:1;display:flex;align-items:center;justify-content:center;font-size:4rem;background:rgba(198,147,10,.04);opacity:.4}
+.kraken-card-body{padding:1rem}
+.kraken-card-name{font-family:'Bebas Neue',cursive;letter-spacing:3px;font-size:1.1rem;color:#f0e8d0;margin-bottom:.3rem}
+.kraken-card-desc{font-size:.75rem;color:rgba(240,232,208,.4);margin-bottom:.8rem;line-height:1.4}
+.kraken-card-price{display:flex;align-items:center;gap:6px;font-weight:700;font-size:.9rem;color:#c6930a;margin-bottom:.8rem}
+.kraken-token-icon{font-size:.8rem}
+.kraken-card-btn{width:100%;padding:.6rem;border-radius:6px;font-family:'Rajdhani',sans-serif;font-size:.8rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;cursor:pointer;border:1px solid;transition:background .2s}
+.kraken-card-btn.can-buy{background:rgba(198,147,10,.1);border-color:rgba(198,147,10,.4);color:#c6930a}
+.kraken-card-btn.can-buy:hover{background:rgba(198,147,10,.2)}
+.kraken-card-btn.no-tokens{background:rgba(224,80,112,.06);border-color:rgba(224,80,112,.2);color:#e05070;cursor:not-allowed}
+.kraken-card-btn.disabled{background:rgba(255,255,255,.04);border-color:rgba(255,255,255,.08);color:rgba(240,232,208,.25);cursor:not-allowed}
+
+/* ── FOOTER ── */
+.kraken-footer{max-width:700px;margin:3rem auto 0;padding:0 2rem}
+.kraken-footer-text{font-size:.78rem;line-height:1.6;color:rgba(240,232,208,.35);text-align:center;padding:1rem;border:1px solid rgba(198,147,10,.08);border-radius:8px}
+.kraken-footer-text strong{color:rgba(198,147,10,.6)}
+
+@media(max-width:768px){.kraken-header{padding:1.2rem 1.5rem}.kraken-lookup,.kraken-store{padding:0 1.2rem}.kraken-lookup-row{flex-direction:column}}
