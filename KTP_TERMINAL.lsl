@@ -3,7 +3,7 @@
 //  Multi-user queue, blue dialog, multi-item delivery
 // ─────────────────────────────────────────────────────────────
 
-string  WEBHOOK_URL    = "https://kappa-theta-phi-ii.vercel.app/api/store/payment";
+string  WEBHOOK_URL    = "https://ktpii.org/api/store/payment";
 string  WEBHOOK_SECRET = "KTP-TERMINAL-2026";
 
 list queuePayers  = [];
@@ -44,7 +44,7 @@ default {
             "Enter your Order Number\n" +
             "(e.g. KTP-001)\n\n" +
             "Don't have one? Visit:\n" +
-            "kappa-theta-phi-ii.vercel.app/store",
+            "ktpii.org/store",
             channel);
     }
 
@@ -68,7 +68,7 @@ default {
                 "Invalid order number.\n\n" +
                 "Enter your Order Number\n" +
                 "(e.g. KTP-001)\n\n" +
-                "Visit kappa-theta-phi-ii.vercel.app/store\n" +
+                "Visit ktpii.org/store\n" +
                 "to place your order first.",
                 channel);
         }
