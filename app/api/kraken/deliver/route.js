@@ -28,14 +28,14 @@ export async function GET(req) {
   if (!pending?.length) return NextResponse.json({ deliveries: [] });
 
   // Mark all as delivered immediately so no double delivery
-  const ids = pending.map((d: any) => d.id);
+  const ids = pending.map((d) => d.id);
   await fetch(`${S}/rest/v1/kraken_redemptions?id=in.(${ids.join(',')})`, {
     method: 'PATCH', headers: ch(),
     body: JSON.stringify({ status: 'delivered' })
   });
 
   // Return grouped by avatar so terminal can deliver to each person
-  const grouped: Record<string, any> = {};
+  const grouped = {};
   for (const d of pending) {
     const key = d.sl_uuid || d.sl_name;
     if (!grouped[key]) grouped[key] = { sl_uuid: d.sl_uuid, sl_name: d.sl_name, items: [] };
