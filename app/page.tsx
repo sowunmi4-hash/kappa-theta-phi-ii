@@ -75,7 +75,7 @@ export default function HomePage() {
           <li><a href="/brothers">Brothers</a></li>
           <li><a href="/gallery">Gallery</a></li>
           <li><a href="/philanthropy">Philanthropy</a></li>
-          <li><a href="/store" className="nav-store">Store</a></li>
+          <li><a href="/kraken" className="nav-store">Store</a></li>
         </ul>
         <div className="mobile-toggle" onClick={() => document.getElementById('navLinks')?.classList.toggle('open')}>
           <span></span><span></span><span></span>

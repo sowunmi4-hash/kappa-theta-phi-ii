@@ -56,7 +56,7 @@ export default function KrakenStore() {
         <div className="kraken-logo">
           <div className="kraken-logo-icon">🦑</div>
           <div>
-            <div className="kraken-title">Kraken Token Store</div>
+            <div className="kraken-title">KΘΦ II Store</div>
             <div className="kraken-subtitle">KΘΦ II · Wokou-Corsairs</div>
           </div>
         </div>
@@ -104,7 +104,7 @@ export default function KrakenStore() {
         {items.length === 0 ? (
           <div className="kraken-empty">
             <div className="kraken-empty-icon">🦑</div>
-            <div className="kraken-empty-text">Items coming soon</div>
+            <div className="kraken-empty-text">Items Coming Soon</div>
             <div className="kraken-empty-sub">Check back after buying your tokens at the in-world terminal</div>
           </div>
         ) : (
