@@ -41,7 +41,7 @@ export default function KrakenStore() {
       setMsg({ text: 'Not enough tokens.', type: 'err' });
     } else if (res.success) {
       setBalance(res.new_balance);
-      setMsg({ text: `✓ ${item.name} redeemed! Touch the terminal in-world to collect your item.`, type: 'ok' });
+      setMsg({ text: `✓ ${item.name} redeemed! Your item will be delivered to your SL inventory within 30 seconds automatically.`, type: 'ok' });
     } else {
       setMsg({ text: res.error || 'Something went wrong.', type: 'err' });
     }
@@ -65,7 +65,7 @@ export default function KrakenStore() {
           <div className="kraken-how-steps">
             <div className="kraken-step"><span>1</span>Buy tokens at the in-world terminal — L$1 = 1 token</div>
             <div className="kraken-step"><span>2</span>Enter your SL username below to check your balance</div>
-            <div className="kraken-step"><span>3</span>Redeem tokens for items, then touch the terminal to collect</div>
+            <div className="kraken-step"><span>3</span>Redeem tokens for items — they deliver to your SL inventory automatically within 30 seconds</div>
           </div>
         </div>
       </div>
@@ -139,7 +139,7 @@ export default function KrakenStore() {
       {/* Terminal reminder */}
       <div className="kraken-footer">
         <div className="kraken-footer-text">
-          ⚓ Don't have tokens yet? Find the <strong>KΘΦ II Kraken Token Terminal</strong> in-world. Pay any amount in L$ — you get the same number of tokens. 1 L$ = 1 Token.
+          ⚓ Don't have tokens yet? Find the <strong>KΘΦ II Kraken Token Terminal</strong> in-world. Pay any amount in L$ to get tokens. Once you redeem on this page, items deliver to your inventory automatically — no need to return to the terminal.
         </div>
       </div>
     </div>
