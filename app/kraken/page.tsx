@@ -41,7 +41,7 @@ export default function KrakenStore() {
       setMsg({ text: 'Not enough tokens.', type: 'err' });
     } else if (res.success) {
       setBalance(res.new_balance);
-      setMsg({ text: `✓ ${item.name} redeemed! Your item will be delivered to your SL inventory within 30 seconds automatically.`, type: 'ok' });
+      setMsg({ text: `✓ ${item.name} redeemed! You will receive an inventory offer in Second Life within 30 seconds — check your notification bell and click Accept to receive your item.`, type: 'ok' });
     } else {
       setMsg({ text: res.error || 'Something went wrong.', type: 'err' });
     }
@@ -65,7 +65,7 @@ export default function KrakenStore() {
           <div className="kraken-how-steps">
             <div className="kraken-step"><span>1</span>Buy tokens at the in-world terminal — L$1 = 1 token</div>
             <div className="kraken-step"><span>2</span>Enter your SL username below to check your balance</div>
-            <div className="kraken-step"><span>3</span>Redeem tokens for items — they deliver to your SL inventory automatically within 30 seconds</div>
+            <div className="kraken-step"><span>3</span>Redeem tokens for items — you'll get an inventory offer in SL within 30 seconds. Click Accept to receive your item</div>
           </div>
         </div>
       </div>
