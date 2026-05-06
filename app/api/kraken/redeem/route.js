@@ -28,16 +28,19 @@ export async function POST(req) {
     body: JSON.stringify({ balance: newBalance, updated_at: new Date().toISOString() })
   });
 
+  // Use UUID from account (saved when they bought tokens at terminal)
+  const resolvedUuid = account.sl_uuid || sl_uuid || null;
+
   // Log transaction
   await fetch(`${S}/rest/v1/kraken_transactions`, {
     method: 'POST', headers: ch(),
-    body: JSON.stringify({ sl_name: account.sl_name, sl_uuid: sl_uuid || null, type: 'redemption', amount: -item.token_price, notes: `Redeemed: ${item.name}` })
+    body: JSON.stringify({ sl_name: account.sl_name, sl_uuid: resolvedUuid, type: 'redemption', amount: -item.token_price, notes: `Redeemed: ${item.name}` })
   });
 
-  // Queue delivery
+  // Queue delivery — resolvedUuid ensures terminal can find the avatar
   await fetch(`${S}/rest/v1/kraken_redemptions`, {
     method: 'POST', headers: ch(),
-    body: JSON.stringify({ sl_name: account.sl_name, sl_uuid: sl_uuid || null, item_id, item_name: item.name, tokens_spent: item.token_price, status: 'pending' })
+    body: JSON.stringify({ sl_name: account.sl_name, sl_uuid: resolvedUuid, item_id, item_name: item.name, tokens_spent: item.token_price, status: 'pending' })
   });
 
   return NextResponse.json({ success: true, item_name: item.name, tokens_spent: item.token_price, new_balance: newBalance });
