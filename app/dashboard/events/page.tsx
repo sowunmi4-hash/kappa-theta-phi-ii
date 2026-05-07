@@ -348,101 +348,101 @@ export default function EventsPage() {
               </div>
             ) : (
               <div className="ev-detail-wrap">
-                {/* Date hero */}
-                <div className="ev-date-hero">
-                  <div className="ev-date-day">{selDay}</div>
-                  <div className="ev-date-right">
-                    <div className="ev-date-month">{selMonth}</div>
-                    <div className="ev-date-year">{selYear}</div>
-                  </div>
-                  <div className="ev-date-badges">
-                    {selected.status === 'completed'
-                      ? <span className="ev-badge completed">Completed</span>
-                      : <span className="ev-badge upcoming">Upcoming</span>
-                    }
-                    {selected.dress_code && (
-                      <span className="ev-badge dress">{selected.dress_code}</span>
-                    )}
-                  </div>
-                </div>
-
-                {/* Title + location */}
-                <div className="ev-title-block">
-                  {selected.flyer_url && (
+                {/* Flyer — full natural proportions */}
+                {selected.flyer_url && (
+                  <div className="ev-flyer-wrap">
                     <img src={selected.flyer_url} alt="flyer" className="ev-flyer-img" />
-                  )}
+                  </div>
+                )}
+
+                {/* Info card below flyer */}
+                <div className="ev-info-card">
+                  {/* Date + badges row */}
+                  <div className="ev-date-row">
+                    <div className="ev-date-day">{selDay}</div>
+                    <div className="ev-date-right">
+                      <div className="ev-date-month">{selMonth}</div>
+                      <div className="ev-date-year">{selYear}</div>
+                    </div>
+                    <div className="ev-date-badges">
+                      {selected.status === 'completed'
+                        ? <span className="ev-badge completed">Completed</span>
+                        : <span className="ev-badge upcoming">Upcoming</span>
+                      }
+                      {selected.dress_code && (
+                        <span className="ev-badge dress">{selected.dress_code}</span>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Title + location */}
                   <div className="ev-title">{selected.title}</div>
                   {selected.location && (
                     <div className="ev-location">
-                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" strokeWidth="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" strokeWidth="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
                       <span>{selected.location}{selected.event_time ? ` · ${fmtTime(selected.event_time)}` : ''}</span>
                     </div>
                   )}
-                </div>
 
-                {/* Description */}
-                {selected.description && (
-                  <div className="ev-description">{selected.description}</div>
-                )}
+                  {/* Description */}
+                  {selected.description && (
+                    <div className="ev-description">{selected.description}</div>
+                  )}
 
-                {/* Meta grid */}
-                <div className="ev-meta-grid">
-                  {selected.event_time && (
-                    <div className="ev-meta-cell">
-                      <div className="ev-meta-key">Time</div>
-                      <div className="ev-meta-val">{fmtTime(selected.event_time)}</div>
-                    </div>
-                  )}
-                  {selected.dress_code && (
-                    <div className="ev-meta-cell">
-                      <div className="ev-meta-key">Attendance</div>
-                      <div className="ev-meta-val">{selected.dress_code}</div>
-                    </div>
-                  )}
-                  {selected.created_by_name && (
-                    <div className="ev-meta-cell">
-                      <div className="ev-meta-key">Organised By</div>
-                      <div className="ev-meta-val">{selected.created_by_name}</div>
-                    </div>
-                  )}
-                  <div className="ev-meta-cell">
-                    <div className="ev-meta-key">Attending</div>
-                    <div className="ev-meta-val" style={{ color: 'var(--green)' }}>{selected.rsvp_count} confirmed</div>
-                  </div>
-                </div>
-
-                {/* Action buttons — RSVP + TELEPORT */}
-                <div className="ev-action-row">
-                  {selected.status !== 'completed' && (
-                    <button
-                      className={`ev-action-btn rsvp${rsvpLocal === 'yes' ? ' active' : ''}`}
-                      onClick={() => handleRsvp(rsvpLocal === 'yes' ? 'no' : 'yes')}
-                    >
-                      {rsvpLocal === 'yes' ? '✓ RSVPed' : 'RSVP →'}
-                    </button>
-                  )}
-                  {selected.sl_url && (
-                    <a
-                      href={selected.sl_url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="ev-action-btn teleport"
-                    >
-                      Teleport →
-                    </a>
-                  )}
-                </div>
-
-                {/* Manage row */}
-                {(selected.created_by_name === member.frat_name || canManage) && (
-                  <div className="ev-manage-row">
-                    <button className="dash-btn ghost" style={{ fontSize:'.36rem', padding:'.28rem .65rem' }} onClick={() => openEdit(selected)}>✏ Edit</button>
-                    {canManage && selected.status !== 'completed' && (
-                      <button className="dash-btn ghost" style={{ fontSize:'.36rem', padding:'.28rem .65rem', color:'var(--green)', borderColor:'rgba(74,222,128,.25)' }} onClick={() => markDone(selected.id)}>✓ Mark Done</button>
+                  {/* Meta grid */}
+                  <div className="ev-meta-grid">
+                    {selected.event_time && (
+                      <div className="ev-meta-cell">
+                        <div className="ev-meta-key">Time</div>
+                        <div className="ev-meta-val">{fmtTime(selected.event_time)}</div>
+                      </div>
                     )}
-                    <button className="dash-btn danger" style={{ fontSize:'.36rem', padding:'.28rem .65rem' }} onClick={() => deleteEvent(selected.id)}>Delete</button>
+                    {selected.dress_code && (
+                      <div className="ev-meta-cell">
+                        <div className="ev-meta-key">Attendance</div>
+                        <div className="ev-meta-val">{selected.dress_code}</div>
+                      </div>
+                    )}
+                    {selected.created_by_name && (
+                      <div className="ev-meta-cell">
+                        <div className="ev-meta-key">Organised By</div>
+                        <div className="ev-meta-val">{selected.created_by_name}</div>
+                      </div>
+                    )}
+                    <div className="ev-meta-cell">
+                      <div className="ev-meta-key">Attending</div>
+                      <div className="ev-meta-val" style={{ color:'var(--green)' }}>{selected.rsvp_count} confirmed</div>
+                    </div>
                   </div>
-                )}
+
+                  {/* Action buttons */}
+                  <div className="ev-action-row">
+                    {selected.status !== 'completed' && (
+                      <button
+                        className={`ev-action-btn rsvp${rsvpLocal === 'yes' ? ' active' : ''}`}
+                        onClick={() => handleRsvp(rsvpLocal === 'yes' ? 'no' : 'yes')}
+                      >
+                        {rsvpLocal === 'yes' ? '✓ RSVPed' : 'RSVP →'}
+                      </button>
+                    )}
+                    {selected.sl_url && (
+                      <a href={selected.sl_url} target="_blank" rel="noopener noreferrer" className="ev-action-btn teleport">
+                        Teleport →
+                      </a>
+                    )}
+                  </div>
+
+                  {/* Manage */}
+                  {(selected.created_by_name === member.frat_name || canManage) && (
+                    <div className="ev-manage-row">
+                      <button className="dash-btn ghost" style={{ fontSize:'.65rem', padding:'.35rem .8rem' }} onClick={() => openEdit(selected)}>✏ Edit</button>
+                      {canManage && selected.status !== 'completed' && (
+                        <button className="dash-btn ghost" style={{ fontSize:'.65rem', padding:'.35rem .8rem', color:'var(--green)', borderColor:'rgba(74,222,128,.25)' }} onClick={() => markDone(selected.id)}>✓ Mark Done</button>
+                      )}
+                      <button className="dash-btn danger" style={{ fontSize:'.65rem', padding:'.35rem .8rem' }} onClick={() => deleteEvent(selected.id)}>Delete</button>
+                    </div>
+                  )}
+                </div>
               </div>
             )}
           </div>
