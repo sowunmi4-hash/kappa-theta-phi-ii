@@ -24,7 +24,7 @@ export default function TransactionsPage() {
   useEffect(() => {
     fetch('/api/dashboard/profile').then(r => r.json()).then(d => {
       if (d.error) { window.location.href = '/login'; return; }
-      if (d.member?.frat_name !== 'Cool Breeze') { window.location.href = '/dashboard'; return; }
+      if (d.member?.frat_name !== 'Big Brother Cool Breeze') { window.location.href = '/dashboard'; return; }
       setMember(d.member); setProfile(d.profile);
       load('');
     });

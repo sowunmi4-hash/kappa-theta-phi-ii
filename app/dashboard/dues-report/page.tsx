@@ -39,7 +39,7 @@ export default function DuesReportPage() {
     fetch('/api/dashboard/profile').then(r=>r.json()).then(d=>{
       if(d.error){window.location.href='/login';return;}
       const m=d.member;
-      const canSee=m?.fraction==='Ishi No Faction'||m?.frat_name==='Big Brother Substance'||m?.frat_name==='Cool Breeze';
+      const canSee=m?.fraction==='Ishi No Faction'||m?.frat_name==='Big Brother Substance'||m?.frat_name==='Big Brother Cool Breeze';
       if(!canSee){window.location.href='/dashboard';return;}
       setMember(m); setProfile(d.profile);
       loadReport('');
@@ -55,7 +55,7 @@ export default function DuesReportPage() {
 
   if(!member) return <div className="dash-loading">LOADING...</div>;
 
-  const canSeeFull=member.frat_name==='Big Brother Substance'||member.frat_name==='Cool Breeze';
+  const canSeeFull=member.frat_name==='Big Brother Substance'||member.frat_name==='Big Brother Cool Breeze';
   const { summary={}, full_records=[], disciplinary=[], periods=[] }=report||{};
   const activePeriod=periods.find((p:any)=>p.is_active);
   const currentPeriod=periods.find((p:any)=>p.id===periodId)||activePeriod||periods[0];

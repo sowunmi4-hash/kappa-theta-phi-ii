@@ -20,7 +20,7 @@ export async function GET(req) {
   if (!member) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
   // Cool Breeze only
-  if (member.frat_name !== 'Cool Breeze') return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+  if (member.frat_name !== 'Big Brother Cool Breeze') return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
 
   const { searchParams } = new URL(req.url);
   const period_id = searchParams.get('period_id');
