@@ -29,7 +29,30 @@ export async function POST(req) {
   const member = await getMember(token);
   if (!member) return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
   const { title, content, pinned } = await req.json();
-  await fetch(`${S}/rest/v1/wokou_news`, { method: 'POST', headers: h({ 'Content-Type': 'application/json', 'Content-Profile': 'members' }), body: JSON.stringify({ title, content, pinned: !!pinned, posted_by: member.id, posted_by_name: member.frat_name, posted_by_role: member.role }) });
+  if (!title || !content) return NextResponse.json({ error: 'Title and content required' }, { status: 400 });
+
+  // Try with posted_by_role first, fall back without if column doesn't exist
+  let res = await fetch(`${S}/rest/v1/wokou_news`, {
+    method: 'POST',
+    headers: h({ 'Content-Type': 'application/json', 'Content-Profile': 'members', 'Prefer': 'return=minimal' }),
+    body: JSON.stringify({ title, content, pinned: !!pinned, posted_by: member.id, posted_by_name: member.frat_name, posted_by_role: member.role }),
+  });
+
+  // If failed (e.g. posted_by_role column missing), retry without it
+  if (!res.ok) {
+    res = await fetch(`${S}/rest/v1/wokou_news`, {
+      method: 'POST',
+      headers: h({ 'Content-Type': 'application/json', 'Content-Profile': 'members', 'Prefer': 'return=minimal' }),
+      body: JSON.stringify({ title, content, pinned: !!pinned, posted_by: member.id, posted_by_name: member.frat_name }),
+    });
+  }
+
+  if (!res.ok) {
+    const err = await res.text();
+    console.error('News POST error:', err);
+    return NextResponse.json({ error: 'Failed to post dispatch' }, { status: 500 });
+  }
+
   return NextResponse.json({ success: true });
 }
 
