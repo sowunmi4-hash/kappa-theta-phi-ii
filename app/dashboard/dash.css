@@ -54,7 +54,7 @@
   --ink:         #030509;
   --muted:       rgba(240,232,208,.3);
   --crimson-dim: rgba(178,34,52,.12);
-  --rail-w:      58px;
+  --rail-w:      72px;
 }
 
 /* ── BASE ── */
@@ -96,9 +96,9 @@
   display: flex; align-items: center; justify-content: center;
   margin-bottom: .7rem; flex-shrink: 0;
 }
-.dash-rail-logo img { width: 22px; height: 22px; object-fit: contain; }
+.dash-rail-logo img { width: 26px; height: 26px; object-fit: contain; }
 .dash-rail-portrait {
-  width: 32px; height: 32px; border-radius: 50%;
+  width: 38px; height: 38px; border-radius: 50%;
   border: 1.5px solid rgba(198,147,10,.4); background: var(--deep2);
   overflow: hidden; display: flex; align-items: center; justify-content: center;
   margin-bottom: .5rem; flex-shrink: 0; position: relative;
@@ -123,7 +123,7 @@
 }
 .dash-rail-btn.danger { color: rgba(224,80,112,.4); }
 .dash-rail-btn.danger:hover { color: #e05070; background: rgba(224,80,112,.05); }
-.dash-rail-btn svg { width: 15px; height: 15px; stroke: currentColor; fill: none; stroke-width: 1.8; }
+.dash-rail-btn svg { width: 19px; height: 19px; stroke: currentColor; fill: none; stroke-width: 1.8; }
 .dash-rail-notif-badge { position: absolute; top: 4px; right: 5px; width: 7px; height: 7px; background: var(--crimson); border-radius: 50%; border: 1px solid var(--deep); }
 
 /* Glass panel */
@@ -139,7 +139,7 @@
   display: flex; flex-direction: column;
 }
 .dash-glass.open {
-  width: 195px;
+  width: 230px;
   border: 1px solid rgba(198,147,10,.18); border-left: none;
   box-shadow: 12px 0 48px rgba(0,0,0,.6), 0 0 32px rgba(198,147,10,.04);
 }
@@ -148,11 +148,11 @@
 .dash-glass.open .dash-glass-corner { opacity: 1; }
 .dash-glass-corner.tr { top: -1px; right: -1px; border-top: 1px solid var(--gold); border-right: 1px solid var(--gold); }
 .dash-glass-corner.br { bottom: -1px; right: -1px; border-bottom: 1px solid var(--gold); border-right: 1px solid var(--gold); }
-.dash-glass-inner { width: 195px; flex-shrink: 0; display: flex; flex-direction: column; height: 100%; padding: .85rem .65rem; opacity: 0; transition: opacity .18s; overflow: hidden; }
+.dash-glass-inner { width: 230px; flex-shrink: 0; display: flex; flex-direction: column; height: 100%; padding: .85rem .65rem; opacity: 0; transition: opacity .18s; overflow: hidden; }
 .dash-glass.open .dash-glass-inner { opacity: 1; transition: opacity .22s .14s; }
 .dash-glass-member { text-align: center; padding: .4rem .4rem .9rem; border-bottom: 1px solid rgba(255,255,255,.05); margin-bottom: .5rem; flex-shrink: 0; }
 .dash-glass-portrait {
-  width: 52px; height: 52px; border-radius: 50%;
+  width: 62px; height: 62px; border-radius: 50%;
   border: 1.5px solid rgba(198,147,10,.5); background: var(--deep2);
   overflow: hidden; display: flex; align-items: center; justify-content: center;
   margin: 0 auto .55rem; position: relative;
@@ -164,14 +164,14 @@
 .dash-glass-portrait-corner.tr { top: -6px; right: -6px; border-top: 1px solid var(--gold); border-right: 1px solid var(--gold); }
 .dash-glass-portrait-corner.bl { bottom: -6px; left: -6px; border-bottom: 1px solid var(--gold); border-left: 1px solid var(--gold); }
 .dash-glass-portrait-corner.br { bottom: -6px; right: -6px; border-bottom: 1px solid var(--gold); border-right: 1px solid var(--gold); }
-.dash-glass-name { font-family: var(--display); font-weight: 700; font-size: .95rem; letter-spacing: 2px; background: linear-gradient(180deg, var(--gold-b), var(--gold)); -webkit-background-clip: text; background-clip: text; color: transparent; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.dash-glass-role   { font-family: var(--cinzel); font-size: .44rem; letter-spacing: 3px; color: var(--crimson); text-transform: uppercase; margin-top: 3px; }
+.dash-glass-name { font-family: var(--display); font-weight: 700; font-size: 1.05rem; letter-spacing: 2px; background: linear-gradient(180deg, var(--gold-b), var(--gold)); -webkit-background-clip: text; background-clip: text; color: transparent; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.dash-glass-role   { font-family: var(--cinzel); font-size: .52rem; letter-spacing: 3px; color: var(--crimson); text-transform: uppercase; margin-top: 3px; }
 .dash-glass-faction{ font-family: var(--cinzel); font-size: .4rem; letter-spacing: 2px; color: var(--bone-faint); margin-top: 2px; }
 .dash-glass-nav { flex: 1; display: flex; flex-direction: column; gap: 1px; overflow: hidden; }
 .dash-glass-item {
   display: flex; align-items: center; gap: 9px;
   padding: .52rem .65rem; border-radius: 5px; cursor: pointer;
-  font-family: var(--cinzel); font-size: .44rem; letter-spacing: 2px; text-transform: uppercase;
+  font-family: var(--cinzel); font-size: .56rem; letter-spacing: 2px; text-transform: uppercase;
   color: rgba(240,232,208,.4); border: none; background: none;
   width: 100%; text-align: left; position: relative;
   transition: all .15s; white-space: nowrap; text-decoration: none;
