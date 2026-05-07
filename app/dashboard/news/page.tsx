@@ -1,11 +1,11 @@
 'use client';
 import { useState, useEffect, useRef } from 'react';
 import '../dash.css';
-import DashSidebar from '../DashSidebar';
 import './news.css';
+import DashSidebar from '../DashSidebar';
 
 const LEADERS = ['Head Founder', 'Co-Founder', 'Iron Fleet'];
-const AUTO_ADVANCE_MS = 6000;
+const AUTO_MS  = 6000;
 
 function fmtDate(d: string) {
   return new Date(d).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }).toUpperCase();
@@ -25,17 +25,17 @@ function Initial({ name, size = 34 }: { name: string; size?: number }) {
 }
 
 export default function NewsPage() {
-  const [member, setMember]   = useState<any>(null);
-  const [profile, setProfile] = useState<any>(null);
-  const [role, setRole]       = useState('');
-  const [news, setNews]       = useState<any[]>([]);
+  const [member, setMember]     = useState<any>(null);
+  const [profile, setProfile]   = useState<any>(null);
+  const [role, setRole]         = useState('');
+  const [news, setNews]         = useState<any[]>([]);
   const [activeIdx, setActiveIdx] = useState(0);
   const [composing, setComposing] = useState(false);
-  const [title, setTitle]     = useState('');
-  const [content, setContent] = useState('');
-  const [pinned, setPinned]   = useState(false);
-  const [posting, setPosting] = useState(false);
-  const [postErr, setPostErr] = useState('');
+  const [title, setTitle]       = useState('');
+  const [content, setContent]   = useState('');
+  const [pinned, setPinned]     = useState(false);
+  const [posting, setPosting]   = useState(false);
+  const [postErr, setPostErr]   = useState('');
   const timerRef = useRef<any>(null);
 
   useEffect(() => {
@@ -56,18 +56,14 @@ export default function NewsPage() {
 
   useEffect(() => {
     if (news.length <= 1) return;
-    timerRef.current = setInterval(() => {
-      setActiveIdx(i => (i + 1) % news.length);
-    }, AUTO_ADVANCE_MS);
+    timerRef.current = setInterval(() => setActiveIdx(i => (i + 1) % news.length), AUTO_MS);
     return () => clearInterval(timerRef.current);
   }, [news.length]);
 
   function selectDispatch(idx: number) {
     setActiveIdx(idx);
-    if (timerRef.current) clearInterval(timerRef.current);
-    timerRef.current = setInterval(() => {
-      setActiveIdx(i => (i + 1) % news.length);
-    }, AUTO_ADVANCE_MS);
+    clearInterval(timerRef.current);
+    timerRef.current = setInterval(() => setActiveIdx(i => (i + 1) % news.length), AUTO_MS);
   }
 
   async function loadNews() {
@@ -82,30 +78,22 @@ export default function NewsPage() {
     setPosting(true);
     try {
       const res = await fetch('/api/dashboard/news', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ title: title.trim(), content: content.trim(), pinned }),
       }).then(r => r.json());
       if (res.error) { setPostErr(res.error); setPosting(false); return; }
-      setComposing(false);
-      setTitle(''); setContent(''); setPinned(false);
-      await loadNews();
-      setActiveIdx(0);
-    } catch (e) {
-      setPostErr('Failed to post. Try again.');
-    }
+      setComposing(false); setTitle(''); setContent(''); setPinned(false);
+      await loadNews(); setActiveIdx(0);
+    } catch { setPostErr('Failed to post. Try again.'); }
     setPosting(false);
   }
 
-  function cancelCompose() {
-    setComposing(false);
-    setTitle(''); setContent(''); setPinned(false); setPostErr('');
-  }
+  function cancel() { setComposing(false); setTitle(''); setContent(''); setPinned(false); setPostErr(''); }
 
   if (!member) return <div className="dash-loading">LOADING...</div>;
 
   const featured = news[activeIdx] || null;
-  const now = new Date();
+  const now      = new Date();
   const thisMonth = news.filter(n => {
     const d = new Date(n.created_at);
     return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
@@ -114,64 +102,40 @@ export default function NewsPage() {
   return (
     <div className="dash-app">
       <DashSidebar member={member} profile={profile} />
-
       <main className="dash-main">
+
         {/* Header */}
         <div className="dash-page-header">
           <div className="dash-page-title">Wokou News</div>
-          <button className="dash-btn gold-ghost" onClick={() => composing ? cancelCompose() : setComposing(true)}>
+          <button className="dash-btn gold-ghost" onClick={() => composing ? cancel() : setComposing(true)}>
             {composing ? '✕ Cancel' : '+ New Post'}
           </button>
         </div>
 
-        {/* ── COMPOSE FORM ── */}
+        {/* Compose */}
         {composing && (
           <div className="nw-compose-panel">
             <div className="nw-compose-inner">
               <div className="nw-compose-hdr">
                 <span className="nw-compose-eyebrow">New Dispatch</span>
-                <button className="nw-compose-x" onClick={cancelCompose}>✕</button>
+                <button className="nw-compose-x" onClick={cancel}>✕</button>
               </div>
-
               <div className="nw-compose-fields">
-                <div className="nw-compose-field full">
+                <div>
                   <label className="nw-compose-label">Dispatch Title *</label>
-                  <input
-                    className="nw-compose-input"
-                    value={title}
-                    onChange={e => setTitle(e.target.value)}
-                    placeholder="e.g. LOONAPALOOSA II — Official Announcement"
-                  />
+                  <input className="nw-compose-input" value={title} onChange={e => setTitle(e.target.value)} placeholder="e.g. LOONAPALOOSA II — Official Announcement" />
                 </div>
-
-                <div className="nw-compose-field full">
+                <div>
                   <label className="nw-compose-label">Content *</label>
-                  <textarea
-                    className="nw-compose-textarea"
-                    value={content}
-                    onChange={e => setContent(e.target.value)}
-                    placeholder="Write your dispatch for the brotherhood..."
-                  />
+                  <textarea className="nw-compose-textarea" value={content} onChange={e => setContent(e.target.value)} placeholder="Write your dispatch for the brotherhood..." />
                 </div>
-
                 <div className="nw-compose-foot">
                   <label className="nw-compose-pin">
-                    <input
-                      type="checkbox"
-                      checked={pinned}
-                      onChange={e => setPinned(e.target.checked)}
-                      style={{ accentColor: 'var(--gold)' }}
-                    />
+                    <input type="checkbox" checked={pinned} onChange={e => setPinned(e.target.checked)} style={{ accentColor: 'var(--gold)' }} />
                     <span>Pin this dispatch</span>
                   </label>
-
                   {postErr && <span className="nw-compose-err">{postErr}</span>}
-
-                  <button
-                    className="nw-compose-submit"
-                    onClick={post}
-                    disabled={posting || !title.trim() || !content.trim()}
-                  >
+                  <button className="nw-compose-submit" onClick={post} disabled={posting || !title.trim() || !content.trim()}>
                     {posting ? 'Posting...' : 'Post Dispatch →'}
                   </button>
                 </div>
@@ -187,10 +151,11 @@ export default function NewsPage() {
           <div className="nw-masthead-line" />
         </div>
 
-        {news.length === 0 && <div className="nw-empty">No dispatches yet. Be the first to post.</div>}
+        {news.length === 0 && <div className="nw-empty">No dispatches yet — be the first to post.</div>}
 
         {news.length > 0 && featured && (
           <div className="nw-body">
+
             {/* LEFT: Featured */}
             <div className="nw-lead">
               <div className="nw-lead-meta">
@@ -212,27 +177,20 @@ export default function NewsPage() {
               )}
 
               <div className="nw-lead-footer">
-                <Initial name={featured.posted_by_name || 'L'} size={40} />
-                <div className="nw-author-info">
-                  <div className="nw-author-name">
-                    {featured.posted_by_name || 'Leadership'}
-                    {featured.posted_by_role && <span className="nw-author-sep"> · {featured.posted_by_role}</span>}
-                  </div>
+                <Initial name={featured.posted_by_name || 'L'} size={38} />
+                <div className="nw-author-name">
+                  {featured.posted_by_name || 'Leadership'}
+                  {featured.posted_by_role && <span className="nw-author-sep"> · {featured.posted_by_role}</span>}
                 </div>
                 {(featured.posted_by_name === member?.frat_name || LEADERS.includes(role)) && (
                   <button className="nw-delete-btn" onClick={async () => {
                     if (!confirm('Delete this dispatch?')) return;
                     const res = await fetch('/api/dashboard/news', {
-                      method: 'DELETE',
-                      headers: { 'Content-Type': 'application/json' },
+                      method: 'DELETE', headers: { 'Content-Type': 'application/json' },
                       body: JSON.stringify({ id: featured.id }),
                     }).then(r => r.json());
-                    if (res.error === 'Window expired') {
-                      alert('Dispatches can only be deleted within 24 hours of posting.');
-                      return;
-                    }
-                    setActiveIdx(0);
-                    await loadNews();
+                    if (res.error === 'Window expired') { alert('Can only delete within 24 hours of posting.'); return; }
+                    setActiveIdx(0); await loadNews();
                   }}>Delete</button>
                 )}
               </div>
@@ -245,7 +203,7 @@ export default function NewsPage() {
                   <div className="nw-item-header">
                     <Initial name={n.posted_by_name || 'L'} size={28} />
                     <span className="nw-item-date">{fmtDate(n.created_at)}</span>
-                    {n.pinned && <span className="nw-pinned-badge" style={{ fontSize: '.52rem', padding: '2px 7px' }}>Pinned</span>}
+                    {n.pinned && <span className="nw-pinned-badge" style={{ fontSize: '.5rem', padding: '1px 7px' }}>Pinned</span>}
                   </div>
                   <div className="nw-item-title">{n.title}</div>
                   <div className="nw-item-content">{n.content}</div>
