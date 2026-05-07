@@ -5,6 +5,13 @@ const K = process.env.SUPABASE_SECRET_KEY;
 const h  = (x={}) => ({ apikey: K, Authorization: `Bearer ${K}`, 'Accept-Profile': 'members', ...x });
 const ch = ()     => h({ 'Content-Type': 'application/json', 'Content-Profile': 'members' });
 
+function genTxnId() {
+  const now = new Date();
+  const date = now.toISOString().slice(0,10).replace(/-/g,''); // YYYYMMDD
+  const rand = Math.random().toString(36).substring(2,8).toUpperCase(); // 6 char random
+  return `KTP-${date}-${rand}`;
+}
+
 export async function POST(req) {
   const body = await req.json();
   const { sl_username = '', sl_uuid = '', amount_ls, secret } = body;
@@ -21,7 +28,7 @@ export async function POST(req) {
     ).then(r => r.json());
   }
 
-  // 2. Username in parens fallback
+  // 2. Username fallback
   if (!members?.length && sl_username) {
     const match = sl_username.match(/\(([^)]+)\)\s*$/);
     const username = match ? match[1] : sl_username;
@@ -60,7 +67,11 @@ export async function POST(req) {
   if (!records?.length) return NextResponse.json({ error: 'No dues record found' }, { status: 404 });
   const record = records[0];
 
-  // Log payment
+  // Generate transaction ID and timestamp
+  const txn_id   = genTxnId();
+  const paid_at  = new Date().toISOString();
+
+  // Log payment with transaction ID, SL UUID, and precise timestamp
   await fetch(`${S}/rest/v1/dues_payments`, {
     method: 'POST', headers: ch(),
     body: JSON.stringify({
@@ -68,30 +79,34 @@ export async function POST(req) {
       member_id:      member.id,
       member_name:    member.frat_name,
       amount_ls:      amount_ls,
-      notes:          `Terminal payment — L$${amount_ls} via SL dues terminal`,
+      transaction_id: txn_id,
+      notes:          `Terminal · SL UUID: ${sl_uuid || 'unknown'} · User: ${sl_username}`,
       logged_by_name: 'SL Dues Terminal',
+      created_at:     paid_at,
     })
   });
 
-  // Update record
+  // Update dues record totals
   const newLindenPaid = (record.linden_paid || 0) + amount_ls;
-  const totalPaid     = newLindenPaid + (record.sweat_paid || 0);
+  const totalPaid     = newLindenPaid + (record.sweat_equity_value || 0);
   const remaining     = Math.max(0, period.amount_due - totalPaid);
   const newStatus     = remaining <= 0 ? 'paid' : totalPaid > 0 ? 'partial' : 'unpaid';
   const credit        = totalPaid > period.amount_due ? totalPaid - period.amount_due : 0;
 
   await fetch(`${S}/rest/v1/dues_records?id=eq.${record.id}`, {
     method: 'PATCH', headers: ch(),
-    body: JSON.stringify({ linden_paid: newLindenPaid, status: newStatus, credit, updated_at: new Date().toISOString() })
+    body: JSON.stringify({ linden_paid: newLindenPaid, status: newStatus, credit, updated_at: paid_at })
   });
 
   return NextResponse.json({
-    frat_name:   member.frat_name,
-    period:      period.label,
-    amount_paid: amount_ls,
-    total_paid:  totalPaid,
+    frat_name:      member.frat_name,
+    period:         period.label,
+    amount_paid:    amount_ls,
+    total_paid:     totalPaid,
     remaining,
     credit,
-    new_status:  newStatus,
+    new_status:     newStatus,
+    transaction_id: txn_id,
+    paid_at,
   });
 }

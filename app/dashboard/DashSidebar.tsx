@@ -37,6 +37,7 @@ export default function DashSidebar({ member, profile, unread = 0 }: Props) {
   const portrait = profile?.portrait_url || `/brothers/${slug}.png`;
 
   const canSeeDuesReport = member?.fraction === 'Ishi No Faction' || member?.frat_name === 'Big Brother Substance' || member?.frat_name === 'Cool Breeze';
+  const canSeeTransactions = member?.frat_name === 'Cool Breeze';
   const canSeeSSPReport  = member?.fraction === 'Ishi No Faction' || member?.role === 'Head Founder' || member?.role === 'Co-Founder';
 
   function openPanel()  { clearTimeout(leaveTimer.current); setOpen(true); }
@@ -190,6 +191,12 @@ export default function DashSidebar({ member, profile, unread = 0 }: Props) {
               <a href="/dashboard/dues-report" className={`dash-glass-item${pathname.startsWith('/dashboard/dues-report') ? ' active' : ''}`}>
                 {REPORT_ICON}
                 Dues Report
+              </a>
+            )}
+            {canSeeTransactions && (
+              <a href="/dashboard/dues/transactions" className={`dash-glass-item${pathname.startsWith('/dashboard/dues/transactions') ? ' active' : ''}`}>
+                {REPORT_ICON}
+                Terminal Log
               </a>
             )}
             {canSeeSSPReport && (
