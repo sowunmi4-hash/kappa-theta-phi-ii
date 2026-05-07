@@ -175,31 +175,28 @@ export default function NewsPage() {
                   <div className="nw-author-name">{featured.posted_by_name || 'Leadership'}</div>
                   {featured.posted_by_role && <div className="nw-author-role">{featured.posted_by_role}</div>}
                 </div>
-                {/* Delete within 24h */}
-                {(() => {
-                  const isAuthor = featured.posted_by_name === member?.frat_name;
-                  const within24h = Date.now() - new Date(featured.created_at).getTime() < 86400000;
-                  if (!isAuthor && !LEADERS.includes(role)) return null;
-                  if (isAuthor && !LEADERS.includes(role) && !within24h) return null;
-                  return (
-                    <button
-                      className="nw-delete-btn"
-                      title={within24h ? 'Delete this dispatch' : 'Delete (Leader override)'}
-                      onClick={async () => {
-                        if (!confirm('Delete this dispatch?')) return;
-                        await fetch('/api/dashboard/news', {
-                          method: 'DELETE',
-                          headers: { 'Content-Type': 'application/json' },
-                          body: JSON.stringify({ id: featured.id }),
-                        });
-                        setActiveIdx(0);
-                        await loadNews();
-                      }}
-                    >
-                      {within24h ? '🗑 Delete' : '🗑 Delete (Leader)'}
-                    </button>
-                  );
-                })()}
+                {/* Delete button */}
+                {(featured.posted_by_name === member?.frat_name || LEADERS.includes(role)) && (
+                  <button
+                    className="nw-delete-btn"
+                    onClick={async () => {
+                      if (!confirm('Delete this dispatch?')) return;
+                      const res = await fetch('/api/dashboard/news', {
+                        method: 'DELETE',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ id: featured.id }),
+                      }).then(r => r.json());
+                      if (res.error === 'Window expired') {
+                        alert('This dispatch can only be deleted within 24 hours of posting.');
+                        return;
+                      }
+                      setActiveIdx(0);
+                      await loadNews();
+                    }}
+                  >
+                    Delete
+                  </button>
+                )}
               </div>
             </div>
 
