@@ -16,11 +16,71 @@ type Event = {
   status?: string; completed_at?: string; completed_by_name?: string;
 };
 
-// Faction colour dots
-const FACTION_COLORS: Record<string,string> = {
-  'Ishi No Faction': '#3c64c8',
-  'default': '#c6930a',
-};
+const FACTION_COLORS: Record<string,string> = { default: '#c6930a' };
+
+// ── Live countdown component ──
+function Countdown({ event }: { event: Event }) {
+  const [diff, setDiff] = useState<number>(0);
+
+  useEffect(() => {
+    function calc() {
+      const dateStr = event.event_date.split('T')[0];
+      const timeStr = event.event_time || '00:00';
+      const start = new Date(`${dateStr}T${timeStr}:00`).getTime();
+      setDiff(start - Date.now());
+    }
+    calc();
+    const t = setInterval(calc, 1000);
+    return () => clearInterval(t);
+  }, [event.event_date, event.event_time]);
+
+  if (!event.event_time && diff > 86400000) return null; // no time set, only show if ≤24h away
+
+  const abs   = Math.abs(diff);
+  const days  = Math.floor(abs / 86400000);
+  const hrs   = Math.floor((abs % 86400000) / 3600000);
+  const mins  = Math.floor((abs % 3600000) / 60000);
+  const secs  = Math.floor((abs % 60000) / 1000);
+
+  const withinHour = diff > 0 && diff <= 3600000;
+  const started    = diff <= 0 && diff > -7200000; // started within last 2hrs
+  const live       = diff <= 0 && diff > -300000;   // within last 5 mins = "live"
+
+  if (live) return (
+    <div className="ev-countdown live">
+      <span className="ev-countdown-pulse" />
+      <span className="ev-countdown-label">Event is Live Now</span>
+    </div>
+  );
+
+  if (started) return (
+    <div className="ev-countdown started">
+      <span className="ev-countdown-label">Started {hrs > 0 ? `${hrs}h ` : ''}{mins}m ago</span>
+    </div>
+  );
+
+  if (diff <= 0) return null; // event ended long ago
+
+  if (withinHour) return (
+    <div className="ev-countdown urgent">
+      <span className="ev-countdown-pulse urgent" />
+      <span className="ev-countdown-label">⚠ Starting in {mins}m {String(secs).padStart(2,'0')}s</span>
+      <span className="ev-countdown-reminder">1hr reminder — get ready</span>
+    </div>
+  );
+
+  return (
+    <div className="ev-countdown normal">
+      <span className="ev-countdown-label">Starts in</span>
+      <div className="ev-countdown-units">
+        {days > 0 && <><span className="ev-countdown-num">{days}</span><span className="ev-countdown-unit">d</span></>}
+        <span className="ev-countdown-num">{String(hrs).padStart(2,'0')}</span><span className="ev-countdown-unit">h</span>
+        <span className="ev-countdown-num">{String(mins).padStart(2,'0')}</span><span className="ev-countdown-unit">m</span>
+        <span className="ev-countdown-num">{String(secs).padStart(2,'0')}</span><span className="ev-countdown-unit">s</span>
+      </div>
+    </div>
+  );
+}
 
 export default function EventsPage() {
   const [member, setMember]       = useState<any>(null);
@@ -374,6 +434,9 @@ export default function EventsPage() {
                       )}
                     </div>
                   </div>
+
+                  {/* Countdown */}
+                  {selected.status !== 'completed' && <Countdown event={selected} />}
 
                   {/* Title + location */}
                   <div className="ev-title">{selected.title}</div>

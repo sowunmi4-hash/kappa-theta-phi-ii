@@ -383,3 +383,71 @@
   min-height: 75px; background: rgba(4,6,15,.5); transition: all .15s;
 }
 .ev-flyer-zone:hover { border-color: var(--gold); background: rgba(198,147,10,.04); }
+
+/* ════════ COUNTDOWN ════════ */
+@keyframes ev-pulse { 0%,100% { opacity:1; transform:scale(1); } 50% { opacity:.4; transform:scale(1.5); } }
+
+.ev-countdown {
+  display: flex;
+  align-items: center;
+  gap: .9rem;
+  padding: .8rem 1rem;
+  border-radius: 3px;
+  border: 1px solid;
+  position: relative;
+  overflow: hidden;
+}
+.ev-countdown.normal  { background: rgba(198,147,10,.06); border-color: rgba(198,147,10,.2); }
+.ev-countdown.urgent  { background: rgba(224,80,112,.07); border-color: rgba(224,80,112,.3); }
+.ev-countdown.live    { background: rgba(74,222,128,.07); border-color: var(--green-border); }
+.ev-countdown.started { background: rgba(198,147,10,.04); border-color: rgba(198,147,10,.15); }
+
+.ev-countdown-pulse {
+  width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0;
+  animation: ev-pulse 1.4s ease-in-out infinite;
+}
+.ev-countdown.live .ev-countdown-pulse   { background: var(--green); }
+.ev-countdown.urgent .ev-countdown-pulse { background: #e05070; }
+
+.ev-countdown-label {
+  font-family: var(--cinzel);
+  font-size: .72rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+.ev-countdown.normal  .ev-countdown-label { color: var(--gold-b); }
+.ev-countdown.urgent  .ev-countdown-label { color: #e05070; }
+.ev-countdown.live    .ev-countdown-label { color: var(--green); }
+.ev-countdown.started .ev-countdown-label { color: var(--bone-faint); }
+
+.ev-countdown-units {
+  display: flex;
+  align-items: baseline;
+  gap: .35rem;
+  margin-left: auto;
+}
+.ev-countdown-num {
+  font-family: 'Courier New', monospace;
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--gold-b);
+  letter-spacing: 1px;
+  line-height: 1;
+}
+.ev-countdown-unit {
+  font-family: var(--cinzel);
+  font-size: .55rem;
+  letter-spacing: 2px;
+  color: rgba(198,147,10,.45);
+  text-transform: uppercase;
+  margin-right: .2rem;
+}
+
+.ev-countdown-reminder {
+  font-family: var(--cinzel);
+  font-size: .6rem;
+  letter-spacing: 2px;
+  color: rgba(224,80,112,.7);
+  margin-left: auto;
+  text-transform: uppercase;
+}
