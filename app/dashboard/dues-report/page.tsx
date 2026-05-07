@@ -9,24 +9,39 @@ function fmt(n: number) { return `L$${(n||0).toLocaleString()}`; }
 function pct(paid: number, sweat: number, due: number) { return Math.min(100, Math.round(((paid+sweat)/due)*100))||0; }
 function dateFmt(d: string) { return new Date(d).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}); }
 
+function fmtTimeLeft(ms: number): string {
+  if (ms <= 0) return 'EXPIRED';
+  const months  = Math.floor(ms / (30*86400000));
+  const days    = Math.floor((ms % (30*86400000)) / 86400000);
+  const hours   = Math.floor((ms % 86400000) / 3600000);
+  const minutes = Math.floor((ms % 3600000) / 60000);
+  const seconds = Math.floor((ms % 60000) / 1000);
+  const parts: string[] = [];
+  if (months  > 0) parts.push(`${months} ${months  === 1 ? 'month'   : 'months'}`);
+  if (days    > 0) parts.push(`${days} ${days    === 1 ? 'day'     : 'days'}`);
+  if (hours   > 0) parts.push(`${hours} ${hours   === 1 ? 'hour'    : 'hours'}`);
+  if (minutes > 0) parts.push(`${minutes} ${minutes === 1 ? 'minute'  : 'minutes'}`);
+  parts.push(`${seconds} ${seconds === 1 ? 'second' : 'seconds'}`);
+  return parts.join(', ') + ' left';
+}
+
 function Countdown({ expiresAt }: { expiresAt: string | null }) {
-  const [display, setDisplay] = useState('—');
-  const [cls, setCls] = useState('ok');
+  const [display, setDisplay] = useState('— No timer set');
+  const [cls, setCls] = useState('none');
   useEffect(() => {
-    if (!expiresAt) { setDisplay('—'); setCls('ok'); return; }
+    if (!expiresAt) { setDisplay('— No timer set'); setCls('none'); return; }
     function tick() {
       const ms = new Date(expiresAt).getTime() - Date.now();
       if (ms <= 0) { setDisplay('EXPIRED'); setCls('urgent'); return; }
-      const d=Math.floor(ms/86400000), h=Math.floor((ms%86400000)/3600000),
-            m=Math.floor((ms%3600000)/60000), s=Math.floor((ms%60000)/1000);
       setCls(ms < 86400000 ? 'urgent' : ms < 86400000*3 ? 'warn' : 'ok');
-      setDisplay(d > 0 ? `${d}d ${h}h ${m}m ${s}s` : h > 0 ? `${h}h ${m}m ${s}s` : `${m}m ${s}s`);
+      setDisplay(fmtTimeLeft(ms));
     }
     tick();
     const t = setInterval(tick, 1000);
     return () => clearInterval(t);
   }, [expiresAt]);
-  return <span className={`dr-brother-timer ${cls}`}>{display}</span>;
+  const col = cls === 'none' ? 'var(--bone-faint)' : undefined;
+  return <span className={`dr-brother-timer ${cls}`} style={{color:col}}>{display}</span>;
 }
 function timerCls(r: any) {
   if(!r.expires_at) return 'ok';

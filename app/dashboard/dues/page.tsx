@@ -21,8 +21,8 @@ function fmtTimeLeft(ms: number): string {
   const seconds = Math.floor((ms % 60000) / 1000);
   const parts: string[] = [];
   if (months  > 0) parts.push(`${months} ${months  === 1 ? 'month'  : 'months'}`);
-  if (days    > 0) parts.push(`${days}   ${days    === 1 ? 'day'    : 'days'}`);
-  if (hours   > 0) parts.push(`${hours}  ${hours   === 1 ? 'hour'   : 'hours'}`);
+  if (days    > 0) parts.push(`${days} ${days    === 1 ? 'day'   : 'days'}`);
+  if (hours   > 0) parts.push(`${hours} ${hours   === 1 ? 'hour'  : 'hours'}`);
   if (minutes > 0) parts.push(`${minutes} ${minutes === 1 ? 'minute'  : 'minutes'}`);
   parts.push(`${seconds} ${seconds === 1 ? 'second' : 'seconds'}`);
   return parts.join(', ') + ' left';
