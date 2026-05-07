@@ -222,7 +222,7 @@ export default function EventsPage() {
   const selDow   = selDate?.toLocaleDateString('en-GB', { weekday:'long' });
 
   if (!member) return <div className="dash-loading">LOADING...</div>;
-  const canManage = member.role === 'Head Founder' || member.role === 'Co-Founder' || member.fraction === 'Ishi No Fraction';
+  const canManage = member.role === 'Head Founder' || member.role === 'Co-Founder' || member.fraction === 'Ishi No Faction';
 
   return (
     <div className="dash-app">

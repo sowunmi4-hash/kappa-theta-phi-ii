@@ -15,7 +15,7 @@ async function getMember() {
   return m[0] || null;
 }
 
-const canSeeDisciplinary = (m) => m && (m.fraction === 'Ishi No Fraction' || m.frat_name === 'Big Brother Substance' || m.frat_name === 'Cool Breeze');
+const canSeeDisciplinary = (m) => m && (m.fraction === 'Ishi No Faction' || m.frat_name === 'Big Brother Substance' || m.frat_name === 'Cool Breeze');
 const canSeeFull = (m) => m && (m.frat_name === 'Big Brother Substance' || m.frat_name === 'Cool Breeze');
 
 export async function GET(req) {

@@ -91,7 +91,7 @@ export default function SSPPage() {
 
   useEffect(()=>{
     if(!member) return;
-    const manage = member.fraction==='Ishi No Fraction' || member.role==='Head Founder' || member.role==='Co-Founder';
+    const manage = member.fraction==='Ishi No Faction' || member.role==='Head Founder' || member.role==='Co-Founder';
     setCanManage(manage);
     loadSSPs(manage);
   },[member]);

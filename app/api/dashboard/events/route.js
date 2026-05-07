@@ -99,7 +99,7 @@ export async function PATCH(req) {
   // Mark event as completed/done
   if (body.action === 'complete') {
     const { event_id } = body;
-    if (!FOUNDERS.includes(member.role) && member.fraction !== 'Ishi No Fraction') {
+    if (!FOUNDERS.includes(member.role) && member.fraction !== 'Ishi No Faction') {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
     await fetch(`${S}/rest/v1/events?id=eq.${event_id}`, {

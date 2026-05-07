@@ -40,7 +40,7 @@ export default function SSPReportPage() {
     fetch('/api/dashboard/phire/balance').then(r=>r.json()).then(d=>{
       if(d.error){window.location.href='/login';return;}
       const m=d.member;
-      const ok=m?.fraction==='Ishi No Fraction'||m?.role==='Head Founder'||m?.role==='Co-Founder';
+      const ok=m?.fraction==='Ishi No Faction'||m?.role==='Head Founder'||m?.role==='Co-Founder';
       if(!ok){window.location.href='/dashboard';return;}
       setMember(m); setProfile(d.profile||{});
       fetch('/api/dashboard/ssp/report').then(r=>r.json()).then(rd=>{setReport(rd);setLoading(false);});

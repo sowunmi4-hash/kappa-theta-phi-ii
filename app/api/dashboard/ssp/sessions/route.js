@@ -15,7 +15,7 @@ async function getMember() {
   return m[0] || null;
 }
 
-const CAN_MANAGE = (m) => m?.fraction === 'Ishi No Fraction' || m?.role === 'Head Founder' || m?.role === 'Co-Founder';
+const CAN_MANAGE = (m) => m?.fraction === 'Ishi No Faction' || m?.role === 'Head Founder' || m?.role === 'Co-Founder';
 
 export async function GET(req) {
   const member = await getMember();
