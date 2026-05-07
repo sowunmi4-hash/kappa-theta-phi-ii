@@ -3,9 +3,11 @@ export const dynamic = 'force-dynamic';
 import { useState, useEffect } from 'react';
 import '../../dash.css';
 import '../phire.css';
+import DashSidebar from '../../DashSidebar';
 
 export default function SubmitActivity() {
   const [member, setMember] = useState<any>(null);
+  const [profile, setProfile] = useState<any>(null);
   const [activities, setActivities] = useState<any[]>([]);
   const [selected, setSelected] = useState<string|null>(null);
   const [submitting, setSubmitting] = useState(false);
@@ -13,37 +15,8 @@ export default function SubmitActivity() {
   const [error, setError] = useState('');
   const [myPending, setMyPending] = useState<string[]>([]);
 
-  const slug = member?.frat_name?.toLowerCase().replace(/\s+/g,'-').replace('big-brother-','') || '';
-  const portrait = `/brothers/${slug}.png`;
-  const NAV = [
-    { href: '/dashboard', label: 'Home' },
-    { href: '/dashboard/news', label: 'Wokou News' },
-    { href: '/dashboard/events', label: 'Events' },
-    { href: '/dashboard/phire', label: 'PHIRE' },
-    { href: '/dashboard/discipline', label: 'Discipline' },
-    { href: '/dashboard/ssp', label: 'Sage Solution' },
-  { href: '/dashboard/dues', label: 'Dues' },
-    { href: '/dashboard/gallery', label: 'My Gallery' },
-    { href: '/dashboard/edit', label: 'Edit Profile' },
-  ];
-  const Sidebar = () => (
-    <aside className="dash-sidebar">
-      <div className="dash-sidebar-logo"><img src="/logo.png" alt="KΘΦ II" /><span className="dash-sidebar-logo-text">KΘΦ II</span></div>
-      <div className="dash-sidebar-member">
-        <div className="dash-sidebar-portrait"><img src={portrait} alt="" onError={(e:any)=>e.target.src='/logo.png'}/></div>
-        <div className="dash-sidebar-name">{member?.frat_name}</div>
-        <div className="dash-sidebar-role">{member?.role}</div>
-      </div>
-      <nav className="dash-nav">
-        {NAV.map(n => <a key={n.href} href={n.href} className={`dash-nav-item ${typeof window !== 'undefined' && window.location.pathname === n.href ? 'active' : ''}`}><span>{n.label}</span></a>)}
-        <div className="dash-nav-divider"/>
-        <a href="/" className="dash-nav-item"><span>Back to Site</span></a>
-            <button onClick={async()=>{await fetch('/api/logout',{method:'POST'});window.location.href='/login';}} className="dash-nav-item" style={{width:'100%',textAlign:'left',background:'none',border:'none',cursor:'pointer',color:'#e05070',fontFamily:'inherit'}}><span>Sign Out</span></button>
-      </nav>
-    </aside>
-  );
   useEffect(() => {
-    fetch('/api/dashboard/phire/balance').then(r=>r.json()).then(d => { if(d.error){window.location.href='/login';return;} setMember(d.member); });
+    fetch('/api/dashboard/phire/balance').then(r=>r.json()).then(d => { if(d.error){window.location.href='/login';return;} setMember(d.member); setProfile(d.profile || {}); });
     fetch('/api/dashboard/phire/activities').then(r=>r.json()).then(d => setActivities(d.activities||[]));
     fetch('/api/dashboard/phire/submissions?view=own').then(r=>r.json()).then(d => {
       const pending = (d.submissions||[]).filter((s:any)=>s.status==='pending').map((s:any)=>s.activity_id);
@@ -67,7 +40,7 @@ export default function SubmitActivity() {
 
   return (
     <div className="dash-app phire-root">
-      <Sidebar />
+      <DashSidebar member={member} profile={profile} />
       <main className="dash-main">
         <div className="phire-submit-wrap">
           <div style={{display:'flex',alignItems:'center',gap:'1rem',marginBottom:'2rem'}}>
