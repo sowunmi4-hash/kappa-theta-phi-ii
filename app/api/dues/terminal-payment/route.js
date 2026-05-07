@@ -5,11 +5,28 @@ const K = process.env.SUPABASE_SECRET_KEY;
 const h  = (x={}) => ({ apikey: K, Authorization: `Bearer ${K}`, 'Accept-Profile': 'members', ...x });
 const ch = ()     => h({ 'Content-Type': 'application/json', 'Content-Profile': 'members' });
 
+// L$500 = 7 days on the timer
+const LS_PER_WEEK = 500;
+const DAYS_PER_WEEK = 7;
+
 function genTxnId() {
-  const now = new Date();
-  const date = now.toISOString().slice(0,10).replace(/-/g,''); // YYYYMMDD
-  const rand = Math.random().toString(36).substring(2,8).toUpperCase(); // 6 char random
+  const date = new Date().toISOString().slice(0,10).replace(/-/g,'');
+  const rand = Math.random().toString(36).substring(2,8).toUpperCase();
   return `KTP-${date}-${rand}`;
+}
+
+function addDays(date, days) {
+  const d = new Date(date);
+  d.setDate(d.getDate() + days);
+  return d;
+}
+
+function fmtExpiryText(date) {
+  return date.toLocaleDateString('en-GB', {
+    weekday: 'short', day: 'numeric', month: 'long',
+    year: 'numeric', hour: '2-digit', minute: '2-digit',
+    hour12: true, timeZone: 'UTC'
+  }) + ' SLT';
 }
 
 export async function POST(req) {
@@ -19,74 +36,70 @@ export async function POST(req) {
   if (secret !== 'KTP-DUES-2026') return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   if (!amount_ls) return NextResponse.json({ error: 'Missing amount' }, { status: 400 });
 
-  // 1. UUID lookup
+  // 1. Find member by UUID or username
   let members = [];
   if (sl_uuid) {
-    members = await fetch(
-      `${S}/rest/v1/roster?sl_uuid=eq.${sl_uuid}&select=*`,
-      { headers: h() }
-    ).then(r => r.json());
+    members = await fetch(`${S}/rest/v1/roster?sl_uuid=eq.${sl_uuid}&select=*`, { headers: h() }).then(r => r.json());
   }
-
-  // 2. Username fallback
   if (!members?.length && sl_username) {
     const match = sl_username.match(/\(([^)]+)\)\s*$/);
     const username = match ? match[1] : sl_username;
-    members = await fetch(
-      `${S}/rest/v1/roster?sl_name=ilike.%25${encodeURIComponent(username)}%25&select=*`,
-      { headers: h() }
-    ).then(r => r.json());
+    members = await fetch(`${S}/rest/v1/roster?sl_name=ilike.%25${encodeURIComponent(username)}%25&select=*`, { headers: h() }).then(r => r.json());
   }
-
   if (!members?.length) return NextResponse.json({ error: 'Member not found' }, { status: 404 });
   const member = members[0];
 
   // Auto-save UUID
   if (sl_uuid && !member.sl_uuid) {
     await fetch(`${S}/rest/v1/roster?id=eq.${member.id}`, {
-      method: 'PATCH', headers: ch(),
-      body: JSON.stringify({ sl_uuid })
+      method: 'PATCH', headers: ch(), body: JSON.stringify({ sl_uuid })
     });
   }
 
-  // Get active period
-  const periods = await fetch(
-    `${S}/rest/v1/dues_periods?is_active=eq.true&select=*`,
-    { headers: h() }
-  ).then(r => r.json());
-
+  // 2. Get active period
+  const periods = await fetch(`${S}/rest/v1/dues_periods?is_active=eq.true&select=*`, { headers: h() }).then(r => r.json());
   if (!periods?.length) return NextResponse.json({ error: 'No active dues period' }, { status: 404 });
   const period = periods[0];
 
-  // Get dues record
-  const records = await fetch(
-    `${S}/rest/v1/dues_records?member_id=eq.${member.id}&period_id=eq.${period.id}&select=*`,
-    { headers: h() }
-  ).then(r => r.json());
-
+  // 3. Get dues record
+  const records = await fetch(`${S}/rest/v1/dues_records?member_id=eq.${member.id}&period_id=eq.${period.id}&select=*`, { headers: h() }).then(r => r.json());
   if (!records?.length) return NextResponse.json({ error: 'No dues record found' }, { status: 404 });
   const record = records[0];
 
-  // Generate transaction ID and timestamp
-  const txn_id   = genTxnId();
-  const paid_at  = new Date().toISOString();
+  // 4. Calculate timer extension
+  //    L$500 = 7 days. Partial amounts rounded down to nearest week unit.
+  const weeksEarned  = amount_ls / LS_PER_WEEK;           // e.g. L$1000 = 2 weeks
+  const daysToAdd    = Math.round(weeksEarned * DAYS_PER_WEEK); // 14 days
 
-  // Log payment with transaction ID, SL UUID, and precise timestamp
+  //    Extend from current expiry (or now if expired/not set)
+  const now = new Date();
+  const currentExpiry = record.expires_at ? new Date(record.expires_at) : now;
+  const baseDate = currentExpiry > now ? currentExpiry : now; // don't go backwards
+  const newExpiry = addDays(baseDate, daysToAdd);
+  const newExpiryText = fmtExpiryText(newExpiry);
+
+  // 5. Generate transaction ID + timestamp
+  const txn_id  = genTxnId();
+  const paid_at = now.toISOString();
+
+  // 6. Log payment
   await fetch(`${S}/rest/v1/dues_payments`, {
     method: 'POST', headers: ch(),
     body: JSON.stringify({
-      period_id:      period.id,
-      member_id:      member.id,
-      member_name:    member.frat_name,
-      amount_ls:      amount_ls,
-      transaction_id: txn_id,
-      notes:          `Terminal · SL UUID: ${sl_uuid || 'unknown'} · User: ${sl_username}`,
-      logged_by_name: 'SL Dues Terminal',
-      created_at:     paid_at,
+      period_id:        period.id,
+      member_id:        member.id,
+      member_name:      member.frat_name,
+      amount_ls:        amount_ls,
+      transaction_id:   txn_id,
+      expires_at:       newExpiry.toISOString(),
+      casper_expiry_text: newExpiryText,
+      notes:            `Terminal · +${daysToAdd}d timer · SL UUID: ${sl_uuid || 'unknown'}`,
+      logged_by_name:   'SL Dues Terminal',
+      created_at:       paid_at,
     })
   });
 
-  // Update dues record totals
+  // 7. Update dues record: new totals + extended timer
   const newLindenPaid = (record.linden_paid || 0) + amount_ls;
   const totalPaid     = newLindenPaid + (record.sweat_equity_value || 0);
   const remaining     = Math.max(0, period.amount_due - totalPaid);
@@ -95,7 +108,14 @@ export async function POST(req) {
 
   await fetch(`${S}/rest/v1/dues_records?id=eq.${record.id}`, {
     method: 'PATCH', headers: ch(),
-    body: JSON.stringify({ linden_paid: newLindenPaid, status: newStatus, credit, updated_at: paid_at })
+    body: JSON.stringify({
+      linden_paid:        newLindenPaid,
+      status:             newStatus,
+      credit,
+      expires_at:         newStatus === 'paid' ? null : newExpiry.toISOString(),
+      casper_expiry_text: newStatus === 'paid' ? null : newExpiryText,
+      updated_at:         paid_at,
+    })
   });
 
   return NextResponse.json({
@@ -108,5 +128,8 @@ export async function POST(req) {
     new_status:     newStatus,
     transaction_id: txn_id,
     paid_at,
+    days_added:     daysToAdd,
+    new_expiry:     newExpiry.toISOString(),
+    new_expiry_text: newExpiryText,
   });
 }
