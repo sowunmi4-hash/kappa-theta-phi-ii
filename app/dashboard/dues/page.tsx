@@ -351,7 +351,7 @@ export default function DuesPage() {
               {myRecords.length === 0 && (
                 <div style={{textAlign:'center',padding:'3rem',fontFamily:'var(--cinzel)',fontSize:'.65rem',letterSpacing:'2px',color:'var(--bone-faint)'}}>No dues records yet.</div>
               )}
-              {myRecords.map(rec=>{
+              {myRecords.filter(rec => periods.find((p:any)=>p.id===rec.period_id)?.is_active).map(rec=>{
                 const period = periods.find(p=>p.id===rec.period_id);
                 const totalPaid = rec.linden_paid + rec.sweat_equity_value;
                 const remaining = Math.max(0, rec.amount_due - totalPaid);
@@ -363,7 +363,11 @@ export default function DuesPage() {
                       <div className="du-status-top">
                         <div>
                           <div className="du-status-lbl">{period?.label || 'Current Period'} · Active Period</div>
-                          <div className="du-status-amount">{fmt(remaining)}</div>
+                          {rec.status === 'paid' ? (
+                            <div className="du-status-amount" style={{color:'var(--green)'}}>PAID IN FULL</div>
+                          ) : (
+                            <div className="du-status-amount">{fmt(remaining)}</div>
+                          )}
                           <div style={{display:'flex',alignItems:'center',gap:'.6rem',marginTop:'.4rem'}}>
                             <span className={`du-badge ${rec.status}`}>{rec.status}</span>
                             <span className="du-status-sub">{fmt(totalPaid)} paid · {fmt(rec.amount_due)} total</span>
