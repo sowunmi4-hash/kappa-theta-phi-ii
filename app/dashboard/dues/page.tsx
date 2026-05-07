@@ -12,10 +12,11 @@ function pct(paid: number, sweat: number, due: number) { return Math.min(100, Ma
 function dateFmt(d:string){ return new Date(d).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}); }
 function progCls(status:string, p:number){ if(status==='paid') return 'green'; return p > 40 ? 'gold' : 'red'; }
 
-function Countdown({ expiresAt, size='md' }: { expiresAt:string; size?:'sm'|'md' }) {
-  const [display, setDisplay] = useState('');
-  const [state, setState]   = useState<'ok'|'warn'|'urgent'|'expired'>('ok');
+function Countdown({ expiresAt, size='md' }: { expiresAt:string|null; size?:'sm'|'md' }) {
+  const [display, setDisplay] = useState('—');
+  const [state, setState]   = useState<'ok'|'warn'|'urgent'|'expired'|'none'>('none');
   useEffect(() => {
+    if (!expiresAt) { setDisplay('— No timer set'); setState('none'); return; }
     function tick() {
       const diff = new Date(expiresAt).getTime() - Date.now();
       if (diff <= 0) { setState('expired'); setDisplay('EXPIRED'); return; }
@@ -27,7 +28,8 @@ function Countdown({ expiresAt, size='md' }: { expiresAt:string; size?:'sm'|'md'
     tick(); const t = setInterval(tick, 1000); return () => clearInterval(t);
   }, [expiresAt]);
   const fs = size === 'sm' ? '.65rem' : '.88rem';
-  return <span className={`du-countdown-time ${state}`} style={{ fontSize:fs }}>{display}</span>;
+  const col = state === 'none' ? 'var(--bone-faint)' : undefined;
+  return <span className={`du-countdown-time ${state}`} style={{ fontSize:fs, color:col }}>{display}</span>;
 }
 
 export default function DuesPage() {

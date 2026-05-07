@@ -33,6 +33,7 @@
 .du-countdown-time.warn   { color:#facc15; }
 .du-countdown-time.urgent { color:#e05070; }
 .du-countdown-time.expired{ color:#e05070; }
+.du-countdown-time.none   { color:var(--bone-faint); font-weight:400; }
 
 /* Progress */
 .du-prog-track { height:4px; background:rgba(198,147,10,.1); border-radius:2px; overflow:hidden; }
@@ -89,7 +90,7 @@
 .du-status-lbl   { font-family:var(--cinzel); font-size:.38rem; letter-spacing:4px; color:rgba(198,147,10,.5); text-transform:uppercase; margin-bottom:.3rem; }
 .du-status-sub   { font-family:var(--cinzel); font-size:.38rem; letter-spacing:2px; color:var(--bone-faint); }
 .du-timer-wrap   { text-align:right; }
-.du-timer-lbl    { font-family:var(--cinzel); font-size:.36rem; letter-spacing:3px; color:var(--bone-faint); text-transform:uppercase; margin-bottom:.25rem; }
+.du-timer-lbl    { font-family:var(--cinzel); font-size:.52rem; letter-spacing:3px; color:var(--bone-faint); text-transform:uppercase; margin-bottom:.25rem; }
 .du-casper-text  { font-family:var(--cinzel); font-size:.36rem; letter-spacing:2px; color:rgba(240,232,208,.2); }
 .du-prog-row     { display:flex; justify-content:space-between; font-family:var(--cinzel); font-size:.37rem; letter-spacing:2px; color:var(--bone-faint); margin-top:.2rem; }
 
