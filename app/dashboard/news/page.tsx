@@ -1,16 +1,17 @@
 'use client';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import '../dash.css';
 import DashSidebar from '../DashSidebar';
 import './news.css';
 
 const LEADERS = ['Head Founder', 'Co-Founder', 'Iron Fleet'];
+const AUTO_ADVANCE_MS = 6000;
 
 function fmtDate(d: string) {
   return new Date(d).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }).toUpperCase();
 }
 
-function Initial({ name, size = 36 }: { name: string; size?: number }) {
+function Initial({ name, size = 34 }: { name: string; size?: number }) {
   return (
     <div style={{
       width: size, height: size, borderRadius: '50%',
@@ -28,9 +29,11 @@ export default function NewsPage() {
   const [profile, setProfile] = useState<any>(null);
   const [role, setRole]       = useState('');
   const [news, setNews]       = useState<any[]>([]);
+  const [activeIdx, setActiveIdx] = useState(0);
   const [composing, setComposing] = useState(false);
   const [form, setForm]       = useState({ title: '', content: '', pinned: false });
   const [posting, setPosting] = useState(false);
+  const timerRef = useRef<any>(null);
 
   useEffect(() => {
     fetch('/api/dashboard/profile').then(r => r.json()).then(d => {
@@ -48,6 +51,24 @@ export default function NewsPage() {
     return () => clearInterval(poll);
   }, []);
 
+  // Auto-advance through dispatches
+  useEffect(() => {
+    if (news.length <= 1) return;
+    timerRef.current = setInterval(() => {
+      setActiveIdx(i => (i + 1) % news.length);
+    }, AUTO_ADVANCE_MS);
+    return () => clearInterval(timerRef.current);
+  }, [news.length]);
+
+  function selectDispatch(idx: number) {
+    setActiveIdx(idx);
+    // Reset timer on manual select
+    if (timerRef.current) clearInterval(timerRef.current);
+    timerRef.current = setInterval(() => {
+      setActiveIdx(i => (i + 1) % news.length);
+    }, AUTO_ADVANCE_MS);
+  }
+
   async function loadNews() {
     const d = await fetch('/api/dashboard/news').then(r => r.json());
     setNews(d.news || []); setRole(d.role || '');
@@ -64,10 +85,7 @@ export default function NewsPage() {
   if (!member) return <div className="dash-loading">LOADING...</div>;
 
   const canPost = LEADERS.includes(role);
-  const lead = news[0] || null;
-  const rest = news.slice(1);
-
-  // Dispatches this month
+  const featured = news[activeIdx] || null;
   const now = new Date();
   const thisMonth = news.filter(n => {
     const d = new Date(n.created_at);
@@ -89,12 +107,10 @@ export default function NewsPage() {
           )}
         </div>
 
-        {/* Compose form — inline */}
+        {/* Compose form */}
         {composing && (
           <div className="nw-compose">
-            <div className="nw-compose-hdr">
-              <span className="nw-compose-title">New Dispatch</span>
-            </div>
+            <div className="nw-compose-hdr"><span className="nw-compose-title">New Dispatch</span></div>
             <div className="nw-compose-body">
               <div>
                 <label className="nw-field-label">Title</label>
@@ -122,58 +138,68 @@ export default function NewsPage() {
           <div className="nw-masthead-line" />
         </div>
 
-        {/* No news */}
-        {news.length === 0 && (
-          <div className="nw-empty">No dispatches yet.</div>
-        )}
+        {news.length === 0 && <div className="nw-empty">No dispatches yet.</div>}
 
-        {/* Two-column layout */}
-        {news.length > 0 && (
+        {news.length > 0 && featured && (
           <div className="nw-body">
 
-            {/* LEFT: Lead story */}
+            {/* LEFT: Featured dispatch */}
             <div className="nw-lead">
               <div className="nw-lead-meta">
                 <span className="nw-dispatched-badge">Dispatched</span>
-                <span className="nw-lead-date">{fmtDate(lead.created_at)}</span>
-                {lead.posted_by_name && <span className="nw-lead-author-name">· {lead.posted_by_name}</span>}
-                {lead.pinned && <span className="nw-pinned-badge">Pinned</span>}
+                <span className="nw-lead-date">{fmtDate(featured.created_at)}</span>
+                {featured.posted_by_name && <span className="nw-lead-byauthor">· {featured.posted_by_name}</span>}
+                {featured.pinned && <span className="nw-pinned-badge">Pinned</span>}
               </div>
 
-              <h2 className="nw-lead-title">{lead.title}</h2>
+              <h2 className="nw-lead-title">{featured.title}</h2>
 
-              <blockquote className="nw-lead-content">{lead.content}</blockquote>
+              <blockquote className="nw-lead-content">{featured.content}</blockquote>
+
+              {/* Progress dots */}
+              {news.length > 1 && (
+                <div className="nw-progress-dots">
+                  {news.map((_: any, i: number) => (
+                    <div
+                      key={i}
+                      className={`nw-dot${i === activeIdx ? ' active' : ''}`}
+                      onClick={() => selectDispatch(i)}
+                    />
+                  ))}
+                </div>
+              )}
 
               <div className="nw-lead-footer">
-                <Initial name={lead.posted_by_name || 'L'} size={38} />
+                <Initial name={featured.posted_by_name || 'L'} size={40} />
                 <div>
-                  <div className="nw-author-name">{lead.posted_by_name || 'Leadership'}</div>
-                  {lead.posted_by_role && <div className="nw-author-role">{lead.posted_by_role}</div>}
+                  <div className="nw-author-name">{featured.posted_by_name || 'Leadership'}</div>
+                  {featured.posted_by_role && <div className="nw-author-role">{featured.posted_by_role}</div>}
                 </div>
               </div>
             </div>
 
-            {/* RIGHT: Stacked items */}
-            {rest.length > 0 && (
-              <div className="nw-stack">
-                {rest.map((n: any) => (
-                  <div key={n.id} className="nw-item">
-                    <div className="nw-item-header">
-                      <Initial name={n.posted_by_name || 'L'} size={30} />
-                      <span className="nw-item-date">{fmtDate(n.created_at)}</span>
-                      {n.pinned && <span className="nw-pinned-badge">Pinned</span>}
-                    </div>
-                    <div className="nw-item-title">{n.title}</div>
-                    <div className="nw-item-content">{n.content}</div>
-                    <div className="nw-item-byline">{n.posted_by_name || 'Leadership'}</div>
+            {/* RIGHT: All dispatches list */}
+            <div className="nw-stack">
+              {news.map((n: any, i: number) => (
+                <div
+                  key={n.id}
+                  className={`nw-item${i === activeIdx ? ' active' : ''}`}
+                  onClick={() => selectDispatch(i)}
+                >
+                  <div className="nw-item-header">
+                    <Initial name={n.posted_by_name || 'L'} size={28} />
+                    <span className="nw-item-date">{fmtDate(n.created_at)}</span>
+                    {n.pinned && <span className="nw-pinned-badge" style={{ fontSize: '.52rem', padding: '2px 7px' }}>Pinned</span>}
                   </div>
-                ))}
-              </div>
-            )}
+                  <div className="nw-item-title">{n.title}</div>
+                  <div className="nw-item-content">{n.content}</div>
+                  <div className="nw-item-byline">{n.posted_by_name || 'Leadership'}</div>
+                </div>
+              ))}
+            </div>
           </div>
         )}
 
-        {/* Footer */}
         {news.length > 0 && (
           <div className="nw-footer">
             <span>{thisMonth} dispatch{thisMonth !== 1 ? 'es' : ''} this month</span>
