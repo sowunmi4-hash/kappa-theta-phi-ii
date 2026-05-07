@@ -9,12 +9,24 @@ function fmt(n: number) { return `L$${(n||0).toLocaleString()}`; }
 function pct(paid: number, sweat: number, due: number) { return Math.min(100, Math.round(((paid+sweat)/due)*100))||0; }
 function dateFmt(d: string) { return new Date(d).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}); }
 
-function timerStr(r: any) {
-  if(!r.expires_at) return '—';
-  const ms = new Date(r.expires_at).getTime() - Date.now();
-  if(ms<=0) return 'EXPIRED';
-  const d=Math.floor(ms/86400000), h=Math.floor((ms%86400000)/3600000);
-  return `${d}d ${String(h).padStart(2,'0')}h`;
+function Countdown({ expiresAt }: { expiresAt: string | null }) {
+  const [display, setDisplay] = useState('—');
+  const [cls, setCls] = useState('ok');
+  useEffect(() => {
+    if (!expiresAt) { setDisplay('—'); setCls('ok'); return; }
+    function tick() {
+      const ms = new Date(expiresAt).getTime() - Date.now();
+      if (ms <= 0) { setDisplay('EXPIRED'); setCls('urgent'); return; }
+      const d=Math.floor(ms/86400000), h=Math.floor((ms%86400000)/3600000),
+            m=Math.floor((ms%3600000)/60000), s=Math.floor((ms%60000)/1000);
+      setCls(ms < 86400000 ? 'urgent' : ms < 86400000*3 ? 'warn' : 'ok');
+      setDisplay(d > 0 ? `${d}d ${h}h ${m}m ${s}s` : h > 0 ? `${h}h ${m}m ${s}s` : `${m}m ${s}s`);
+    }
+    tick();
+    const t = setInterval(tick, 1000);
+    return () => clearInterval(t);
+  }, [expiresAt]);
+  return <span className={`dr-brother-timer ${cls}`}>{display}</span>;
 }
 function timerCls(r: any) {
   if(!r.expires_at) return 'ok';
@@ -140,7 +152,7 @@ export default function DuesReportPage() {
                   {/* Brother name + timer */}
                   <div className="dr-brother-col">
                     <div className="dr-brother-name">{rec.member_name}</div>
-                    <span className={`dr-brother-timer ${timerCls(rec)}`}>{timerStr(rec)}</span>
+                    <Countdown expiresAt={rec.expires_at} />
                   </div>
 
                   {/* Progress bar */}
