@@ -234,7 +234,7 @@ export default function EventsPage() {
           <div className="dash-page-title">Events</div>
           <div style={{ display:'flex', alignItems:'center', gap:'.5rem' }}>
             <span style={{ fontFamily:'var(--cinzel)', fontSize:'.4rem', letterSpacing:'2px', color:'var(--bone-faint)' }}>{upcomingEvents.length} upcoming</span>
-            {canManage && <button className="dash-btn gold-ghost" onClick={() => setCreating(true)}>+ Add Event</button>}
+            <button className="dash-btn gold-ghost" onClick={() => setCreating(true)}>+ Add Event</button>
           </div>
         </div>
 
