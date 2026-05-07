@@ -280,9 +280,68 @@ export default function EventsPage() {
             </div>
           </div>
 
-          {/* ── CENTRE: Event Detail ── */}
+          {/* ── CENTRE: Event Detail or Create Form ── */}
           <div className="ev-centre">
-            {!selected ? (
+            {creating ? (
+              /* ── INLINE CREATE FORM ── */
+              <div className="ev-create-form">
+                <div className="ev-create-hdr">
+                  <span className="ev-create-title">New Event</span>
+                  <button className="ev-create-close" onClick={() => setCreating(false)}>✕</button>
+                </div>
+                <div className="ev-create-body">
+                  <div className="ev-create-field">
+                    <label className="ev-create-label">Event Title *</label>
+                    <input className="ev-create-input" value={form.title} onChange={e => setForm(f => ({ ...f, title:e.target.value }))} placeholder="e.g. Brotherhood Night — June 2026" />
+                  </div>
+                  <div className="ev-create-row">
+                    <div className="ev-create-field">
+                      <label className="ev-create-label">Date *</label>
+                      <input className="ev-create-input" type="date" value={form.event_date} onChange={e => setForm(f => ({ ...f, event_date:e.target.value }))} />
+                    </div>
+                    <div className="ev-create-field">
+                      <label className="ev-create-label">Time</label>
+                      <input className="ev-create-input" type="time" value={form.event_time} onChange={e => setForm(f => ({ ...f, event_time:e.target.value }))} />
+                    </div>
+                  </div>
+                  <div className="ev-create-row">
+                    <div className="ev-create-field">
+                      <label className="ev-create-label">Location (SL)</label>
+                      <input className="ev-create-input" value={form.location} onChange={e => setForm(f => ({ ...f, location:e.target.value }))} placeholder="e.g. Kuro Kanda sim" />
+                    </div>
+                    <div className="ev-create-field">
+                      <label className="ev-create-label">Attendance</label>
+                      <input className="ev-create-input" value={form.dress_code} onChange={e => setForm(f => ({ ...f, dress_code:e.target.value }))} placeholder="e.g. All Brothers Required" />
+                    </div>
+                  </div>
+                  <div className="ev-create-field">
+                    <label className="ev-create-label">SL Teleport URL</label>
+                    <input className="ev-create-input" value={form.sl_url} onChange={e => setForm(f => ({ ...f, sl_url:e.target.value }))} placeholder="secondlife://..." />
+                  </div>
+                  <div className="ev-create-field">
+                    <label className="ev-create-label">Description</label>
+                    <textarea className="ev-create-textarea" value={form.description} onChange={e => setForm(f => ({ ...f, description:e.target.value }))} placeholder="Tell brothers about this event..." />
+                  </div>
+                  <div className="ev-create-field">
+                    <label className="ev-create-label">Event Flyer (Optional)</label>
+                    <label className="ev-create-flyer">
+                      <input ref={flyerRef} type="file" accept="image/*" style={{ display:'none' }} onChange={e => uploadFlyer(e, false)} />
+                      {form.flyer_url
+                        ? <img src={form.flyer_url} alt="flyer" style={{ maxHeight:'120px', objectFit:'contain', borderRadius:'2px' }} />
+                        : <>
+                            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="rgba(198,147,10,.35)" strokeWidth="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+                            <span className="ev-create-flyer-lbl">{uploading ? 'Uploading...' : 'Click to Upload Flyer'}</span>
+                            <span className="ev-create-flyer-hint">JPG, PNG or WebP — max 5MB</span>
+                          </>
+                      }
+                    </label>
+                  </div>
+                  <button className="ev-create-submit" onClick={createEvent} disabled={saving || !form.title || !form.event_date}>
+                    {saving ? 'Creating...' : 'Create Event →'}
+                  </button>
+                </div>
+              </div>
+            ) : !selected ? (
               <div className="ev-empty">
                 <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="rgba(198,147,10,.2)" strokeWidth="1.2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
                 <span>Select an event from the calendar<br/>or the sidebar</span>
@@ -316,10 +375,7 @@ export default function EventsPage() {
                   {selected.location && (
                     <div className="ev-location">
                       <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" strokeWidth="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
-                      {selected.sl_url
-                        ? <a href={selected.sl_url} target="_blank" rel="noopener noreferrer" className="ev-location-link">{selected.location} · {fmtTime(selected.event_time)}</a>
-                        : <span>{selected.location}{selected.event_time ? ` · ${fmtTime(selected.event_time)}` : ''}</span>
-                      }
+                      <span>{selected.location}{selected.event_time ? ` · ${fmtTime(selected.event_time)}` : ''}</span>
                     </div>
                   )}
                 </div>
@@ -353,6 +409,28 @@ export default function EventsPage() {
                     <div className="ev-meta-key">Attending</div>
                     <div className="ev-meta-val" style={{ color: 'var(--green)' }}>{selected.rsvp_count} confirmed</div>
                   </div>
+                </div>
+
+                {/* Action buttons — RSVP + TELEPORT */}
+                <div className="ev-action-row">
+                  {selected.status !== 'completed' && (
+                    <button
+                      className={`ev-action-btn rsvp${rsvpLocal === 'yes' ? ' active' : ''}`}
+                      onClick={() => handleRsvp(rsvpLocal === 'yes' ? 'no' : 'yes')}
+                    >
+                      {rsvpLocal === 'yes' ? '✓ RSVPed' : 'RSVP →'}
+                    </button>
+                  )}
+                  {selected.sl_url && (
+                    <a
+                      href={selected.sl_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="ev-action-btn teleport"
+                    >
+                      Teleport →
+                    </a>
+                  )}
                 </div>
 
                 {/* Manage row */}
@@ -426,40 +504,6 @@ export default function EventsPage() {
           </div>
         </div>
       </main>
-
-      {/* ── CREATE MODAL ── */}
-      {creating && (
-        <div className="ev-modal-overlay" onClick={() => setCreating(false)}>
-          <div className="ev-modal" onClick={e => e.stopPropagation()}>
-            <div className="ev-modal-hdr">
-              <span className="dash-page-title" style={{ fontSize:'.85rem', letterSpacing:'3px' }}>New Event</span>
-              <button className="ev-modal-close" onClick={() => setCreating(false)}>✕</button>
-            </div>
-            <div className="ev-modal-body">
-              <label className="ev-flyer-zone">
-                <input ref={flyerRef} type="file" accept="image/*" style={{ display:'none' }} onChange={e => uploadFlyer(e, false)} />
-                {form.flyer_url
-                  ? <img src={form.flyer_url} alt="flyer" style={{ maxHeight:'90px', objectFit:'contain' }} />
-                  : <><div style={{ fontSize:'.8rem', color:'rgba(198,147,10,.4)' }}>🖼</div><span style={{ fontFamily:'var(--cinzel)', fontSize:'.36rem', letterSpacing:'2px', color:'rgba(198,147,10,.4)' }}>{uploading ? 'Uploading...' : 'Upload Flyer'}</span></>
-                }
-              </label>
-              <div><label className="dash-field-label">Title *</label><input className="dash-input" value={form.title} onChange={e => setForm(f => ({ ...f, title:e.target.value }))} placeholder="Event name..." /></div>
-              <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:'.6rem' }}>
-                <div><label className="dash-field-label">Date *</label><input className="dash-input" type="date" value={form.event_date} onChange={e => setForm(f => ({ ...f, event_date:e.target.value }))} /></div>
-                <div><label className="dash-field-label">Time (SLT)</label><input className="dash-input" type="time" value={form.event_time} onChange={e => setForm(f => ({ ...f, event_time:e.target.value }))} /></div>
-              </div>
-              <div><label className="dash-field-label">SL Location</label><input className="dash-input" value={form.location} onChange={e => setForm(f => ({ ...f, location:e.target.value }))} placeholder="e.g. Kuro Kanda sim" /></div>
-              <div><label className="dash-field-label">SL URL</label><input className="dash-input" value={form.sl_url} onChange={e => setForm(f => ({ ...f, sl_url:e.target.value }))} placeholder="secondlife:// link" /></div>
-              <div><label className="dash-field-label">Attendance</label><input className="dash-input" value={form.dress_code} onChange={e => setForm(f => ({ ...f, dress_code:e.target.value }))} placeholder="e.g. All Brothers Required" /></div>
-              <div><label className="dash-field-label">Description</label><textarea className="dash-textarea" style={{ minHeight:'70px' }} value={form.description} onChange={e => setForm(f => ({ ...f, description:e.target.value }))} placeholder="What to expect..." /></div>
-              <div style={{ display:'flex', gap:'.5rem', paddingTop:'.4rem' }}>
-                <button className="dash-btn gold-solid" onClick={createEvent} disabled={saving || !form.title || !form.event_date}>{saving ? 'Saving...' : 'Create Event'}</button>
-                <button className="dash-btn ghost" onClick={() => setCreating(false)}>Cancel</button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
 
       {/* ── EDIT MODAL ── */}
       {editing && (
