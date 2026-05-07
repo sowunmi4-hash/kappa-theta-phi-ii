@@ -5,9 +5,9 @@ const K = process.env.SUPABASE_SECRET_KEY;
 const h  = (x={}) => ({ apikey: K, Authorization: `Bearer ${K}`, 'Accept-Profile': 'members', ...x });
 const ch = ()     => h({ 'Content-Type': 'application/json', 'Content-Profile': 'members' });
 
-// L$500 = 7 days on the timer
-const LS_PER_WEEK = 500;
-const DAYS_PER_WEEK = 7;
+// Timer rate: full dues amount = 28 days (4 weeks).
+// Proportion paid determines days earned: days = (amount / total_due) * 28
+const PERIOD_DAYS = 28;
 
 function genTxnId() {
   const date = new Date().toISOString().slice(0,10).replace(/-/g,'');
@@ -66,10 +66,9 @@ export async function POST(req) {
   if (!records?.length) return NextResponse.json({ error: 'No dues record found' }, { status: 404 });
   const record = records[0];
 
-  // 4. Calculate timer extension
-  //    L$500 = 7 days. Partial amounts rounded down to nearest week unit.
-  const weeksEarned  = amount_ls / LS_PER_WEEK;           // e.g. L$1000 = 2 weeks
-  const daysToAdd    = Math.round(weeksEarned * DAYS_PER_WEEK); // 14 days
+  // 4. Calculate timer extension — proportional to period dues
+  //    e.g. L$4,000 due = 28 days. Pay L$1,000 = 7 days. Pay L$2,000 = 14 days.
+  const daysToAdd = Math.round((amount_ls / period.amount_due) * PERIOD_DAYS);
 
   //    Extend from current expiry (or now if expired/not set)
   const now = new Date();
