@@ -15,7 +15,7 @@
 .ph-layout {
   display: grid;
   grid-template-columns: 195px 1fr;
-  min-height: calc(100vh - 60px);
+  flex: 1; min-height: 0;
 }
 
 /* ══ LEFT PANEL ══ */

@@ -3,7 +3,7 @@
 .ev-layout {
   display: grid;
   grid-template-columns: 1.35fr 2fr;
-  min-height: calc(100vh - 60px);
+  flex: 1; min-height: 0;
   background: var(--border);
   gap: 1px;
 }

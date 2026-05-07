@@ -52,7 +52,7 @@
 .disc-badge.expelled { background: rgba(198,147,10,.08); border-color: rgba(198,147,10,.25); color: var(--gold-b); }
 
 /* Management grid (Ishi No Faction) */
-.disc-manage-grid { display: grid; grid-template-columns: 190px 1fr 240px; min-height: calc(100vh - 120px); }
+.disc-manage-grid { display: grid; grid-template-columns: 190px 1fr 240px; flex: 1; min-height: 0; }
 .disc-manage-left { border-right: 1px solid var(--border); background: rgba(4,6,15,.45); display: flex; flex-direction: column; }
 .disc-manage-hdr { padding: .6rem .8rem; border-bottom: 1px solid var(--border); flex-shrink: 0; }
 .disc-manage-items { flex: 1; display: flex; flex-direction: column; gap: 1px; padding: .5rem .55rem; overflow-y: auto; }
