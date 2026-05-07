@@ -3,7 +3,7 @@
 /* Three-column layout — fills viewport height */
 .ev-layout {
   display: grid;
-  grid-template-columns: 260px 1fr 230px;
+  grid-template-columns: 1fr 1fr 1fr;
   min-height: calc(100vh - 60px);
   background: var(--border);
   gap: 1px;
@@ -132,7 +132,7 @@
 /* RSVP Yes/Maybe buttons */
 .ev-rsvp-btns {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr 1fr 1fr;
   gap: 1px;
   background: var(--border);
   flex-shrink: 0;
@@ -172,8 +172,11 @@
 .ev-rsvp-btn.yes.active span:last-child { color: var(--green); }
 .ev-rsvp-btn.maybe.active .ev-rsvp-icon { background: rgba(198,147,10,.12); border-color: rgba(198,147,10,.3); color: var(--gold-b); }
 .ev-rsvp-btn.maybe.active span:last-child { color: var(--gold-b); }
+.ev-rsvp-btn.cant.active .ev-rsvp-icon { background: rgba(224,80,112,.08); border-color: rgba(224,80,112,.28); color: #e05070; }
+.ev-rsvp-btn.cant.active span:last-child { color: #e05070; }
 .ev-rsvp-btn.yes:hover .ev-rsvp-icon { border-color: var(--green-border); color: var(--green); }
 .ev-rsvp-btn.maybe:hover .ev-rsvp-icon { border-color: rgba(198,147,10,.3); color: var(--gold-b); }
+.ev-rsvp-btn.cant:hover .ev-rsvp-icon { border-color: rgba(224,80,112,.28); color: #e05070; }
 
 /* Attendee list */
 .ev-attendee-list {

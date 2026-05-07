@@ -235,6 +235,13 @@ export default function EventsPage() {
                     <span className="ev-rsvp-icon">?</span>
                     <span>Maybe</span>
                   </button>
+                  <button
+                    className={`ev-rsvp-btn cant${rsvpLocal==='no'?' active':''}`}
+                    onClick={() => handleRsvp('no')}
+                  >
+                    <span className="ev-rsvp-icon">✕</span>
+                    <span>Can't</span>
+                  </button>
                 </div>
               )}
 
