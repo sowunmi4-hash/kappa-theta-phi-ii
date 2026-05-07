@@ -246,20 +246,34 @@ export default function EventsPage() {
               )}
 
               {/* Attendee list */}
-              {selected && selected.attendees.length > 0 && (
-                <div className="ev-attendee-list">
-                  {selected.attendees.map((name: string) => (
-                    <div key={name} className="ev-attendee-row">
-                      <span className="ev-attendee-dot" style={{ background: FACTION_COLORS['default'] }} />
-                      <span className="ev-attendee-name">{name}</span>
-                      <span className="ev-attendee-status">Yes</span>
-                    </div>
-                  ))}
-                </div>
-              )}
-              {selected && selected.attendees.length === 0 && (
-                <div className="ev-rollcall-empty">No RSVPs yet</div>
-              )}
+              {selected && (() => {
+                // Build display list: API attendees (Yes) + current user if maybe/cant
+                const memberName = member?.frat_name || '';
+                const alreadyInList = selected.attendees.includes(memberName);
+                const showMaybeEntry = !alreadyInList && (rsvpLocal === 'maybe' || rsvpLocal === 'no');
+                const extraEntry = showMaybeEntry ? [{ name: memberName, status: rsvpLocal === 'maybe' ? 'Maybe' : "Can't" }] : [];
+                const allEntries = [
+                  ...extraEntry,
+                  ...selected.attendees.map((name: string) => ({ name, status: 'Yes' })),
+                ];
+                return allEntries.length > 0 ? (
+                  <div className="ev-attendee-list">
+                    {allEntries.map(({ name, status }) => (
+                      <div key={name} className="ev-attendee-row">
+                        <span className="ev-attendee-dot" style={{
+                          background: status === 'Yes' ? 'var(--green)' : status === 'Maybe' ? 'var(--gold)' : '#e05070'
+                        }} />
+                        <span className="ev-attendee-name">{name}</span>
+                        <span className="ev-attendee-status" style={{
+                          color: status === 'Yes' ? 'var(--green)' : status === 'Maybe' ? 'var(--gold-b)' : '#e05070'
+                        }}>{status}</span>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="ev-rollcall-empty">No RSVPs yet</div>
+                );
+              })()}
               {!selected && (
                 <div className="ev-rollcall-empty">Select an event</div>
               )}
