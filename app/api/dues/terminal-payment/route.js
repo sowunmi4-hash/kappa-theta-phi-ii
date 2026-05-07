@@ -114,7 +114,7 @@ export async function POST(req) {
       linden_paid:        newLindenPaid,
       status:             newStatus,
       credit,
-      expires_at:         newStatus === 'paid' ? null : newExpiry.toISOString(),
+      expires_at:         newExpiry.toISOString(),
       updated_at:         paid_at,
     })
   });
