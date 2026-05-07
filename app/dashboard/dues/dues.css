@@ -91,7 +91,7 @@
 .du-status-sub   { font-family:var(--cinzel); font-size:.38rem; letter-spacing:2px; color:var(--bone-faint); }
 .du-timer-wrap   { text-align:right; }
 .du-timer-lbl    { font-family:var(--cinzel); font-size:.52rem; letter-spacing:3px; color:var(--bone-faint); text-transform:uppercase; margin-bottom:.25rem; }
-.du-casper-text  { font-family:var(--cinzel); font-size:.36rem; letter-spacing:2px; color:rgba(240,232,208,.2); }
+.du-expiry-note  { font-family:var(--cinzel); font-size:.36rem; letter-spacing:2px; color:rgba(240,232,208,.2); }
 .du-prog-row     { display:flex; justify-content:space-between; font-family:var(--cinzel); font-size:.37rem; letter-spacing:2px; color:var(--bone-faint); margin-top:.2rem; }
 
 /* Breakdown grid */

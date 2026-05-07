@@ -95,7 +95,6 @@ export async function POST(req) {
       amount_ls:        amount_ls,
       transaction_id:   txn_id,
       expires_at:       newExpiry.toISOString(),
-      casper_expiry_text: newExpiryText,
       notes:            `Terminal · +${daysToAdd}d timer · SL UUID: ${sl_uuid || 'unknown'}`,
       logged_by_name:   'SL Dues Terminal',
       created_at:       paid_at,
@@ -116,7 +115,6 @@ export async function POST(req) {
       status:             newStatus,
       credit,
       expires_at:         newStatus === 'paid' ? null : newExpiry.toISOString(),
-      casper_expiry_text: newStatus === 'paid' ? null : newExpiryText,
       updated_at:         paid_at,
     })
   });

@@ -12,6 +12,22 @@ function pct(paid: number, sweat: number, due: number) { return Math.min(100, Ma
 function dateFmt(d:string){ return new Date(d).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}); }
 function progCls(status:string, p:number){ if(status==='paid') return 'green'; return p > 40 ? 'gold' : 'red'; }
 
+function fmtTimeLeft(ms: number): string {
+  if (ms <= 0) return 'EXPIRED';
+  const months  = Math.floor(ms / (30*86400000));
+  const days    = Math.floor((ms % (30*86400000)) / 86400000);
+  const hours   = Math.floor((ms % 86400000) / 3600000);
+  const minutes = Math.floor((ms % 3600000) / 60000);
+  const seconds = Math.floor((ms % 60000) / 1000);
+  const parts: string[] = [];
+  if (months  > 0) parts.push(`${months} ${months  === 1 ? 'month'  : 'months'}`);
+  if (days    > 0) parts.push(`${days}   ${days    === 1 ? 'day'    : 'days'}`);
+  if (hours   > 0) parts.push(`${hours}  ${hours   === 1 ? 'hour'   : 'hours'}`);
+  if (minutes > 0) parts.push(`${minutes} ${minutes === 1 ? 'minute'  : 'minutes'}`);
+  parts.push(`${seconds} ${seconds === 1 ? 'second' : 'seconds'}`);
+  return parts.join(', ') + ' left';
+}
+
 function Countdown({ expiresAt, size='md' }: { expiresAt:string|null; size?:'sm'|'md' }) {
   const [display, setDisplay] = useState('—');
   const [state, setState]   = useState<'ok'|'warn'|'urgent'|'expired'|'none'>('none');
@@ -20,16 +36,13 @@ function Countdown({ expiresAt, size='md' }: { expiresAt:string|null; size?:'sm'
     function tick() {
       const diff = new Date(expiresAt).getTime() - Date.now();
       if (diff <= 0) { setState('expired'); setDisplay('EXPIRED'); return; }
-      const d=Math.floor(diff/86400000), h=Math.floor((diff%86400000)/3600000),
-            m=Math.floor((diff%3600000)/60000), s=Math.floor((diff%60000)/1000);
       setState(diff < 86400000 ? 'urgent' : diff < 86400000*3 ? 'warn' : 'ok');
-      setDisplay(d > 0 ? `${d}d ${h}h ${m}m ${s}s` : h > 0 ? `${h}h ${m}m ${s}s` : `${m}m ${s}s`);
+      setDisplay(fmtTimeLeft(diff));
     }
     tick(); const t = setInterval(tick, 1000); return () => clearInterval(t);
   }, [expiresAt]);
-  const fs = size === 'sm' ? '.65rem' : '.88rem';
   const col = state === 'none' ? 'var(--bone-faint)' : undefined;
-  return <span className={`du-countdown-time ${state}`} style={{ fontSize:fs, color:col }}>{display}</span>;
+  return <span className={`du-countdown-time ${state}`} style={{ color:col }}>{display}</span>;
 }
 
 export default function DuesPage() {
@@ -46,9 +59,9 @@ export default function DuesPage() {
   const [saving, setSaving]       = useState(false);
   const [modal, setModal]         = useState<string|null>(null);
   const [sweatApprove, setSweatApprove] = useState<{id:string,value:string,notes:string}|null>(null);
-  const [timerEdit, setTimerEdit] = useState<{record_id:string,expires_at:string,casper_expiry_text:string}|null>(null);
+  const [timerEdit, setTimerEdit] = useState<{record_id:string,expires_at:string}|null>(null);
 
-  const [payForm, setPayForm]   = useState({ amount_ls:'', transaction_id:'', expires_at:'', casper_expiry_text:'', notes:'', target_member_id:'' });
+  const [payForm, setPayForm]   = useState({ amount_ls:'', transaction_id:'', expires_at:'', notes:'', target_member_id:'' });
   const [sweatForm, setSweatForm] = useState({ contribution:'', category:'General', value_requested:'', notes:'' });
   const [periodForm, setPeriodForm] = useState({ month:new Date().getMonth()+1, year:new Date().getFullYear(), amount_due:4000 });
 
@@ -83,11 +96,11 @@ export default function DuesPage() {
   async function logPayment() {
     if(!payForm.amount_ls){setMsg('err:Enter payment amount.');return;}
     setSaving(true);
-    const body:any = { period_id:activePeriod, amount_ls:parseInt(payForm.amount_ls), transaction_id:payForm.transaction_id||null, notes:payForm.notes||null, expires_at:payForm.expires_at||null, casper_expiry_text:payForm.casper_expiry_text||null };
+    const body:any = { period_id:activePeriod, amount_ls:parseInt(payForm.amount_ls), transaction_id:payForm.transaction_id||null, notes:payForm.notes||null, expires_at:payForm.expires_at||null };
     if(canManage && selRecord) body.target_member_id = selRecord.member_id;
     const res = await fetch('/api/dashboard/dues/payments',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)}).then(r=>r.json());
     if(res.error){setMsg(`err:${res.error}`);setSaving(false);return;}
-    setPayForm({amount_ls:'',transaction_id:'',expires_at:'',casper_expiry_text:'',notes:'',target_member_id:''});
+    setPayForm({amount_ls:'',transaction_id:'',expires_at:'',notes:'',target_member_id:''});
     if(canManage) await loadRecords(activePeriod!);
     await loadMyRecords(); setSaving(false); setMsg('ok:Payment logged.');
     setTimeout(()=>setMsg(''),2000);
@@ -108,9 +121,9 @@ export default function DuesPage() {
     if(canManage) await loadRecords(activePeriod!);
     await loadMyRecords(); setSaving(false);
   }
-  async function updateTimer(record_id:string, expires_at:string, casper_expiry_text:string) {
+  async function updateTimer(record_id:string, expires_at:string) {
     setSaving(true);
-    await fetch('/api/dashboard/dues/payments',{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({record_id,expires_at,casper_expiry_text})});
+    await fetch('/api/dashboard/dues/payments',{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({record_id,expires_at})});
     setTimerEdit(null); if(canManage) await loadRecords(activePeriod!); setSaving(false);
   }
   async function waveRecord(record_id:string) {
@@ -236,7 +249,7 @@ export default function DuesPage() {
                     {/* Timer */}
                     {selRecord.expires_at && (
                       <div className="du-detail-timer-row" style={{margin:'.7rem 1rem',borderRadius:2}}>
-                        <div><div className="du-detail-timer-lbl">CasperLet Expiry</div><Countdown expiresAt={selRecord.expires_at} /></div>
+                        <div><div className="du-detail-timer-lbl">Dues Timer</div><Countdown expiresAt={selRecord.expires_at} /></div>
                       </div>
                     )}
 
@@ -289,7 +302,6 @@ export default function DuesPage() {
                       <div><label className="du-action-lbl">Amount (L$)</label><input className="du-action-fld" type="number" placeholder="e.g. 1000" value={payForm.amount_ls} onChange={e=>setPayForm(f=>({...f,amount_ls:e.target.value}))}/></div>
                       <div><label className="du-action-lbl">Transaction ID</label><input className="du-action-fld" placeholder="Optional" value={payForm.transaction_id} onChange={e=>setPayForm(f=>({...f,transaction_id:e.target.value}))}/></div>
                       <div><label className="du-action-lbl">Expiry Date</label><input className="du-action-fld" type="datetime-local" value={payForm.expires_at} onChange={e=>setPayForm(f=>({...f,expires_at:e.target.value}))}/></div>
-                      <div><label className="du-action-lbl">Expiry Text</label><input className="du-action-fld" placeholder="e.g. expires Wed 13 May..." value={payForm.casper_expiry_text} onChange={e=>setPayForm(f=>({...f,casper_expiry_text:e.target.value}))}/></div>
                       <button className="du-btn green" style={{width:'100%',justifyContent:'center'}} onClick={logPayment} disabled={saving}>Log Payment</button>
                     </div>
 
@@ -321,7 +333,7 @@ export default function DuesPage() {
                     {/* Timer + Waive */}
                     <div className="du-action-section">
                       <div className="du-action-title">Record</div>
-                      <button className="du-btn ghost" style={{width:'100%',justifyContent:'center'}} onClick={()=>setTimerEdit({record_id:selRecord.id,expires_at:selRecord.expires_at||'',casper_expiry_text:selRecord.casper_expiry_text||''})}>⏱ Edit Timer</button>
+                      <button className="du-btn ghost" style={{width:'100%',justifyContent:'center'}} onClick={()=>setTimerEdit({record_id:selRecord.id,expires_at:selRecord.expires_at||''})}>⏱ Set Timer</button>
                       {selRecord.status !== 'waived' && <button className="du-btn muted" style={{width:'100%',justifyContent:'center'}} onClick={()=>waveRecord(selRecord.id)}>Waive Dues</button>}
                     </div>
                   </>
@@ -360,7 +372,6 @@ export default function DuesPage() {
                         <div className="du-timer-wrap">
                             <div className="du-timer-lbl">Timer</div>
                             <Countdown expiresAt={rec.expires_at ?? null} />
-                            {rec.casper_expiry_text && <div className="du-casper-text" style={{marginTop:'.2rem'}}>{rec.casper_expiry_text}</div>}
                           </div>
                       </div>
                       <div className="du-prog-track"><div className={`du-prog-fill ${progCls(rec.status,progress)}`} style={{width:`${progress}%`}}/></div>
@@ -479,11 +490,10 @@ export default function DuesPage() {
       {timerEdit && (
         <div className="du-overlay" onClick={()=>setTimerEdit(null)}>
           <div className="du-modal" onClick={e=>e.stopPropagation()}>
-            <div className="du-modal-hdr"><div className="du-modal-title">Edit CasperLet Timer</div><button className="du-modal-close" onClick={()=>setTimerEdit(null)}>✕</button></div>
+            <div className="du-modal-hdr"><div className="du-modal-title">Edit Dues Timer</div><button className="du-modal-close" onClick={()=>setTimerEdit(null)}>✕</button></div>
             <div className="du-modal-body">
-              <div><label className="du-modal-lbl">CasperLet Expiry Date</label><input className="du-modal-fld" type="datetime-local" value={timerEdit.expires_at?timerEdit.expires_at.slice(0,16):''} onChange={e=>setTimerEdit(p=>({...p,expires_at:e.target.value}))}/></div>
-              <div><label className="du-modal-lbl">CasperLet Expiry Text</label><input className="du-modal-fld" placeholder="e.g. expires Wed, 13th May, at 5:09 AM" value={timerEdit.casper_expiry_text} onChange={e=>setTimerEdit(p=>({...p,casper_expiry_text:e.target.value}))}/></div>
-              <button className="du-btn gold" onClick={()=>updateTimer(timerEdit.record_id,timerEdit.expires_at,timerEdit.casper_expiry_text)} disabled={saving}>{saving?'Saving...':'Save Timer'}</button>
+              <div><label className="du-modal-lbl">Dues Timer Date</label><input className="du-modal-fld" type="datetime-local" value={timerEdit.expires_at?timerEdit.expires_at.slice(0,16):''} onChange={e=>setTimerEdit(p=>({...p,expires_at:e.target.value}))}/></div>
+              <button className="du-btn gold" onClick={()=>updateTimer(timerEdit.record_id,timerEdit.expires_at)} disabled={saving}>{saving?'Saving...':'Save Timer'}</button>
             </div>
           </div>
         </div>
