@@ -3,7 +3,7 @@
 /* Three-column layout — fills viewport height */
 .ev-layout {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-columns: 1.35fr 1fr 1fr;
   min-height: calc(100vh - 60px);
   background: var(--border);
   gap: 1px;
