@@ -331,7 +331,7 @@ export default function DuesPage() {
 
         {/* ══ BROTHER VIEW ══ */}
         {!canManage && (
-          <div className="du-bro-body">
+          <div className="du-bro-wrap"><div className="du-bro-body">
             {/* LEFT: status + history */}
             <div className="du-bro-main">
               {myRecords.length === 0 && (
@@ -451,7 +451,7 @@ export default function DuesPage() {
               <div style={{height:'1px',background:'var(--border)'}}/>
               <div style={{fontFamily:'var(--cinzel)',fontSize:'.58rem',letterSpacing:'1px',color:'var(--bone-faint)',lineHeight:'1.6'}}>⚓ Pay via the in-world KΘΦ II Dues Terminal</div>
             </div>
-          </div>
+          </div></div>
         )}
       </main>
 
