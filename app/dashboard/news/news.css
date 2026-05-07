@@ -323,3 +323,20 @@
   transform: scale(1.2);
 }
 .nw-dot:hover { background: rgba(198,147,10,.5); }
+
+/* Delete button */
+.nw-delete-btn {
+  margin-left: auto;
+  font-family: var(--cinzel);
+  font-size: .6rem;
+  letter-spacing: 2px;
+  padding: .35rem .8rem;
+  border: 1px solid rgba(224,80,112,.25);
+  color: #e05070;
+  background: none;
+  cursor: pointer;
+  border-radius: 2px;
+  transition: all .15s;
+  text-transform: uppercase;
+}
+.nw-delete-btn:hover { background: rgba(224,80,112,.08); border-color: rgba(224,80,112,.45); }

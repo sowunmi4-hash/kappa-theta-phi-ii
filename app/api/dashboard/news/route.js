@@ -32,3 +32,30 @@ export async function POST(req) {
   await fetch(`${S}/rest/v1/wokou_news`, { method: 'POST', headers: h({ 'Content-Type': 'application/json', 'Content-Profile': 'members' }), body: JSON.stringify({ title, content, pinned: !!pinned, posted_by: member.id, posted_by_name: member.frat_name }) });
   return NextResponse.json({ success: true });
 }
+
+export async function DELETE(req) {
+  const token = (await cookies()).get(C)?.value;
+  if (!token) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  const member = await getMember(token);
+  if (!member) return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+
+  const { id } = await req.json();
+  if (!id) return NextResponse.json({ error: 'No id' }, { status: 400 });
+
+  // Fetch the post
+  const posts = await fetch(`${S}/rest/v1/wokou_news?id=eq.${id}&select=*`, { headers: h() }).then(r => r.json());
+  const post = posts[0];
+  if (!post) return NextResponse.json({ error: 'Not found' }, { status: 404 });
+
+  // Only the author can delete, and only within 24 hours
+  const isAuthor = post.posted_by === member.id;
+  const isLeader = LEADERS.includes(member.role);
+  const ageMs = Date.now() - new Date(post.created_at).getTime();
+  const within24h = ageMs < 86400000;
+
+  if (!isAuthor && !isLeader) return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+  if (isAuthor && !isLeader && !within24h) return NextResponse.json({ error: 'Window expired' }, { status: 403 });
+
+  await fetch(`${S}/rest/v1/wokou_news?id=eq.${id}`, { method: 'DELETE', headers: h({ 'Content-Profile': 'members' }) });
+  return NextResponse.json({ success: true });
+}
