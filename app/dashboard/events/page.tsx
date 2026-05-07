@@ -447,61 +447,6 @@ export default function EventsPage() {
             )}
           </div>
 
-          {/* ── RIGHT: All Events ── */}
-          <div className="ev-right">
-            <div className="ev-right-hdr">All Events</div>
-
-            {upcomingEvents.length > 0 && (
-              <div className="ev-right-section">
-                <div className="ev-right-section-label">Upcoming</div>
-                {upcomingEvents.map((ev, idx) => {
-                  const dt = new Date(ev.event_date + 'T12:00:00');
-                  return (
-                    <div
-                      key={ev.id}
-                      className={`ev-right-card${selected?.id === ev.id ? ' sel' : ''}`}
-                      onClick={() => setSelected(ev)}
-                    >
-                      <div className="ev-right-card-date">
-                        <div className="ev-right-card-day">{dt.getDate()} {MONTHS_SHORT[dt.getMonth()].toUpperCase()} {dt.getFullYear()}</div>
-                        {idx === 0 && <span className="ev-right-next-badge">Next</span>}
-                      </div>
-                      <div className="ev-right-card-title">{ev.title}</div>
-                      {(ev.location || ev.event_time) && (
-                        <div className="ev-right-card-meta">{ev.location}{ev.location && ev.event_time ? ' · ' : ''}{fmtTime(ev.event_time)}</div>
-                      )}
-                    </div>
-                  );
-                })}
-              </div>
-            )}
-
-            {completedEvents.length > 0 && (
-              <div className="ev-right-section">
-                <div className="ev-right-section-label">Completed</div>
-                {completedEvents.map(ev => {
-                  const dt = new Date(ev.event_date + 'T12:00:00');
-                  return (
-                    <div
-                      key={ev.id}
-                      className={`ev-right-card past${selected?.id === ev.id ? ' sel' : ''}`}
-                      onClick={() => setSelected(ev)}
-                    >
-                      <div className="ev-right-card-date">
-                        <div className="ev-right-card-day">{dt.getDate()} {MONTHS_SHORT[dt.getMonth()].toUpperCase()} {dt.getFullYear()}</div>
-                      </div>
-                      <div className="ev-right-card-title">{ev.title}</div>
-                      {ev.location && <div className="ev-right-card-meta">{ev.location}</div>}
-                    </div>
-                  );
-                })}
-              </div>
-            )}
-
-            {events.length === 0 && (
-              <div style={{ padding:'1rem .8rem', fontFamily:'var(--cinzel)', fontSize:'.4rem', letterSpacing:'2px', color:'var(--bone-faint)' }}>No events yet</div>
-            )}
-          </div>
         </div>
       </main>
 
