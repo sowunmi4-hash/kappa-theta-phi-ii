@@ -66,9 +66,13 @@ export async function POST(req) {
   if (!records?.length) return NextResponse.json({ error: 'No dues record found' }, { status: 404 });
   const record = records[0];
 
-  // 4. Calculate timer extension — proportional to period dues
-  //    e.g. L$4,000 due = 28 days. Pay L$1,000 = 7 days. Pay L$2,000 = 14 days.
-  const daysToAdd = Math.round((amount_ls / period.amount_due) * PERIOD_DAYS);
+  // 4. Calculate timer extension — only for the portion that clears actual dues
+  //    Credit overpayments do NOT earn extra timer days.
+  //    e.g. Remaining L$1,000, pay L$2,000 → only 7 days added, L$1,000 is credit.
+  const currentTotal     = (record.linden_paid || 0) + (record.sweat_equity_value || 0);
+  const remainingBefore  = Math.max(0, period.amount_due - currentTotal);
+  const effectiveAmount  = Math.min(amount_ls, remainingBefore); // cap at owed amount
+  const daysToAdd        = Math.round((effectiveAmount / period.amount_due) * PERIOD_DAYS);
 
   //    Extend from current expiry (or now if expired/not set)
   const now = new Date();
