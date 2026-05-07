@@ -2,6 +2,7 @@
 export const dynamic = 'force-dynamic';
 import { useState, useEffect, useRef } from 'react';
 import '../dash.css';
+import DashSidebar from '../DashSidebar';
 import './ssp.css';
 
 // ─── LESSON BANK (facilitator-only) ───────────────────────────────────────────
@@ -125,6 +126,7 @@ function timeAgo(d: string) {
 
 export default function SSPPage() {
   const [member, setMember]       = useState<any>(null);
+  const [profile, setProfile] = useState<any>(null);
   const [canManage, setCanManage] = useState(false);
   const [ssps, setSsps]           = useState<any[]>([]);
   const [active, setActive]       = useState<string | null>(null);
@@ -137,20 +139,10 @@ export default function SSPPage() {
   const [saving, setSaving]               = useState('');
   const [sessionLogs, setSessionLogs]     = useState<any[]>([]);
 
-  const NAV = [
-    { href: '/dashboard', label: 'Home' },
-    { href: '/dashboard/news', label: 'Wokou News' },
-    { href: '/dashboard/events', label: 'Events' },
-    { href: '/dashboard/phire', label: 'PHIRE' },
-    { href: '/dashboard/discipline', label: 'Discipline' },
-    { href: '/dashboard/gallery', label: 'My Gallery' },
-    { href: '/dashboard/edit', label: 'Edit Profile' },
-  ];
-
   useEffect(() => {
     fetch('/api/dashboard/phire/balance').then(r => r.json()).then(d => {
       if (d.error) { window.location.href = '/login'; return; }
-      setMember(d.member);
+      setMember(d.member); setProfile(d.profile || {});
     });
   }, []);
 
@@ -221,20 +213,7 @@ export default function SSPPage() {
   if (!canManage) {
     return (
       <div className="dash-app">
-        <aside className="dash-sidebar">
-          <div className="dash-sidebar-logo"><img src="/logo.png" alt="KΘΦ II" /><span className="dash-sidebar-logo-text">KΘΦ II</span></div>
-          <div className="dash-sidebar-member">
-            <div className="dash-sidebar-portrait"><img src={`/brothers/${slug}.png`} alt="" onError={(e: any) => e.target.src = '/logo.png'} /></div>
-            <div className="dash-sidebar-name">{member.frat_name}</div>
-            <div className="dash-sidebar-role">{member.role}</div>
-          </div>
-          <nav className="dash-nav">
-            {NAV.map(n => <a key={n.href} href={n.href} className="dash-nav-item"><span>{n.label}</span></a>)}
-            <div className="dash-nav-divider" />
-            <a href="/" className="dash-nav-item"><span>Back to Site</span></a>
-            <button onClick={async () => { await fetch('/api/logout', { method: 'POST' }); window.location.href = '/login'; }} className="dash-nav-item" style={{ width: '100%', textAlign: 'left', background: 'none', border: 'none', cursor: 'pointer', color: '#e05070', fontFamily: 'inherit' }}><span>Sign Out</span></button>
-          </nav>
-        </aside>
+        <DashSidebar member={member} profile={profile} />
         <main className="dash-main">
           <div className="ssp-hero">
             <div className="ssp-hero-title">Sage Solution Program</div>
@@ -296,23 +275,7 @@ export default function SSPPage() {
   // ─── FACILITATOR VIEW (Ishi No Faction) ─────────────────────────────────────
   return (
     <div className="dash-app">
-      <aside className="dash-sidebar">
-        <div className="dash-sidebar-logo"><img src="/logo.png" alt="KΘΦ II" /><span className="dash-sidebar-logo-text">KΘΦ II</span></div>
-        <div className="dash-sidebar-member">
-          <div className="dash-sidebar-portrait"><img src={`/brothers/${slug}.png`} alt="" onError={(e: any) => e.target.src = '/logo.png'} /></div>
-          <div className="dash-sidebar-name">{member.frat_name}</div>
-          <div className="dash-sidebar-role">{member.role}</div>
-        </div>
-        <nav className="dash-nav">
-          {NAV.map(n => <a key={n.href} href={n.href} className="dash-nav-item"><span>{n.label}</span></a>)}
-          {(member?.fraction === 'Ishi No Fraction' || member?.frat_name === 'Big Brother Substance') && (
-            <a href="/dashboard/dues-report" className="dash-nav-item"><span>Dues Report</span></a>
-          )}
-          <div className="dash-nav-divider" />
-          <a href="/" className="dash-nav-item"><span>Back to Site</span></a>
-          <button onClick={async () => { await fetch('/api/logout', { method: 'POST' }); window.location.href = '/login'; }} className="dash-nav-item" style={{ width: '100%', textAlign: 'left', background: 'none', border: 'none', cursor: 'pointer', color: '#e05070', fontFamily: 'inherit' }}><span>Sign Out</span></button>
-        </nav>
-      </aside>
+      <DashSidebar member={member} profile={profile} />
 
       <main className="dash-main">
         <div className="ssp-hero">

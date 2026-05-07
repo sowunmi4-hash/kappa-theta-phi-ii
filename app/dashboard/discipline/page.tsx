@@ -2,6 +2,7 @@
 export const dynamic = 'force-dynamic';
 import { useState, useEffect, useRef } from 'react';
 import '../dash.css';
+import DashSidebar from '../DashSidebar';
 import './discipline.css';
 
 
@@ -20,6 +21,7 @@ function timeAgo(d:string){ const s=Math.floor((Date.now()-new Date(d).getTime()
 
 export default function DisciplinePage() {
   const [member, setMember]       = useState<any>(null);
+  const [profile, setProfile] = useState<any>(null);
   const [canManage, setCanManage] = useState(false);
   const [tab, setTab]             = useState<'all'|'issue'|'my'>('all');
   const [violations, setViolations] = useState<any[]>([]);
@@ -42,7 +44,7 @@ export default function DisciplinePage() {
   useEffect(() => {
     fetch('/api/dashboard/phire/balance').then(r=>r.json()).then(d => {
       if (d.error) { window.location.href='/login'; return; }
-      setMember(d.member);
+      setMember(d.member); setProfile(d.profile || {});
 
     });
   }, []);
@@ -123,33 +125,13 @@ export default function DisciplinePage() {
   violations.forEach(v => { if (colorCounts[v.offense_color]!==undefined) colorCounts[v.offense_color]++; });
 
   const slug = member?.frat_name?.toLowerCase().replace(/\s+/g,'-').replace('big-brother-','') || '';
-  const NAV = [
-    { href:'/dashboard', label:'Home' },
-    { href:'/dashboard/news', label:'Wokou News' },
-    { href:'/dashboard/events', label:'Events' },
-    { href:'/dashboard/phire', label:'PHIRE' },
-    { href:'/dashboard/gallery', label:'My Gallery' },
-    { href:'/dashboard/edit', label:'Edit Profile' },
-  ];
 
   if (!member || loading) return <div className="dash-loading">LOADING...</div>;
 
   if (!canManage) {
     return (
       <div className="dash-app disc-root">
-        <aside className="dash-sidebar">
-          <div className="dash-sidebar-logo"><img src="/logo.png" alt="KΘΦ II"/><span className="dash-sidebar-logo-text">KΘΦ II</span></div>
-          <div className="dash-sidebar-member">
-            <div className="dash-sidebar-portrait"><img src={`/brothers/${slug}.png`} alt="" onError={(e:any)=>e.target.src='/logo.png'}/></div>
-            <div className="dash-sidebar-name">{member.frat_name}</div>
-            <div className="dash-sidebar-role">{member.role}</div>
-          </div>
-          <nav className="dash-nav">
-            {NAV.map(n=><a key={n.href} href={n.href} className="dash-nav-item"><span>{n.label}</span></a>)}
-            <div className="dash-nav-divider"/><a href="/" className="dash-nav-item"><span>Back to Site</span></a>
-            <button onClick={async()=>{await fetch('/api/logout',{method:'POST'});window.location.href='/login';}} className="dash-nav-item" style={{width:'100%',textAlign:'left',background:'none',border:'none',cursor:'pointer',color:'#e05070',fontFamily:'inherit'}}><span>Sign Out</span></button>
-          </nav>
-        </aside>
+        <DashSidebar member={member} profile={profile} />
         <main className="dash-main">
           <div className="disc-hero">
             <div className="disc-hero-title">My Discipline Record</div>
@@ -180,12 +162,7 @@ export default function DisciplinePage() {
           <div className="dash-sidebar-name">{member.frat_name}</div>
           <div className="dash-sidebar-role">{member.role}</div>
         </div>
-        <nav className="dash-nav">
-          {NAV.map(n=><a key={n.href} href={n.href} className="dash-nav-item"><span>{n.label}</span></a>)}
-          {(member?.fraction === 'Ishi No Fraction' || member?.role === 'Head Founder' || member?.role === 'Co-Founder') && <a href="/dashboard/ssp/report" className="dash-nav-item"><span>SSP Report</span></a>}
-          <div className="dash-nav-divider"/><a href="/" className="dash-nav-item"><span>Back to Site</span></a>
-            <button onClick={async()=>{await fetch('/api/logout',{method:'POST'});window.location.href='/login';}} className="dash-nav-item" style={{width:'100%',textAlign:'left',background:'none',border:'none',cursor:'pointer',color:'#e05070',fontFamily:'inherit'}}><span>Sign Out</span></button>
-        </nav>
+        
       </aside>
 
       <main className="dash-main">

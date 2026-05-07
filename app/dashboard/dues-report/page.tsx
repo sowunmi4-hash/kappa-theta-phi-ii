@@ -1,240 +1,226 @@
 'use client';
+export const dynamic = 'force-dynamic';
 import { useState, useEffect } from 'react';
 import '../dash.css';
-
-const NAV = [
-  { href: '/dashboard', label: 'Home' },
-  { href: '/dashboard/news', label: 'Wokou News' },
-  { href: '/dashboard/events', label: 'Events' },
-  { href: '/dashboard/phire', label: 'PHIRE' },
-  { href: '/dashboard/discipline', label: 'Discipline' },
-  { href: '/dashboard/dues-report', label: 'Dues Report' },
-  { href: '/dashboard/ssp', label: 'Sage Solution' },
-  { href: '/dashboard/dues', label: 'Dues' },
-  { href: '/dashboard/gallery', label: 'My Gallery' },
-  { href: '/dashboard/edit', label: 'Edit Profile' },
-];
+import DashSidebar from '../DashSidebar';
 
 export default function DuesReportPage() {
   const [member, setMember]   = useState<any>(null);
+  const [profile, setProfile] = useState<any>(null);
   const [report, setReport]   = useState<any>(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError]     = useState('');
-  const [period, setPeriod]   = useState('');
-  const [view, setView]       = useState<'disciplinary'|'full'>('disciplinary');
+  const [periodId, setPeriodId]   = useState('');
+  const [filter, setFilter]   = useState<'all'|'outstanding'>('all');
+  const [expanded, setExpanded] = useState<string | null>(null);
+  const [periodOpen, setPeriodOpen] = useState(false);
 
   useEffect(() => {
-    fetch('/api/dashboard/profile').then(r=>r.json()).then(d => {
-      if (d.error) { window.location.href='/login'; return; }
-      setMember(d.member);
-      const canSee = d.member?.fraction === 'Ishi No Fraction' || d.member?.frat_name === 'Big Brother Substance';
-      if (!canSee) { window.location.href='/dashboard'; return; }
+    fetch('/api/dashboard/profile').then(r => r.json()).then(d => {
+      if (d.error) { window.location.href = '/login'; return; }
+      const m = d.member;
+      const canSee = m?.fraction === 'Ishi No Fraction' || m?.frat_name === 'Big Brother Substance';
+      if (!canSee) { window.location.href = '/dashboard'; return; }
+      setMember(m); setProfile(d.profile);
       loadReport('');
     });
   }, []);
 
   async function loadReport(pid: string) {
     setLoading(true);
-    setError('');
-    try {
-      const url = pid ? `/api/dashboard/dues/report?period_id=${pid}` : '/api/dashboard/dues/report';
-      const res = await fetch(url);
-      const d = await res.json();
-      if (d.error) setError(d.error);
-      else setReport(d);
-    } catch(e:any) { setError('Network error: ' + e.message); }
-    setLoading(false);
+    const url = pid ? `/api/dashboard/dues/report?period_id=${pid}` : '/api/dashboard/dues/report';
+    const d = await fetch(url).then(r => r.json());
+    setReport(d); setLoading(false);
   }
 
-  if (!member || (loading && !report)) return <div className="dash-loading">LOADING...</div>;
+  function switchPeriod(pid: string) {
+    setPeriodId(pid); setPeriodOpen(false); loadReport(pid);
+  }
 
-  const slug = member.frat_name?.toLowerCase().replace(/\s+/g,'-');
+  if (!member) return <div className="dash-loading">LOADING...</div>;
+
+  const fmt = (n: number) => `L$${(n || 0).toLocaleString()}`;
   const canSeeFull = member.frat_name === 'Big Brother Substance';
-  const fmt = (n:number) => `L$${(n||0).toLocaleString()}`;
-  const statusColor: Record<string,string> = {
-    paid: '#4ade80', partial: '#c6930a', unpaid: '#e05070', waived: 'rgba(240,232,208,0.2)'
+  const { summary = {}, full_records = [], disciplinary = [], periods = [] } = report || {};
+
+  const activePeriod = periods.find((p: any) => p.is_active);
+  const currentPeriod = periods.find((p: any) => p.id === periodId) || activePeriod || periods[0];
+
+  const records = canSeeFull ? full_records : disciplinary;
+  const displayed = filter === 'outstanding'
+    ? records.filter((r: any) => r.status !== 'paid')
+    : records;
+
+  function statusCls(status: string) {
+    if (status === 'paid') return 'paid';
+    if (status === 'partial') return 'partial';
+    return 'unpaid';
+  }
+
+  function timerCls(r: any) {
+    if (!r.casperlet_expiry) return 'urgent';
+    const ms = new Date(r.casperlet_expiry).getTime() - Date.now();
+    if (ms <= 0) return 'urgent';
+    if (ms < 3 * 86400000) return 'warn';
+    return 'ok';
+  }
+
+  function timerStr(r: any) {
+    if (!r.casperlet_expiry) return 'EXPIRED';
+    const ms = new Date(r.casperlet_expiry).getTime() - Date.now();
+    if (ms <= 0) return 'EXPIRED';
+    const d = Math.floor(ms / 86400000);
+    const h = Math.floor((ms % 86400000) / 3600000);
+    return `${d}d ${String(h).padStart(2,'0')}h`;
+  }
+
+  const borderColor = (status: string) => {
+    if (status === 'paid') return 'rgba(74,222,128,.45)';
+    if (status === 'partial') return 'rgba(198,147,10,.45)';
+    return 'rgba(224,80,112,.38)';
   };
 
   return (
     <div className="dash-app">
-      <aside className="dash-sidebar">
-        <div className="dash-sidebar-logo">
-          <img src="/logo.png" alt="KΘΦ II"/>
-          <span className="dash-sidebar-logo-text">KΘΦ II</span>
-        </div>
-        <div className="dash-sidebar-member">
-          <div className="dash-sidebar-portrait">
-            <img src={`/brothers/${slug}.png`} alt="" onError={(e:any)=>e.target.src='/logo.png'}/>
-          </div>
-          <div className="dash-sidebar-name">{member.frat_name}</div>
-          <div className="dash-sidebar-role">{member.role}</div>
-        </div>
-        <nav className="dash-nav">
-          {NAV.map(n => (
-            <a key={n.href} href={n.href} className={`dash-nav-item${n.href==='/dashboard/dues-report'?' active':''}`}>
-              <span>{n.label}</span>
-            </a>
-          ))}
-          {(member?.fraction === 'Ishi No Fraction' || member?.role === 'Head Founder' || member?.role === 'Co-Founder') && <a href="/dashboard/ssp/report" className="dash-nav-item"><span>SSP Report</span></a>}
-          <div className="dash-nav-divider"/>
-          <a href="/" className="dash-nav-item"><span>Back to Site</span></a>
-          <button onClick={async()=>{await fetch('/api/logout',{method:'POST'});window.location.href='/login';}}
-            className="dash-nav-item"
-            style={{width:'100%',textAlign:'left',background:'none',border:'none',cursor:'pointer',color:'#e05070',fontFamily:'inherit'}}>
-            <span>Sign Out</span>
-          </button>
-        </nav>
-      </aside>
-
+      <DashSidebar member={member} profile={profile} />
       <main className="dash-main">
+
         {/* Header */}
-        <div style={{padding:'2rem 2rem 0',borderBottom:'1px solid var(--border)',marginBottom:'1.5rem'}}>
-          <div style={{fontSize:'0.55rem',letterSpacing:'4px',color:'var(--muted)',textTransform:'uppercase',marginBottom:'4px'}}>KΘΦ II Wokou-Corsairs</div>
-          <h1 style={{fontSize:'1.6rem',fontWeight:800,color:'var(--bone)',margin:0,letterSpacing:'1px'}}>Dues Report</h1>
-          <div style={{fontSize:'0.75rem',color:'var(--muted)',marginTop:'4px',paddingBottom:'1.5rem'}}>Billing period overview — {canSeeFull ? 'Full access' : 'Ishi No Faction view'}</div>
+        <div className="dash-page-header">
+          <div className="dash-page-title">Dues Report</div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '.5rem' }}>
+            <span style={{ fontFamily: 'var(--cinzel)', fontSize: '.38rem', letterSpacing: '2px', padding: '.28rem .7rem', border: `1px solid ${canSeeFull ? 'rgba(198,147,10,.25)' : 'rgba(224,80,112,.2)'}`, color: canSeeFull ? 'var(--gold)' : 'rgba(224,80,112,.7)', background: canSeeFull ? 'rgba(198,147,10,.06)' : 'rgba(224,80,112,.06)', borderRadius: '2px' }}>
+              {canSeeFull ? 'Full Access' : 'Ishi No Faction'}
+            </span>
+            {/* Period dropdown */}
+            {periods.length > 0 && (
+              <div style={{ position: 'relative' }}>
+                <div className="dash-period-trigger" onClick={() => setPeriodOpen(v => !v)}>
+                  <span className="dash-period-label">{currentPeriod?.name || 'Select Period'}</span>
+                  {currentPeriod?.is_active && <span className="dash-period-badge">Active</span>}
+                  {!currentPeriod?.is_active && currentPeriod && <span className="dash-period-badge closed">Closed</span>}
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" strokeWidth="2" style={{ transition: 'transform .2s', transform: periodOpen ? 'rotate(180deg)' : 'none' }}><polyline points="6 9 12 15 18 9"/></svg>
+                </div>
+                {periodOpen && (
+                  <div style={{ position: 'absolute', top: 'calc(100% + 6px)', right: 0, width: '220px', background: 'rgba(8,13,24,.97)', border: '1px solid rgba(198,147,10,.3)', borderRadius: '4px', boxShadow: '0 8px 32px rgba(0,0,0,.6)', zIndex: 50, overflow: 'hidden' }}>
+                    <div style={{ padding: '.5rem .75rem', borderBottom: '1px solid var(--border)', fontFamily: 'var(--cinzel)', fontSize: '.38rem', letterSpacing: '4px', color: 'rgba(198,147,10,.5)' }}>All Periods</div>
+                    {periods.map((p: any) => (
+                      <div key={p.id} onClick={() => switchPeriod(p.id)}
+                        style={{ display: 'flex', alignItems: 'center', gap: '.6rem', padding: '.48rem .65rem', cursor: 'pointer', background: p.id === currentPeriod?.id ? 'rgba(198,147,10,.1)' : 'none', transition: 'background .15s' }}
+                      >
+                        <span style={{ width: '7px', height: '7px', borderRadius: '50%', background: p.is_active ? 'var(--green)' : 'rgba(198,147,10,.4)', flexShrink: 0 }} />
+                        <span style={{ fontFamily: 'var(--cinzel)', fontSize: '.42rem', letterSpacing: '2px', color: p.id === currentPeriod?.id ? 'var(--gold)' : 'var(--bone-dim)', flex: 1 }}>{p.name}</span>
+                        <span style={{ fontFamily: 'var(--cinzel)', fontSize: '.36rem', color: p.is_active ? 'var(--green)' : 'var(--bone-faint)' }}>{p.is_active ? 'Active' : 'Closed'}</span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
         </div>
 
-        <div style={{padding:'0 2rem 2rem'}}>
+        {/* Stat strip */}
+        {summary && (
+          <div className="dash-stat-strip">
+            {[
+              { val: summary.paid || 0, lbl: 'Paid', color: 'var(--green)', iconColor: '#4ade80', borderColor: 'var(--green)', iconPath: <polyline points="20 6 9 17 4 12"/> },
+              { val: summary.partial || 0, lbl: 'Partial', color: 'var(--gold-b)', iconColor: '#e8b84b', borderColor: 'var(--gold-b)', iconPath: <><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></> },
+              { val: summary.unpaid || 0, lbl: 'Unpaid', color: '#e05070', iconColor: '#e05070', borderColor: '#e05070', iconPath: <><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></> },
+              { val: fmt(summary.total_collected || 0), lbl: 'Collected', color: 'var(--gold)', iconColor: '#c6930a', borderColor: 'var(--gold)', iconPath: <><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></> },
+            ].map((s, i) => (
+              <div key={i} className="dash-stat-cell" style={{ borderLeft: `2px solid ${s.borderColor}` }}>
+                <div className="dash-stat-icon" style={{ background: `${s.iconColor}18`, border: `1px solid ${s.iconColor}40` }}>
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke={s.iconColor} strokeWidth="2.2">{s.iconPath}</svg>
+                </div>
+                <div><div className="dash-stat-val" style={{ color: s.color }}>{s.val}</div><div className="dash-stat-lbl">{s.lbl}</div></div>
+              </div>
+            ))}
+          </div>
+        )}
 
-          {/* Period selector */}
-          {report?.periods?.length > 0 && (
-            <div style={{display:'flex',gap:'8px',flexWrap:'wrap',marginBottom:'1.5rem',alignItems:'center'}}>
-              <span style={{fontSize:'0.6rem',letterSpacing:'3px',color:'var(--muted)',textTransform:'uppercase'}}>Period:</span>
-              {report.periods.map((p:any) => (
-                <button key={p.id} onClick={()=>{ setPeriod(p.id); loadReport(p.id); }}
-                  style={{padding:'4px 14px',borderRadius:'20px',fontSize:'0.75rem',cursor:'pointer',fontFamily:'Rajdhani,sans-serif',fontWeight:600,
-                    background: period===p.id || (!period && p.id===report?.period?.id) ? 'rgba(198,147,10,0.15)' : 'var(--surface)',
-                    border: period===p.id || (!period && p.id===report?.period?.id) ? '1px solid var(--gold)' : '1px solid var(--border)',
-                    color: period===p.id || (!period && p.id===report?.period?.id) ? 'var(--gold)' : 'var(--muted)'}}>
-                  {p.label}
-                </button>
+        {/* Filter tabs */}
+        <div className="dash-inner-tabs">
+          <button className={`dash-itab${filter === 'all' ? ' active' : ''}`} onClick={() => setFilter('all')}>
+            {canSeeFull ? `All Brothers (${records.length})` : `All Outstanding (${records.length})`}
+          </button>
+          {canSeeFull && (
+            <button className={`dash-itab${filter === 'outstanding' ? ' active' : ''}`} onClick={() => setFilter('outstanding')}>
+              Outstanding Only ({records.filter((r: any) => r.status !== 'paid').length})
+            </button>
+          )}
+        </div>
+
+        {/* Dossier rows */}
+        <div style={{ padding: '.9rem 1.4rem', display: 'flex', flexDirection: 'column', gap: '2px' }}>
+          {loading && <div style={{ fontFamily: 'var(--cinzel)', fontSize: '.48rem', letterSpacing: '3px', color: 'var(--bone-faint)', padding: '2rem', textAlign: 'center' }}>Loading...</div>}
+          {!loading && displayed.length === 0 && (
+            <div style={{ fontFamily: 'var(--cinzel)', fontSize: '.48rem', letterSpacing: '3px', color: 'var(--bone-faint)', padding: '2rem', textAlign: 'center' }}>No records found.</div>
+          )}
+          {!loading && displayed.map((rec: any) => {
+            const remaining = Math.max(0, rec.amount_due - rec.linden_paid - rec.sweat_equity_value);
+            const pct = Math.min(100, Math.round(((rec.linden_paid + rec.sweat_equity_value) / rec.amount_due) * 100)) || 0;
+            const isExp = expanded === rec.member_id;
+            return (
+              <div key={rec.member_id} style={{ border: '1px solid var(--border)', background: 'rgba(8,13,24,.88)', borderLeft: `2px solid ${borderColor(rec.status)}`, position: 'relative', transition: 'border-color .18s' }}>
+                <span className="dash-corner tl" /><span className="dash-corner br" />
+                {/* Main row */}
+                <div
+                  onClick={() => setExpanded(isExp ? null : rec.member_id)}
+                  style={{ display: 'grid', gridTemplateColumns: '110px 1fr 88px 88px 88px auto', alignItems: 'center', gap: '.7rem', padding: '.65rem .9rem', cursor: 'pointer' }}
+                >
+                  <div>
+                    <div style={{ fontFamily: 'var(--display)', fontSize: '.9rem', letterSpacing: '1px', color: 'var(--bone)' }}>{rec.frat_name}</div>
+                    <div style={{ fontFamily: 'var(--cinzel)', fontSize: '.34rem', letterSpacing: '1px', color: 'var(--bone-faint)', marginTop: '.1rem' }}>
+                      <span className={`dash-countdown ${timerCls(rec)}`} style={{ fontSize: '.34rem' }}>{timerStr(rec)}</span>
+                    </div>
+                  </div>
+                  <div>
+                    <div className="dash-prog-track" style={{ marginBottom: '.2rem' }}>
+                      <div className={`dash-prog-fill ${rec.status === 'paid' ? 'green' : pct > 40 ? 'gold' : 'red'}`} style={{ width: `${pct}%` }} />
+                    </div>
+                    <div style={{ fontFamily: 'var(--cinzel)', fontSize: '.34rem', letterSpacing: '1px', color: 'var(--bone-faint)' }}>{pct}% · {fmt(rec.amount_due)} due</div>
+                  </div>
+                  <div style={{ fontFamily: 'var(--display)', fontSize: '.82rem', color: 'var(--green)', textAlign: 'right' }}>{rec.linden_paid ? fmt(rec.linden_paid) : '—'}</div>
+                  <div style={{ fontFamily: 'var(--display)', fontSize: '.82rem', color: 'var(--gold-b)', textAlign: 'right' }}>{rec.sweat_equity_value ? fmt(rec.sweat_equity_value) : '—'}</div>
+                  <div style={{ fontFamily: 'var(--display)', fontSize: '.82rem', color: remaining > 0 ? '#e05070' : 'var(--green)', textAlign: 'right' }}>{remaining > 0 ? fmt(remaining) : '—'}</div>
+                  <span className={`dash-badge ${statusCls(rec.status)}`}>{rec.status === 'paid' ? 'Paid' : rec.status === 'partial' ? `${pct}%` : 'Unpaid'}</span>
+                </div>
+                {/* Expanded payment log */}
+                {isExp && rec.payments?.length > 0 && (
+                  <div style={{ borderTop: '1px solid var(--border)', padding: '.55rem .9rem', background: 'rgba(4,6,15,.6)', display: 'flex', flexDirection: 'column', gap: '2px' }}>
+                    {rec.payments.map((p: any, i: number) => (
+                      <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '.6rem', fontFamily: 'var(--cinzel)', fontSize: '.34rem', letterSpacing: '1px', color: 'var(--bone-faint)' }}>
+                        <span style={{ width: '5px', height: '5px', borderRadius: '50%', background: 'var(--green)', flexShrink: 0 }} />
+                        <span style={{ color: 'var(--green)' }}>{fmt(p.amount_ls)}</span>
+                        <span>·</span>
+                        <span>{new Date(p.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}</span>
+                        {p.transaction_id && <span style={{ opacity: .5 }}>#{p.transaction_id}</span>}
+                      </div>
+                    ))}
+                  </div>
+                )}
+                {isExp && (!rec.payments || rec.payments.length === 0) && (
+                  <div style={{ borderTop: '1px solid var(--border)', padding: '.5rem .9rem', background: 'rgba(4,6,15,.6)', fontFamily: 'var(--cinzel)', fontSize: '.36rem', letterSpacing: '2px', color: 'var(--bone-faint)' }}>No payments logged.</div>
+                )}
+              </div>
+            );
+          })}
+
+          {/* Summary footer */}
+          {!loading && summary.total_collected !== undefined && (
+            <div style={{ background: 'rgba(8,13,24,.88)', border: '1px solid var(--border)', padding: '.65rem .9rem', marginTop: '2px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '.8rem', position: 'relative' }}>
+              <span className="dash-corner tl" /><span className="dash-corner br" />
+              {[
+                { lbl: 'Period Total', val: fmt(summary.total_collected), color: 'var(--green)' },
+                { lbl: 'Sweat Credited', val: fmt(summary.total_sweat || 0), color: 'var(--gold)' },
+                { lbl: 'Outstanding', val: fmt(summary.total_outstanding || 0), color: '#e05070' },
+                { lbl: 'Paid in Full', val: `${summary.paid || 0} of ${summary.total || 0}`, color: 'var(--bone-dim)' },
+              ].map(s => (
+                <span key={s.lbl} style={{ fontFamily: 'var(--cinzel)', fontSize: '.38rem', letterSpacing: '2px', color: 'var(--bone-faint)' }}>
+                  {s.lbl}: <strong style={{ color: s.color }}>{s.val}</strong>
+                </span>
               ))}
             </div>
-          )}
-
-          {error && (
-            <div style={{padding:'1rem',background:'rgba(178,34,52,0.08)',border:'1px solid rgba(178,34,52,0.2)',borderRadius:'8px',color:'#e05070',fontSize:'0.85rem',marginBottom:'1.5rem'}}>
-              Error loading report: {error}
-            </div>
-          )}
-
-          {loading && <div style={{textAlign:'center',padding:'3rem',color:'var(--muted)',fontSize:'0.85rem'}}>Loading report...</div>}
-
-          {!loading && report && (
-            <>
-              {/* Summary stats */}
-              {report.summary && (
-                <div style={{display:'grid',gridTemplateColumns:'repeat(4,1fr)',gap:'10px',marginBottom:'1.5rem'}}>
-                  {[
-                    { label:'Paid in Full', val: report.summary.paid, color:'#4ade80' },
-                    { label:'Partial', val: report.summary.partial, color:'#c6930a' },
-                    { label:'Unpaid', val: report.summary.unpaid, color:'#e05070' },
-                    { label:'Total Collected', val: fmt(report.summary.total_collected), color:'var(--bone)' },
-                  ].map(s => (
-                    <div key={s.label} style={{background:'var(--surface)',border:'1px solid var(--border)',borderRadius:'10px',padding:'1rem',textAlign:'center'}}>
-                      <div style={{fontSize:'1.6rem',fontWeight:800,color:s.color,fontFamily:'Rajdhani,sans-serif'}}>{s.val}</div>
-                      <div style={{fontSize:'0.6rem',letterSpacing:'2px',color:'var(--muted)',marginTop:'4px',textTransform:'uppercase'}}>{s.label}</div>
-                    </div>
-                  ))}
-                </div>
-              )}
-
-              {/* View toggle (Substance only) */}
-              {canSeeFull && (
-                <div style={{display:'flex',gap:'8px',marginBottom:'1.5rem'}}>
-                  <button onClick={()=>setView('disciplinary')} style={{
-                    padding:'6px 16px',borderRadius:'6px',fontSize:'0.75rem',fontWeight:700,cursor:'pointer',fontFamily:'Rajdhani,sans-serif',letterSpacing:'1px',textTransform:'uppercase',
-                    background: view==='disciplinary' ? 'rgba(178,34,52,0.12)' : 'var(--surface)',
-                    border: view==='disciplinary' ? '1px solid rgba(178,34,52,0.4)' : '1px solid var(--border)',
-                    color: view==='disciplinary' ? '#e05070' : 'var(--muted)'
-                  }}>⚔ Disciplinary</button>
-                  <button onClick={()=>setView('full')} style={{
-                    padding:'6px 16px',borderRadius:'6px',fontSize:'0.75rem',fontWeight:700,cursor:'pointer',fontFamily:'Rajdhani,sans-serif',letterSpacing:'1px',textTransform:'uppercase',
-                    background: view==='full' ? 'rgba(198,147,10,0.12)' : 'var(--surface)',
-                    border: view==='full' ? '1px solid rgba(198,147,10,0.4)' : '1px solid var(--border)',
-                    color: view==='full' ? 'var(--gold)' : 'var(--muted)'
-                  }}>◈ Full Report</button>
-                </div>
-              )}
-
-              {/* DISCIPLINARY REPORT */}
-              {view === 'disciplinary' && (
-                <div style={{background:'rgba(178,34,52,0.05)',border:'1px solid rgba(178,34,52,0.2)',borderRadius:'12px',padding:'1.5rem'}}>
-                  <div style={{fontSize:'0.55rem',letterSpacing:'4px',color:'#e05070',textTransform:'uppercase',marginBottom:'1.2rem',fontWeight:700}}>
-                    ⚔ Outstanding Dues — {report.disciplinary?.length || 0} Brothers
-                  </div>
-                  {!report.disciplinary?.length ? (
-                    <div style={{textAlign:'center',padding:'2rem',color:'var(--muted)',fontSize:'0.85rem'}}>All brothers are in good standing this period.</div>
-                  ) : report.disciplinary.map((rec:any) => {
-                    const owed = rec.amount_due - rec.linden_paid - rec.sweat_equity_value;
-                    return (
-                      <div key={rec.id} style={{display:'flex',justifyContent:'space-between',alignItems:'center',padding:'0.8rem 1rem',background:'var(--surface)',border:'1px solid var(--border)',borderRadius:'8px',marginBottom:'6px'}}>
-                        <div>
-                          <div style={{fontWeight:700,color:'var(--bone)',fontSize:'0.95rem'}}>{rec.member_name}</div>
-                          <div style={{fontSize:'0.7rem',color:'var(--muted)',marginTop:'2px'}}>
-                            Paid {fmt(rec.linden_paid)} cash + {fmt(rec.sweat_equity_value)} sweat — owes {fmt(owed)}
-                          </div>
-                        </div>
-                        <span style={{
-                          fontSize:'0.55rem',letterSpacing:'2px',padding:'3px 10px',borderRadius:'4px',fontWeight:700,textTransform:'uppercase',
-                          color:statusColor[rec.status],
-                          background: rec.status==='partial' ? 'rgba(198,147,10,0.1)' : 'rgba(178,34,52,0.1)',
-                          border:`1px solid ${statusColor[rec.status]}44`
-                        }}>{rec.status}</span>
-                      </div>
-                    );
-                  })}
-                </div>
-              )}
-
-              {/* FULL REPORT (Substance only) */}
-              {view === 'full' && canSeeFull && report.full_records && (
-                <div style={{background:'var(--surface)',border:'1px solid var(--border)',borderRadius:'12px',padding:'1.5rem'}}>
-                  <div style={{fontSize:'0.55rem',letterSpacing:'4px',color:'var(--gold)',textTransform:'uppercase',marginBottom:'1.2rem',fontWeight:700}}>
-                    ◈ Full Report — All {report.full_records.length} Brothers
-                  </div>
-                  {report.full_records.map((rec:any) => {
-                    const remaining = Math.max(0, rec.amount_due - rec.linden_paid - rec.sweat_equity_value);
-                    const progress = Math.min(100, Math.round(((rec.linden_paid + rec.sweat_equity_value) / rec.amount_due) * 100));
-                    return (
-                      <div key={rec.id} style={{borderLeft:`3px solid ${statusColor[rec.status]}`,background:'var(--raised)',borderRadius:'8px',padding:'0.9rem 1.1rem',marginBottom:'8px'}}>
-                        <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:'6px'}}>
-                          <span style={{fontWeight:700,color:'var(--bone)',fontSize:'0.95rem'}}>{rec.member_name}</span>
-                          <span style={{
-                            fontSize:'0.55rem',letterSpacing:'2px',padding:'2px 10px',borderRadius:'4px',fontWeight:700,textTransform:'uppercase',
-                            color:statusColor[rec.status],background:'rgba(0,0,0,0.2)',border:`1px solid ${statusColor[rec.status]}44`
-                          }}>{rec.status}</span>
-                        </div>
-                        <div style={{height:'3px',background:'var(--border)',borderRadius:'3px',marginBottom:'6px'}}>
-                          <div style={{height:'100%',width:`${progress}%`,background:statusColor[rec.status],borderRadius:'3px',transition:'width 0.3s'}}/>
-                        </div>
-                        <div style={{display:'flex',gap:'1rem',fontSize:'0.72rem',color:'var(--muted)',flexWrap:'wrap'}}>
-                          <span style={{color:'#4ade80'}}>{fmt(rec.linden_paid)} cash</span>
-                          <span style={{color:'#c6930a'}}>{fmt(rec.sweat_equity_value)} sweat</span>
-                          <span style={{color:'#e05070'}}>{fmt(remaining)} remaining</span>
-                          {rec.payments?.length > 0 && <span>{rec.payments.length} payment{rec.payments.length!==1?'s':''}</span>}
-                        </div>
-                        {rec.payments?.map((p:any) => (
-                          <div key={p.id} style={{marginTop:'4px',fontSize:'0.68rem',color:'rgba(240,232,208,0.25)',paddingLeft:'10px',borderLeft:'1px solid var(--border)'}}>
-                            └ {fmt(p.amount_ls)} · {new Date(p.created_at).toLocaleDateString('en-GB')}
-                            {p.transaction_id && <span style={{fontFamily:'monospace',marginLeft:'8px',fontSize:'0.65rem',color:'rgba(240,232,208,0.15)'}}>{p.transaction_id}</span>}
-                          </div>
-                        ))}
-                      </div>
-                    );
-                  })}
-                  <div style={{marginTop:'1.2rem',padding:'0.9rem 1rem',background:'var(--raised)',borderRadius:'8px',display:'flex',gap:'2rem',flexWrap:'wrap',fontSize:'0.8rem',color:'var(--muted)'}}>
-                    <span>Collected: <strong style={{color:'#4ade80'}}>{fmt(report.summary.total_collected)}</strong></span>
-                    <span>Sweat credited: <strong style={{color:'#c6930a'}}>{fmt(report.summary.total_sweat)}</strong></span>
-                    <span>Paid in full: <strong style={{color:'var(--bone)'}}>{report.summary.paid} / {report.summary.total} brothers</strong></span>
-                  </div>
-                </div>
-              )}
-            </>
-          )}
-
-          {!loading && !report && !error && (
-            <div style={{textAlign:'center',padding:'3rem',color:'var(--muted)'}}>No dues periods found.</div>
           )}
         </div>
       </main>

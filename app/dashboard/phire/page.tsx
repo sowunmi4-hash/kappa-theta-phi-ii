@@ -2,6 +2,7 @@
 export const dynamic = 'force-dynamic';
 import { useState, useEffect } from 'react';
 import '../dash.css';
+import DashSidebar from '../DashSidebar';
 import './phire.css';
 
 
@@ -34,33 +35,7 @@ export default function PhireHome() {
 
   const slug = member?.frat_name?.toLowerCase().replace(/\s+/g,'-').replace('big-brother-','') || '';
   const portrait = `/brothers/${slug}.png`;
-  const NAV = [
-    { href: '/dashboard', label: 'Home' },
-    { href: '/dashboard/news', label: 'Wokou News' },
-    { href: '/dashboard/events', label: 'Events' },
-    { href: '/dashboard/phire', label: 'PHIRE' },
-    { href: '/dashboard/discipline', label: 'Discipline' },
-    { href: '/dashboard/ssp', label: 'Sage Solution' },
-  { href: '/dashboard/dues', label: 'Dues' },
-    { href: '/dashboard/gallery', label: 'My Gallery' },
-    { href: '/dashboard/edit', label: 'Edit Profile' },
-  ];
-  const Sidebar = () => (
-    <aside className="dash-sidebar">
-      <div className="dash-sidebar-logo"><img src="/logo.png" alt="KΘΦ II" /><span className="dash-sidebar-logo-text">KΘΦ II</span></div>
-      <div className="dash-sidebar-member">
-        <div className="dash-sidebar-portrait"><img src={portrait} alt="" onError={(e:any)=>e.target.src='/logo.png'}/></div>
-        <div className="dash-sidebar-name">{member?.frat_name}</div>
-        <div className="dash-sidebar-role">{member?.role}</div>
-      </div>
-      <nav className="dash-nav">
-        {NAV.map(n => <a key={n.href} href={n.href} className={`dash-nav-item ${typeof window !== 'undefined' && window.location.pathname === n.href ? 'active' : ''}`}><span>{n.label}</span></a>)}
-        <div className="dash-nav-divider"/>
-        <a href="/" className="dash-nav-item"><span>Back to Site</span></a>
-            <button onClick={async()=>{await fetch('/api/logout',{method:'POST'});window.location.href='/login';}} className="dash-nav-item" style={{width:'100%',textAlign:'left',background:'none',border:'none',cursor:'pointer',color:'#e05070',fontFamily:'inherit'}}><span>Sign Out</span></button>
-      </nav>
-    </aside>
-  );
+
   function timeAgo(d: string) {
     const s = Math.floor((Date.now() - new Date(d).getTime())/1000);
     if (s < 60) return 'just now';
@@ -71,7 +46,7 @@ export default function PhireHome() {
 
   return (
     <div className="dash-app phire-root">
-      <Sidebar />
+      <DashSidebar member={member} profile={data?.profile} />
       <main className="dash-main">
         {/* Hero */}
         <div className="phire-hero">

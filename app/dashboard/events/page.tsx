@@ -1,21 +1,8 @@
 'use client';
 import { useState, useEffect, useRef } from 'react';
 import '../dash.css';
+import DashSidebar from '../DashSidebar';
 import './events.css';
-
-
-
-const NAV = [
-  { href: '/dashboard', label: 'Home' },
-  { href: '/dashboard/news', label: 'Wokou News' },
-  { href: '/dashboard/events', label: 'Events' },
-  { href: '/dashboard/phire', label: 'PHIRE' },
-  { href: '/dashboard/discipline', label: 'Discipline' },
-    { href: '/dashboard/ssp', label: 'Sage Solution' },
-  { href: '/dashboard/dues', label: 'Dues' },
-    { href: '/dashboard/gallery', label: 'My Gallery' },
-  { href: '/dashboard/edit', label: 'Edit Profile' },
-];
 
 const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
 const DAYS = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
@@ -30,6 +17,7 @@ type Event = {
 
 export default function EventsPage() {
   const [member, setMember] = useState<any>(null);
+  const [profile, setProfile] = useState<any>(null);
   const [events, setEvents] = useState<Event[]>([]);
   const [view, setView] = useState<'calendar'|'list'>('calendar');
   const [calDate, setCalDate] = useState(new Date());
@@ -49,7 +37,7 @@ export default function EventsPage() {
   useEffect(() => {
     fetch('/api/dashboard/profile').then(r=>r.json()).then(d => {
       if (d.error) { window.location.href='/login'; return; }
-      setMember(d.member);
+      setMember(d.member); setProfile(d.profile || {});
     });
     loadEvents();
   }, []);
@@ -86,6 +74,11 @@ export default function EventsPage() {
     setFlyerPreview('');
     await loadEvents();
     setSaving(false);
+  }
+
+  async function markDone(event_id: string) {
+    await fetch('/api/dashboard/events', { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ event_id, mark_done: true }) });
+    await loadEvents();
   }
 
   async function rsvp(event_id: string, attending: boolean) {
@@ -167,37 +160,7 @@ export default function EventsPage() {
   return (
     <div className="dash-app">
       {/* ── SIDEBAR ── */}
-      <aside className="dash-sidebar">
-        <div className="dash-sidebar-logo">
-          <img src="/logo.png" alt="KΘΦ II" />
-          <span className="dash-sidebar-logo-text">KΘΦ II</span>
-        </div>
-        <div className="dash-sidebar-member">
-          <div className="dash-sidebar-portrait">
-            <img src={`/brothers/${slug}.png`} alt="" onError={(e:any)=>e.target.src='/logo.png'} />
-          </div>
-          <div className="dash-sidebar-name">{member.frat_name}</div>
-          <div className="dash-sidebar-role">{member.role}</div>
-          {member.fraction && <div className="dash-sidebar-fraction">{member.fraction}</div>}
-        </div>
-        <nav className="dash-nav">
-          {NAV.map(n => (
-            <a key={n.href} href={n.href} className={`dash-nav-item ${n.href==='/dashboard/events'?'active':''}`}>
-              <span>{n.label}</span>
-            </a>
-          ))}
-          {(member?.fraction === 'Ishi No Fraction' || member?.frat_name === 'Big Brother Substance') && (
-            <a href="/dashboard/dues-report" className="dash-nav-item">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
-              <span>Dues Report</span>
-            </a>
-          )}
-          {(member?.fraction === 'Ishi No Fraction' || member?.role === 'Head Founder' || member?.role === 'Co-Founder') && <a href="/dashboard/ssp/report" className="dash-nav-item"><span>SSP Report</span></a>}
-          <div className="dash-nav-divider"/>
-          <a href="/" className="dash-nav-item"><span>Back to Site</span></a>
-            <button onClick={async()=>{await fetch('/api/logout',{method:'POST'});window.location.href='/login';}} className="dash-nav-item" style={{width:'100%',textAlign:'left',background:'none',border:'none',cursor:'pointer',color:'#e05070',fontFamily:'inherit'}}><span>Sign Out</span></button>
-        </nav>
-      </aside>
+      <DashSidebar member={member} profile={profile} />
 
       {/* ── MAIN ── */}
       <main className="dash-main">

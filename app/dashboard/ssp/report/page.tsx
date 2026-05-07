@@ -2,6 +2,7 @@
 export const dynamic = 'force-dynamic';
 import { useState, useEffect } from 'react';
 import '../../dash.css';
+import DashSidebar from '../../DashSidebar';
 import '../ssp.css';
 
 const LESSONS = [
@@ -30,17 +31,9 @@ function fmtTime(d: string) {
   return new Date(d).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
 }
 
-const NAV = [
-  { href: '/dashboard', label: 'Home' },
-  { href: '/dashboard/news', label: 'Wokou News' },
-  { href: '/dashboard/events', label: 'Events' },
-  { href: '/dashboard/phire', label: 'PHIRE' },
-  { href: '/dashboard/gallery', label: 'My Gallery' },
-  { href: '/dashboard/edit', label: 'Edit Profile' },
-];
-
 export default function SSPReportPage() {
   const [member, setMember] = useState<any>(null);
+  const [profile, setProfile] = useState<any>(null);
   const [report, setReport] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [expanded, setExpanded] = useState<string | null>(null);
@@ -75,25 +68,7 @@ export default function SSPReportPage() {
 
   return (
     <div className="dash-app">
-      <aside className="dash-sidebar">
-        <div className="dash-sidebar-logo"><img src="/logo.png" alt="KΘΦ II" /><span className="dash-sidebar-logo-text">KΘΦ II</span></div>
-        <div className="dash-sidebar-member">
-          <div className="dash-sidebar-portrait"><img src={`/brothers/${slug}.png`} alt="" onError={(e: any) => e.target.src = '/logo.png'} /></div>
-          <div className="dash-sidebar-name">{member.frat_name}</div>
-          <div className="dash-sidebar-role">{member.role}</div>
-        </div>
-        <nav className="dash-nav">
-          {NAV.map(n => <a key={n.href} href={n.href} className="dash-nav-item"><span>{n.label}</span></a>)}
-          <a href="/dashboard/ssp" className="dash-nav-item"><span>Sage Solution</span></a>
-          <a href="/dashboard/ssp/report" className="dash-nav-item active"><span>SSP Report</span></a>
-          {(member?.fraction === 'Ishi No Fraction' || member?.frat_name === 'Big Brother Substance') && (
-            <a href="/dashboard/dues-report" className="dash-nav-item"><span>Dues Report</span></a>
-          )}
-          <div className="dash-nav-divider" />
-          <a href="/" className="dash-nav-item"><span>Back to Site</span></a>
-          <button onClick={async () => { await fetch('/api/logout', { method: 'POST' }); window.location.href = '/login'; }} className="dash-nav-item" style={{ width: '100%', textAlign: 'left', background: 'none', border: 'none', cursor: 'pointer', color: '#e05070', fontFamily: 'inherit' }}><span>Sign Out</span></button>
-        </nav>
-      </aside>
+      <DashSidebar member={member} profile={profile} />
 
       <main className="dash-main">
         {/* Header */}

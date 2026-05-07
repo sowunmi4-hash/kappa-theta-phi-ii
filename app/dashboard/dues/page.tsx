@@ -2,6 +2,7 @@
 export const dynamic = 'force-dynamic';
 import { useState, useEffect } from 'react';
 import '../dash.css';
+import DashSidebar from '../DashSidebar';
 import './dues.css';
 
 const SWEAT_CATEGORIES = ['Planning','Advertising','Recruitment','Design','Content Creation','Event Support','Administrative','General'];
@@ -41,6 +42,7 @@ function Countdown({ expiresAt }) {
 
 export default function DuesPage() {
   const [member, setMember]       = useState<any>(null);
+  const [profile, setProfile] = useState<any>(null);
   const [canManage, setCanManage] = useState(false);
   const [periods, setPeriods]     = useState<any[]>([]);
   const [activePeriod, setActivePeriod] = useState<string|null>(null);
@@ -60,21 +62,10 @@ export default function DuesPage() {
   const [saving, setSaving]       = useState(false);
   const [msg, setMsg]             = useState('');
 
-  const NAV = [
-    { href:'/dashboard', label:'Home' },
-    { href:'/dashboard/news', label:'Wokou News' },
-    { href:'/dashboard/events', label:'Events' },
-    { href:'/dashboard/phire', label:'PHIRE' },
-    { href:'/dashboard/discipline', label:'Discipline' },
-    { href:'/dashboard/ssp', label:'Sage Solution' },
-    { href:'/dashboard/gallery', label:'My Gallery' },
-    { href:'/dashboard/edit', label:'Edit Profile' },
-  ];
-
   useEffect(() => {
     fetch('/api/dashboard/dues/periods').then(r=>r.json()).then(async d => {
       if (d.error) { window.location.href='/login'; return; }
-      setMember(d.member);
+      setMember(d.member); setProfile(d.profile || {});
       setCanManage(d.can_manage);
       setPeriods(d.periods||[]);
       const first = d.periods?.[0]?.id || null;
@@ -181,27 +172,7 @@ export default function DuesPage() {
 
   return (
     <div className="dash-app">
-      <aside className="dash-sidebar">
-        <div className="dash-sidebar-logo"><img src="/logo.png" alt="KΘΦ II"/><span className="dash-sidebar-logo-text">KΘΦ II</span></div>
-        <div className="dash-sidebar-member">
-          <div className="dash-sidebar-portrait"><img src={`/brothers/${slug}.png`} alt="" onError={(e:any)=>e.target.src='/logo.png'}/></div>
-          <div className="dash-sidebar-name">{member.frat_name}</div>
-          <div className="dash-sidebar-role">{member.role}</div>
-        </div>
-        <nav className="dash-nav">
-          {NAV.map(n=><a key={n.href} href={n.href} className={`dash-nav-item ${n.href==='/dashboard/dues'?'active':''}`}><span>{n.label}</span></a>)}
-          {(member?.fraction === 'Ishi No Fraction' || member?.frat_name === 'Big Brother Substance') && (
-            <a href="/dashboard/dues-report" className="dash-nav-item">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
-              <span>Dues Report</span>
-            </a>
-          )}
-          {(member?.fraction === 'Ishi No Fraction' || member?.role === 'Head Founder' || member?.role === 'Co-Founder') && <a href="/dashboard/ssp/report" className="dash-nav-item"><span>SSP Report</span></a>}
-          <div className="dash-nav-divider"/>
-          <a href="/" className="dash-nav-item"><span>Back to Site</span></a>
-            <button onClick={async()=>{await fetch('/api/logout',{method:'POST'});window.location.href='/login';}} className="dash-nav-item" style={{width:'100%',textAlign:'left',background:'none',border:'none',cursor:'pointer',color:'#e05070',fontFamily:'inherit'}}><span>Sign Out</span></button>
-        </nav>
-      </aside>
+      <DashSidebar member={member} profile={profile} />
 
       <main className="dash-main">
         <div className="dues-hero">
