@@ -63,6 +63,7 @@ export default function DuesPage() {
 
   const [payForm, setPayForm]   = useState({ amount_ls:'', transaction_id:'', expires_at:'', notes:'', target_member_id:'' });
   const [sweatForm, setSweatForm] = useState({ contribution:'', category:'General', value_requested:'', notes:'' });
+  const [selectedBroPeriod, setSelectedBroPeriod] = useState<string>('');
   const [periodForm, setPeriodForm] = useState({ month:new Date().getMonth()+1, year:new Date().getFullYear(), amount_due:4000 });
 
   useEffect(() => {
@@ -84,7 +85,12 @@ export default function DuesPage() {
     setRecords(recs);
     if (selRecord) { const fresh = recs.find((r:any)=>r.id===selRecord.id); if(fresh) setSelRecord(fresh); }
   }
-  async function loadMyRecords() { const d = await fetch('/api/dashboard/dues/record').then(r=>r.json()); setMyRecords(d.records||[]); }
+  async function loadMyRecords() {
+    const d = await fetch('/api/dashboard/dues/record').then(r=>r.json());
+    const recs = d.records||[];
+    setMyRecords(recs);
+    setSelectedBroPeriod(prev => prev || recs[0]?.period_id || '');
+  }
   async function selectPeriod(pid:string) { setActivePeriod(pid); setSelRecord(null); if(canManage) await loadRecords(pid); }
   async function createPeriod() {
     setSaving(true);
@@ -348,10 +354,29 @@ export default function DuesPage() {
           <div className="du-bro-wrap"><div className="du-bro-body">
             {/* LEFT: status + history */}
             <div className="du-bro-main">
+              {/* Period selector */}
+              {myRecords.length > 0 && (
+                <div className="du-period-selector">
+                  <button className="du-period-prev" onClick={()=>{
+                    const idx = myRecords.findIndex(r=>r.period_id===selectedBroPeriod);
+                    if(idx < myRecords.length-1) setSelectedBroPeriod(myRecords[idx+1].period_id);
+                  }} disabled={myRecords.findIndex(r=>r.period_id===selectedBroPeriod) >= myRecords.length-1}>‹</button>
+                  <select className="du-period-dropdown" value={selectedBroPeriod} onChange={e=>setSelectedBroPeriod(e.target.value)}>
+                    {myRecords.map(r=>{
+                      const p = periods.find((pp:any)=>pp.id===r.period_id);
+                      return <option key={r.period_id} value={r.period_id}>{p?.label || r.period_id}{p?.is_active ? ' · Active' : ''}</option>;
+                    })}
+                  </select>
+                  <button className="du-period-next" onClick={()=>{
+                    const idx = myRecords.findIndex(r=>r.period_id===selectedBroPeriod);
+                    if(idx > 0) setSelectedBroPeriod(myRecords[idx-1].period_id);
+                  }} disabled={myRecords.findIndex(r=>r.period_id===selectedBroPeriod) <= 0}>›</button>
+                </div>
+              )}
               {myRecords.length === 0 && (
                 <div style={{textAlign:'center',padding:'3rem',fontFamily:'var(--cinzel)',fontSize:'.65rem',letterSpacing:'2px',color:'var(--bone-faint)'}}>No dues records yet.</div>
               )}
-              {myRecords.filter(rec => periods.find((p:any)=>p.id===rec.period_id)?.is_active).map(rec=>{
+              {myRecords.filter(rec => rec.period_id === (selectedBroPeriod || myRecords[0]?.period_id)).map(rec=>{
                 const period = periods.find(p=>p.id===rec.period_id);
                 const totalPaid = rec.linden_paid + rec.sweat_equity_value;
                 const remaining = Math.max(0, rec.amount_due - totalPaid);
@@ -447,20 +472,6 @@ export default function DuesPage() {
                 <div><label className="du-flbl">Notes</label><textarea className="du-fld du-fta" placeholder="Any additional context..." value={sweatForm.notes} onChange={e=>setSweatForm(f=>({...f,notes:e.target.value}))}/></div>
                 {msgText && <div className={`du-msg ${msgType}`}>{msgText}</div>}
                 <button className="du-btn gold du-btn full" onClick={submitSweat} disabled={saving}>{saving?'Submitting...':'Submit Contribution'}</button>
-              </div>
-
-              <div style={{height:'1px',background:'var(--border)'}}/>
-              <div className="du-clbl">Past Periods</div>
-              <div style={{display:'flex',flexDirection:'column',gap:'2px'}}>
-                {periods.map(p=>{
-                  const rec = myRecords.find(r=>r.period_id===p.id);
-                  return (
-                    <div key={p.id} className="du-period-item">
-                      <span className="du-period-item-name">{p.label}</span>
-                      {rec && <span className={`du-badge ${rec.status}`} style={{fontSize:'.44rem',padding:'1px 6px'}}>{rec.status}</span>}
-                    </div>
-                  );
-                })}
               </div>
 
               <div style={{height:'1px',background:'var(--border)'}}/>
