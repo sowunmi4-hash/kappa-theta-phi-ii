@@ -1,0 +1,160 @@
+/* ── DUES REPORT PAGE ── */
+
+/* Period selector */
+.dr-period-bar {
+  display: flex; align-items: center; gap: .75rem; flex-wrap: wrap;
+  padding: .75rem 1.8rem; border-bottom: 1px solid rgba(255,255,255,.04);
+  background: rgba(4,6,12,.3);
+}
+.dr-period-label { font-family: var(--cinzel); font-size: .62rem; letter-spacing: 3px; color: var(--bone-faint); text-transform: uppercase; }
+.dr-period-select {
+  background: rgba(4,6,12,.7); border: 1px solid rgba(198,147,10,.25); border-radius: 4px;
+  padding: .42rem 1rem; color: var(--gold-b); font-family: var(--cinzel);
+  font-size: .65rem; letter-spacing: 2px; outline: none; cursor: pointer; transition: border .15s;
+}
+.dr-period-select:focus { border-color: rgba(198,147,10,.5); }
+.dr-period-badge {
+  font-family: var(--cinzel); font-size: .58rem; letter-spacing: 2px; padding: 3px 10px;
+  border-radius: 3px; border: 1px solid; display: inline-block;
+}
+.dr-period-badge.active { background: rgba(74,222,128,.08); border-color: rgba(74,222,128,.2); color: var(--green); }
+.dr-period-badge.closed { background: rgba(198,147,10,.06); border-color: rgba(198,147,10,.18); color: rgba(198,147,10,.6); }
+
+/* Access tag */
+.dr-access-tag {
+  font-family: var(--cinzel); font-size: .6rem; letter-spacing: 2px;
+  padding: .32rem .85rem; border-radius: 3px; border: 1px solid;
+}
+.dr-access-tag.full { border-color: rgba(198,147,10,.25); color: var(--gold-b); background: rgba(198,147,10,.07); }
+.dr-access-tag.ishi { border-color: rgba(224,80,112,.2); color: rgba(224,80,112,.75); background: rgba(224,80,112,.06); }
+
+/* Stats strip */
+.dr-stats {
+  display: grid; grid-template-columns: repeat(4,1fr);
+  border-bottom: 1px solid rgba(255,255,255,.04);
+}
+.dr-stat-cell {
+  background: rgba(8,12,22,.9); padding: 1rem 1.5rem;
+  border-right: 1px solid rgba(255,255,255,.04);
+  display: flex; align-items: center; gap: .85rem;
+}
+.dr-stat-cell:last-child { border-right: none; }
+.dr-stat-icon {
+  width: 36px; height: 36px; border-radius: 8px;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.dr-stat-val { font-family: var(--display); font-size: 1.6rem; line-height: 1; letter-spacing: 1px; }
+.dr-stat-lbl { font-family: var(--cinzel); font-size: .58rem; letter-spacing: 3px; color: var(--bone-faint); text-transform: uppercase; margin-top: .25rem; }
+
+/* Filter tabs */
+.dr-filter-bar {
+  display: flex; gap: .4rem; padding: .75rem 1.8rem;
+  border-bottom: 1px solid rgba(255,255,255,.04); background: rgba(4,6,12,.2);
+}
+.dr-filter-btn {
+  font-family: var(--cinzel); font-size: .62rem; letter-spacing: 2px;
+  padding: .38rem .95rem; border-radius: 3px; border: 1px solid transparent;
+  cursor: pointer; color: var(--bone-faint); background: none;
+  transition: all .15s; text-transform: uppercase;
+}
+.dr-filter-btn:hover { color: var(--bone-dim); }
+.dr-filter-btn.active { color: var(--gold-b); background: rgba(198,147,10,.08); border-color: rgba(198,147,10,.2); }
+
+/* Records list */
+.dr-records { padding: 1.2rem 1.8rem 3rem; display: flex; flex-direction: column; gap: 4px; }
+
+/* Dossier row */
+.dr-row {
+  background: rgba(10,14,24,.9); border: 1px solid rgba(255,255,255,.05);
+  border-radius: 4px; overflow: hidden;
+  transition: border-color .15s; border-left: 3px solid transparent;
+}
+.dr-row:hover { border-color: rgba(255,255,255,.08); }
+.dr-row.paid    { border-left-color: rgba(74,222,128,.45); }
+.dr-row.partial { border-left-color: rgba(198,147,10,.45); }
+.dr-row.unpaid  { border-left-color: rgba(224,80,112,.38); }
+.dr-row.open    { border-color: rgba(255,255,255,.08); }
+
+/* Main row content */
+.dr-row-main {
+  display: flex; align-items: center; gap: 1.2rem;
+  padding: 1rem 1.4rem; cursor: pointer;
+}
+
+/* Brother info */
+.dr-brother-col { flex: 0 0 180px; }
+.dr-brother-name { font-family: var(--display); font-size: 1.15rem; letter-spacing: 2px; color: var(--bone); }
+.dr-brother-timer { font-family: 'Courier New', monospace; font-size: .72rem; font-weight: 700; margin-top: 3px; display: block; }
+.dr-brother-timer.ok     { color: var(--green); }
+.dr-brother-timer.warn   { color: #facc15; }
+.dr-brother-timer.urgent { color: #e05070; }
+
+/* Progress */
+.dr-prog-col { flex: 1; }
+.dr-prog-meta { display: flex; justify-content: space-between; margin-bottom: .4rem; }
+.dr-prog-pct  { font-family: var(--cinzel); font-size: .65rem; letter-spacing: 2px; }
+.dr-prog-due  { font-family: var(--cinzel); font-size: .65rem; letter-spacing: 1px; color: var(--bone-faint); }
+.dr-prog-track { height: 6px; background: rgba(255,255,255,.06); border-radius: 3px; overflow: hidden; }
+.dr-prog-fill  { height: 100%; border-radius: 3px; transition: width .6s ease; }
+.dr-prog-fill.green { background: linear-gradient(90deg, var(--green), #86efac); }
+.dr-prog-fill.gold  { background: linear-gradient(90deg, var(--gold), var(--gold-b)); }
+.dr-prog-fill.red   { background: linear-gradient(90deg, #e05070, #f87171); }
+
+/* Amount cells */
+.dr-amount-col { flex: 0 0 100px; text-align: right; }
+.dr-amount-val { font-family: var(--display); font-size: 1.05rem; letter-spacing: 1px; line-height: 1; }
+.dr-amount-lbl { font-family: var(--cinzel); font-size: .56rem; letter-spacing: 2px; color: var(--bone-faint); margin-top: 3px; text-transform: uppercase; }
+
+/* Status badge */
+.dr-status { flex-shrink: 0; }
+.dr-badge {
+  font-family: var(--cinzel); font-size: .6rem; letter-spacing: 2px;
+  padding: 4px 12px; border-radius: 3px; border: 1px solid; text-transform: uppercase;
+  display: inline-block; white-space: nowrap;
+}
+.dr-badge.paid    { background: rgba(74,222,128,.08); border-color: rgba(74,222,128,.22); color: var(--green); }
+.dr-badge.partial { background: rgba(198,147,10,.08); border-color: rgba(198,147,10,.25); color: var(--gold-b); }
+.dr-badge.unpaid  { background: rgba(224,80,112,.07); border-color: rgba(224,80,112,.22); color: #e05070; }
+
+/* Chevron */
+.dr-chevron { flex-shrink: 0; color: var(--bone-faint); font-size: .7rem; transition: transform .2s; }
+.dr-row.open .dr-chevron { transform: rotate(180deg); }
+
+/* Expanded detail */
+.dr-detail {
+  border-top: 1px solid rgba(255,255,255,.04);
+  padding: 1rem 1.4rem 1.2rem;
+  background: rgba(5,8,15,.7);
+  display: flex; flex-direction: column; gap: .85rem;
+}
+.dr-detail-section-lbl { font-family: var(--cinzel); font-size: .58rem; letter-spacing: 4px; color: rgba(198,147,10,.4); text-transform: uppercase; margin-bottom: .55rem; }
+
+/* Payment entries */
+.dr-payment-row {
+  display: flex; align-items: center; gap: 1rem;
+  padding: .6rem .85rem; background: rgba(8,12,22,.8);
+  border: 1px solid rgba(255,255,255,.04); border-radius: 3px;
+  transition: border-color .15s;
+}
+.dr-payment-row:hover { border-color: rgba(255,255,255,.08); }
+.dr-payment-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.dr-payment-dot.linden { background: var(--green); box-shadow: 0 0 6px rgba(74,222,128,.3); }
+.dr-payment-dot.sweat  { background: var(--gold);  box-shadow: 0 0 6px rgba(198,147,10,.3); }
+.dr-payment-amount { font-family: var(--display); font-size: 1.05rem; letter-spacing: 1px; flex-shrink: 0; }
+.dr-payment-amount.linden { color: var(--green); }
+.dr-payment-amount.sweat  { color: var(--gold-b); }
+.dr-payment-desc { font-family: var(--cinzel); font-size: .62rem; letter-spacing: 1px; color: var(--bone-faint); flex: 1; }
+.dr-payment-date { font-family: var(--cinzel); font-size: .6rem; letter-spacing: 1px; color: var(--bone-faint); flex-shrink: 0; }
+.dr-payment-txid { font-family: var(--cinzel); font-size: .56rem; letter-spacing: 1px; color: rgba(198,147,10,.4); flex-shrink: 0; }
+
+/* Summary footer */
+.dr-footer {
+  background: rgba(8,12,22,.9); border: 1px solid rgba(255,255,255,.05);
+  border-radius: 4px; padding: .85rem 1.4rem;
+  display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: .8rem;
+}
+.dr-footer-stat { font-family: var(--cinzel); font-size: .65rem; letter-spacing: 2px; color: var(--bone-faint); }
+.dr-footer-stat strong { font-weight: 600; }
+
+/* Empty / loading */
+.dr-empty { padding: 3rem; text-align: center; font-family: var(--cinzel); font-size: .72rem; letter-spacing: 3px; color: var(--bone-faint); }
