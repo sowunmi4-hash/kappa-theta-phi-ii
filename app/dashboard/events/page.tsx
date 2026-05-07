@@ -25,9 +25,15 @@ function Countdown({ event }: { event: Event }) {
   useEffect(() => {
     function calc() {
       const dateStr = event.event_date.split('T')[0];
-      const timeStr = event.event_time || '00:00';
-      const start = new Date(`${dateStr}T${timeStr}:00`).getTime();
-      setDiff(start - Date.now());
+      const [y, mo, d] = dateStr.split('-').map(Number);
+      let startMs: number;
+      if (event.event_time) {
+        const [h, m] = event.event_time.split(':').map(Number);
+        startMs = new Date(y, mo - 1, d, h, m || 0, 0).getTime();
+      } else {
+        startMs = new Date(y, mo - 1, d, 0, 0, 0).getTime();
+      }
+      setDiff(startMs - Date.now());
     }
     calc();
     const t = setInterval(calc, 1000);
