@@ -4,7 +4,7 @@
 /* Reward card */
 .rw-card {
   display: grid; grid-template-columns: 110px 1fr auto;
-  background: rgba(8,13,24,.9); border: 1px solid var(--border);
+  background: rgba(8,13,24,.9); border: 1px solid rgba(255,255,255,.06);
   position: relative; transition: border-color .2s; overflow: hidden;
 }
 .rw-card.unlocked { border-color: rgba(198,147,10,.32); }

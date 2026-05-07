@@ -13,7 +13,7 @@
 .sa-item {
   display: flex; align-items: center; gap: 1rem;
   padding: 1rem 1.2rem;
-  background: rgba(7,11,20,.8); border: 1px solid var(--border);
+  background: rgba(7,11,20,.8); border: 1px solid rgba(255,255,255,.06);
   cursor: pointer; transition: all .15s; position: relative;
   margin-bottom: 2px;
 }

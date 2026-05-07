@@ -31,9 +31,8 @@
 .disc-content { padding: 1.2rem 1.4rem 3rem; }
 
 /* Violation blocks */
-.track-block { border: 1px solid var(--border); padding: 1rem 1.2rem; margin-bottom: 3px; position: relative; animation: disciplineIn .4s both; transition: border-color .2s; }
+.track-block { border: 1px solid rgba(255,255,255,.06); padding: 1rem 1.2rem; margin-bottom: 3px; position: relative; animation: disciplineIn .4s both; transition: border-color .2s; }
 .track-block:hover { border-color: var(--border-h); }
-.track-block::before { content: ''; position: absolute; inset: 5px; border: 1px solid rgba(198,147,10,.055); pointer-events: none; }
 .track-label { font-family: var(--cinzel); font-size: .44rem; letter-spacing: 3px; color: rgba(198,147,10,.5); text-transform: uppercase; margin-bottom: .4rem; }
 .track-name  { font-family: var(--display); font-size: 1rem; letter-spacing: 2px; color: var(--bone); }
 .track-meta  { font-family: var(--cinzel); font-size: .38rem; letter-spacing: 1px; color: var(--bone-faint); margin-top: .2rem; }
@@ -56,7 +55,7 @@
 .disc-manage-left { border-right: 1px solid var(--border); background: rgba(4,6,15,.45); display: flex; flex-direction: column; }
 .disc-manage-hdr { padding: .6rem .8rem; border-bottom: 1px solid var(--border); flex-shrink: 0; }
 .disc-manage-items { flex: 1; display: flex; flex-direction: column; gap: 1px; padding: .5rem .55rem; overflow-y: auto; }
-.disc-manage-item { padding: .55rem .65rem; border: 1px solid var(--border); background: rgba(7,11,20,.75); cursor: pointer; position: relative; transition: all .15s; display: flex; flex-direction: column; gap: .25rem; }
+.disc-manage-item { padding: .55rem .65rem; border: 1px solid rgba(255,255,255,.06); background: rgba(7,11,20,.75); cursor: pointer; position: relative; transition: all .15s; display: flex; flex-direction: column; gap: .25rem; }
 .disc-manage-item:hover { border-color: var(--border-h); }
 .disc-manage-item.selected { border-color: rgba(178,34,52,.38); background: rgba(12,4,10,.95); }
 .disc-manage-item.selected::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 2px; background: linear-gradient(to bottom, #f87191, var(--crimson)); }
@@ -70,9 +69,8 @@
 .disc-issue-panel { padding: .9rem .85rem; background: rgba(4,6,15,.3); display: flex; flex-direction: column; gap: .75rem; }
 
 /* Issue form */
-.disc-form-section { background: rgba(8,13,24,.85); border: 1px solid var(--border); padding: .85rem .9rem; position: relative; display: flex; flex-direction: column; gap: .55rem; }
-.disc-form-section::before { content: ''; position: absolute; inset: 5px; border: 1px solid rgba(198,147,10,.05); pointer-events: none; }
-.disc-field { background: rgba(4,6,15,.7); border: 1px solid var(--border); border-radius: 3px; padding: .42rem .6rem; color: var(--bone-dim); font-family: var(--body); font-size: .82rem; width: 100%; outline: none; transition: border .15s; }
+.disc-form-section { background: rgba(8,13,24,.85); border: 1px solid rgba(255,255,255,.06); padding: .85rem .9rem; position: relative; display: flex; flex-direction: column; gap: .55rem; }
+.disc-field { background: rgba(4,6,15,.7); border: 1px solid rgba(255,255,255,.06); border-radius: 3px; padding: .42rem .6rem; color: var(--bone-dim); font-family: var(--body); font-size: .82rem; width: 100%; outline: none; transition: border .15s; }
 .disc-field:focus { border-color: rgba(198,147,10,.45); }
 .disc-field-label { display: block; font-family: var(--cinzel); font-size: .36rem; letter-spacing: 3px; color: rgba(198,147,10,.45); text-transform: uppercase; margin-bottom: .28rem; }
 
