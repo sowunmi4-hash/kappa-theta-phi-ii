@@ -357,13 +357,11 @@ export default function DuesPage() {
                             <span className="du-status-sub">{fmt(totalPaid)} paid · {fmt(rec.amount_due)} total</span>
                           </div>
                         </div>
-                        {rec.expires_at && (
-                          <div className="du-timer-wrap">
-                            <div className="du-timer-lbl">Expires In</div>
-                            <Countdown expiresAt={rec.expires_at} />
+                        <div className="du-timer-wrap">
+                            <div className="du-timer-lbl">Timer</div>
+                            <Countdown expiresAt={rec.expires_at ?? null} />
                             {rec.casper_expiry_text && <div className="du-casper-text" style={{marginTop:'.2rem'}}>{rec.casper_expiry_text}</div>}
                           </div>
-                        )}
                       </div>
                       <div className="du-prog-track"><div className={`du-prog-fill ${progCls(rec.status,progress)}`} style={{width:`${progress}%`}}/></div>
                       <div className="du-prog-row"><span>{progress}% covered</span><span>{fmt(remaining)} remaining</span></div>
