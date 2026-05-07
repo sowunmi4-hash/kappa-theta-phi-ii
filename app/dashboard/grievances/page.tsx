@@ -52,7 +52,7 @@ export default function GrievancesPage() {
     fetch('/api/dashboard/profile').then(r=>r.json()).then(d=>{
       if(d.error){window.location.href='/login';return;}
       setMember(d.member); setProfile(d.profile);
-      const admin = d.member?.frat_name === 'Big Brother Cool Breeze';
+      const admin = d.member?.frat_name === 'Big Brother Wildwon';
       setIsAdmin(admin);
       load(admin);
     });
@@ -186,7 +186,7 @@ export default function GrievancesPage() {
                               <div className="cn-card-description">{item.description}</div>
                               {item.admin_notes&&(
                                 <div className="cn-admin-response">
-                                  <div className="cn-admin-response-lbl">Response from Cool Breeze</div>
+                                  <div className="cn-admin-response-lbl">Response from Big Brother Wildwon</div>
                                   <div className="cn-admin-response-text">{item.admin_notes}</div>
                                 </div>
                               )}
@@ -216,7 +216,7 @@ export default function GrievancesPage() {
         <div className="dash-page-header">
           <div>
             <div style={{fontFamily:'var(--cinzel)',fontSize:'.54rem',letterSpacing:'4px',color:'rgba(198,147,10,.45)',textTransform:'uppercase',marginBottom:'.25rem'}}>
-              Admin View · Cool Breeze
+              Admin View · Big Brother Wildwon
             </div>
             <div className="dash-page-title">The Crow's Nest</div>
           </div>

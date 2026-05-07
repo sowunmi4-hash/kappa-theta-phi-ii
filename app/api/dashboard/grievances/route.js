@@ -7,7 +7,7 @@ const C = process.env.SESSION_COOKIE_NAME || 'ktf_session';
 const h  = (x={}) => ({ apikey: K, Authorization: `Bearer ${K}`, 'Accept-Profile': 'members', ...x });
 const ch = (x={}) => h({ 'Content-Type': 'application/json', 'Content-Profile': 'members', ...x });
 
-const IS_ADMIN = (m) => m?.frat_name === 'Big Brother Cool Breeze';
+const IS_ADMIN = (m) => m?.frat_name === 'Big Brother Wildwon';
 
 async function getMember() {
   const token = (await cookies()).get(C)?.value;
