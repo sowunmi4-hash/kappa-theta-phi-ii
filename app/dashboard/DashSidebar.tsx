@@ -36,7 +36,7 @@ export default function DashSidebar({ member, profile, unread = 0 }: Props) {
   const slug     = member?.frat_name?.toLowerCase().replace(/\s+/g, '-').replace('big-brother-', '') || '';
   const portrait = profile?.portrait_url || `/brothers/${slug}.png`;
 
-  const canSeeDuesReport = member?.fraction === 'Ishi No Fraction' || member?.frat_name === 'Big Brother Substance';
+  const canSeeDuesReport = member?.fraction === 'Ishi No Fraction' || member?.frat_name === 'Big Brother Substance' || member?.frat_name === 'Cool Breeze';
   const canSeeSSPReport  = member?.fraction === 'Ishi No Fraction' || member?.role === 'Head Founder' || member?.role === 'Co-Founder';
 
   function openPanel()  { clearTimeout(leaveTimer.current); setOpen(true); }
