@@ -187,6 +187,13 @@ export default function DashSidebar({ member, profile, unread = 0 }: Props) {
 
             <div className="dash-glass-divider" />
 
+            <a href="/dashboard/grievances" className={`dash-glass-item${pathname.startsWith('/dashboard/grievances') ? ' active' : ''}`}>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M12 2L8 8H3l4 5-2 7 7-3 7 3-2-7 4-5h-5z"/></svg>
+              The Crow's Nest
+            </a>
+
+            <div className="dash-glass-divider" />
+
             {canSeeDuesReport && (
               <a href="/dashboard/dues-report" className={`dash-glass-item${pathname.startsWith('/dashboard/dues-report') ? ' active' : ''}`}>
                 {REPORT_ICON}
