@@ -1,0 +1,71 @@
+/* ── HISTORY PAGE ── ledger/record feel ── */
+.hy-tabs { display: flex; border-bottom: 1px solid var(--border); }
+.hy-tab {
+  font-family: var(--cinzel); font-size: .68rem; letter-spacing: 3px;
+  padding: .85rem 1.6rem; border: none; background: none;
+  color: var(--bone-faint); cursor: pointer;
+  border-bottom: 2px solid transparent; transition: all .15s; text-transform: uppercase;
+}
+.hy-tab:hover { color: var(--bone-dim); }
+.hy-tab.active { color: var(--gold); border-bottom-color: var(--gold); }
+
+.hy-wrap { padding: 1.4rem 2rem 3rem; display: flex; flex-direction: column; gap: 1px; }
+
+/* Column header */
+.hy-cols {
+  display: grid; grid-template-columns: 18px 1fr 90px 80px 90px;
+  gap: .8rem; padding: .55rem 1.2rem;
+  background: rgba(4,6,15,.6); border: 1px solid var(--border);
+  border-bottom: none;
+}
+.hy-col-label {
+  font-family: var(--cinzel); font-size: .55rem; letter-spacing: 3px;
+  color: rgba(198,147,10,.35); text-transform: uppercase;
+}
+
+/* Row */
+.hy-row {
+  display: grid; grid-template-columns: 18px 1fr 90px 80px 90px;
+  gap: .8rem; align-items: center;
+  padding: .9rem 1.2rem;
+  background: rgba(7,11,20,.75); border: 1px solid var(--border);
+  border-top: none; transition: background .15s;
+}
+.hy-row:hover { background: rgba(198,147,10,.03); }
+.hy-row-name  { font-family: var(--cinzel); font-size: .68rem; letter-spacing: 1px; color: var(--bone-dim); }
+.hy-row-sub   { font-family: var(--cinzel); font-size: .56rem; letter-spacing: 1px; color: var(--bone-faint); margin-top: 2px; }
+.hy-row-time  { font-family: var(--cinzel); font-size: .58rem; letter-spacing: 1px; color: var(--bone-faint); }
+.hy-row-pts   { font-family: var(--display); font-size: 1.05rem; letter-spacing: 1px; }
+.hy-row-pts.earn  { color: var(--green); }
+.hy-row-pts.spend { color: #e05070; }
+.hy-row-pts.neutral { color: var(--gold-b); }
+
+/* Status dot */
+.hy-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+.hy-dot.pending  { background: var(--gold); }
+.hy-dot.approved { background: var(--green); }
+.hy-dot.denied   { background: #e05070; }
+.hy-dot.earn     { background: var(--green); }
+.hy-dot.spend    { background: #e05070; }
+
+/* Status badge */
+.hy-badge {
+  font-family: var(--cinzel); font-size: .52rem; letter-spacing: 1px;
+  padding: 2px 8px; border-radius: 2px; border: 1px solid; text-transform: uppercase;
+  display: inline-block;
+}
+.hy-badge.pending  { background: rgba(198,147,10,.08); border-color: rgba(198,147,10,.28); color: var(--gold-b); }
+.hy-badge.approved { background: var(--green-dim); border-color: var(--green-border); color: var(--green); }
+.hy-badge.denied   { background: rgba(224,80,112,.07); border-color: rgba(224,80,112,.22); color: #e05070; }
+
+/* Denial reason */
+.hy-deny-reason {
+  grid-column: 2; font-family: var(--cinzel); font-size: .58rem;
+  letter-spacing: 1px; color: #e05070; margin-top: 3px;
+}
+
+.hy-empty {
+  padding: 3rem 2rem; text-align: center;
+  font-family: var(--cinzel); font-size: .7rem; letter-spacing: 2px; color: var(--bone-faint);
+  background: rgba(7,11,20,.75); border: 1px solid var(--border);
+}

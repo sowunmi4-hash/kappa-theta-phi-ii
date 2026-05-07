@@ -1,0 +1,95 @@
+/* ── LOG ACTIVITY PAGE ── */
+.sa-wrap { padding: 1.8rem 2rem 3rem; display: flex; flex-direction: column; gap: 1.6rem; max-width: 720px; }
+
+/* Category group */
+.sa-group-label {
+  font-family: var(--cinzel); font-size: .7rem; letter-spacing: 6px;
+  color: rgba(198,147,10,.4); text-transform: uppercase;
+  padding-bottom: .5rem; border-bottom: 1px solid rgba(198,147,10,.1);
+  margin-bottom: .5rem;
+}
+
+/* Activity item */
+.sa-item {
+  display: flex; align-items: center; gap: 1rem;
+  padding: 1rem 1.2rem;
+  background: rgba(7,11,20,.8); border: 1px solid var(--border);
+  cursor: pointer; transition: all .15s; position: relative;
+  margin-bottom: 2px;
+}
+.sa-item:hover { border-color: rgba(198,147,10,.28); background: rgba(198,147,10,.04); }
+.sa-item.selected {
+  border-color: var(--gold);
+  background: rgba(198,147,10,.09);
+}
+.sa-item.selected::before {
+  content: ''; position: absolute; left: 0; top: 0; bottom: 0;
+  width: 3px; background: linear-gradient(to bottom, var(--gold-b), var(--gold));
+}
+.sa-item.pending { opacity: .45; cursor: not-allowed; }
+.sa-item-name {
+  flex: 1; font-family: var(--cinzel); font-size: .72rem;
+  letter-spacing: 2px; color: var(--bone-dim); text-transform: uppercase;
+}
+.sa-item.selected .sa-item-name { color: var(--bone); }
+.sa-item-pts {
+  font-family: var(--display); font-size: 1.15rem; letter-spacing: 1px;
+  color: var(--bone-faint); flex-shrink: 0;
+}
+.sa-item.selected .sa-item-pts { color: var(--gold-b); }
+.sa-item-pending-label {
+  font-family: var(--cinzel); font-size: .58rem; letter-spacing: 1px;
+  color: var(--gold); margin-top: 2px;
+}
+
+/* Check circle */
+.sa-check {
+  width: 22px; height: 22px; border-radius: 50%;
+  background: var(--gold); display: flex; align-items: center; justify-content: center;
+  font-size: .65rem; color: var(--deep); font-weight: 700; flex-shrink: 0;
+}
+
+/* Sticky submit bar */
+.sa-submit-bar {
+  position: sticky; bottom: 1.5rem;
+  display: flex; gap: .7rem; justify-content: center;
+}
+.sa-submit-btn {
+  font-family: var(--cinzel); font-size: .72rem; letter-spacing: 3px;
+  padding: .7rem 2.5rem; border: 1px solid var(--gold);
+  color: var(--deep); background: var(--gold); cursor: pointer;
+  border-radius: 2px; transition: all .15s; text-transform: uppercase;
+}
+.sa-submit-btn:hover { background: var(--gold-b); }
+.sa-submit-btn:disabled { opacity: .45; cursor: not-allowed; }
+.sa-cancel-btn {
+  font-family: var(--cinzel); font-size: .72rem; letter-spacing: 3px;
+  padding: .7rem 1.4rem; border: 1px solid rgba(198,147,10,.3);
+  color: var(--gold); background: rgba(198,147,10,.08); cursor: pointer;
+  border-radius: 2px; transition: all .15s; text-transform: uppercase;
+}
+.sa-cancel-btn:hover { background: rgba(198,147,10,.16); }
+
+/* Success state */
+.sa-success {
+  padding: 3.5rem; text-align: center; background: rgba(8,13,24,.9);
+  border: 1px solid rgba(74,222,128,.2); position: relative;
+}
+.sa-success::before { content:''; position:absolute; inset:5px; border:1px solid rgba(74,222,128,.07); pointer-events:none; }
+.sa-success-icon { font-size: 2.8rem; margin-bottom: 1.2rem; color: var(--green); }
+.sa-success-title { font-family: var(--cinzel); font-size: .85rem; letter-spacing: 5px; color: var(--green); margin-bottom: .5rem; text-transform: uppercase; }
+.sa-success-sub { font-family: var(--cinzel); font-size: .65rem; letter-spacing: 1px; color: var(--bone-faint); margin-bottom: 1.8rem; }
+
+/* Error */
+.sa-error {
+  padding: .75rem 1.1rem; background: rgba(224,80,112,.07);
+  border: 1px solid rgba(224,80,112,.25); border-radius: 2px;
+  font-family: var(--cinzel); font-size: .65rem; letter-spacing: 1px; color: #e05070;
+}
+
+/* Back nav */
+.sa-back {
+  font-family: var(--cinzel); font-size: .65rem; letter-spacing: 2px;
+  color: var(--bone-faint); text-decoration: none; transition: color .15s;
+}
+.sa-back:hover { color: var(--gold); }
