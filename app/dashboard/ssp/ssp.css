@@ -1,242 +1,103 @@
-/* ─── SSP PAGE ─── */
-.ssp-wrap { padding: 2rem 2.5rem 4rem; }
-
-.ssp-header { margin-bottom: 2rem; padding-bottom: 1.5rem; border-bottom: 1px solid var(--border); }
-.ssp-page-title { font-size: 1.4rem; font-weight: 800; color: var(--bone); letter-spacing: 2px; font-family: 'Noto Serif JP', serif; }
-.ssp-page-sub { font-size: 0.82rem; color: var(--muted); margin-top: 5px; line-height: 1.6; }
+/* ── SSP PAGE — inherits dash.css design system ── */
+.ssp-hero {
+  background: linear-gradient(160deg, rgba(8,12,26,.96), rgba(6,10,18,.98));
+  border-bottom: 1px solid var(--border); position: relative;
+  padding: 1rem 1.5rem 1.1rem;
+}
+.ssp-hero::after { content: ''; position: absolute; top: -1px; left: 1.5rem; right: 1.5rem; height: 1.5px; background: linear-gradient(90deg, transparent, var(--gold), transparent); }
+.ssp-hero::before { content: ''; position: absolute; inset: 6px; border: 1px solid rgba(198,147,10,.07); pointer-events: none; }
+.ssp-hero-title { font-family: var(--display); font-weight: 700; font-size: 1.3rem; letter-spacing: 5px; color: var(--bone); display: flex; align-items: center; gap: 14px; }
+.ssp-hero-title::after { content: ''; flex: 1; height: 1px; background: linear-gradient(90deg, var(--gold), transparent); }
+.ssp-hero-sub { font-family: var(--cinzel); font-size: .42rem; letter-spacing: 3px; color: var(--bone-faint); margin-top: 4px; text-transform: uppercase; }
 
 /* Layout */
-.ssp-layout { display: grid; grid-template-columns: 220px 1fr; gap: 1.5rem; align-items: start; }
+.ssp-wrap { padding: 1.3rem 1.5rem 3rem; }
+.ssp-layout { display: grid; grid-template-columns: 220px 1fr; gap: 1px; background: var(--border); }
 
-/* Session list */
-.ssp-sessions { display: flex; flex-direction: column; gap: 3px; }
-.ssp-sessions-label { font-size: 0.58rem; letter-spacing: 4px; color: var(--gold-dim); text-transform: uppercase; margin-bottom: 0.6rem; }
-.ssp-session-item {
-  background: var(--surface); border: 1px solid var(--border);
-  border-radius: 8px; padding: 0.9rem 1rem; cursor: pointer;
-  transition: all 0.15s;
-}
-.ssp-session-item:hover { border-color: rgba(198,147,10,0.25); background: var(--raised); }
-.ssp-session-item.active { border-color: rgba(198,147,10,0.4); background: rgba(198,147,10,0.05); }
-.ssp-session-item.cleared { border-color: rgba(74,222,128,0.25); }
-.ssp-session-item.cleared.active { border-color: rgba(74,222,128,0.4); }
-.ssp-session-offense { font-size: 0.72rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; }
-.ssp-session-status { font-size: 0.75rem; color: var(--bone); margin-top: 2px; text-transform: capitalize; }
-.ssp-session-offer { font-size: 0.62rem; color: var(--muted); margin-top: 1px; }
-.ssp-session-bar { height: 3px; background: var(--raised); border-radius: 2px; margin-top: 8px; overflow: hidden; }
-.ssp-session-bar-fill { height: 100%; border-radius: 2px; transition: width 0.5s; }
-.ssp-session-pct { font-size: 0.62rem; color: var(--muted); margin-top: 3px; text-align: right; }
+/* Session/lesson list */
+.ssp-sessions { background: rgba(4,6,15,.5); padding: 1rem .9rem; display: flex; flex-direction: column; gap: .4rem; }
+.ssp-sessions-label { font-family: var(--cinzel); font-size: .4rem; letter-spacing: 4px; color: rgba(198,147,10,.5); text-transform: uppercase; margin-bottom: .5rem; }
+.ssp-session-item { background: rgba(8,13,24,.88); border: 1px solid var(--border); padding: .65rem .8rem; cursor: pointer; transition: all .15s; display: flex; flex-direction: column; gap: .25rem; position: relative; }
+.ssp-session-item:hover { border-color: var(--border-h); }
+.ssp-session-item.active { border-color: rgba(198,147,10,.38); background: rgba(12,20,36,.95); }
+.ssp-session-item.active::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 2px; background: linear-gradient(to bottom, var(--gold-b), var(--gold)); }
+.ssp-session-item.done { border-color: rgba(74,222,128,.2); background: rgba(74,222,128,.03); opacity: .65; }
+.ssp-session-num { font-family: var(--cinzel); font-size: .36rem; letter-spacing: 2px; color: rgba(198,147,10,.5); }
+.ssp-session-item.done .ssp-session-num { color: var(--green); }
+.ssp-session-title { font-family: var(--display); font-size: .82rem; letter-spacing: 1px; color: var(--bone-dim); line-height: 1.3; }
+.ssp-session-item.active .ssp-session-title { color: var(--bone); }
 
-/* Status banners */
-.ssp-banner {
-  border-radius: 8px; padding: 1rem 1.2rem; margin-bottom: 1.5rem; border: 1px solid;
-}
-.ssp-banner.enrolled   { background: rgba(198,147,10,0.07); border-color: rgba(198,147,10,0.25); }
-.ssp-banner.cleared    { background: rgba(74,222,128,0.07); border-color: rgba(74,222,128,0.25); }
-.ssp-banner.opted-out  { background: rgba(178,34,52,0.07);  border-color: rgba(178,34,52,0.25); }
-.ssp-banner.offered    { background: rgba(198,147,10,0.05); border-color: rgba(198,147,10,0.15); }
-.ssp-banner-title { font-size: 0.88rem; font-weight: 700; color: var(--bone); margin-bottom: 4px; }
-.ssp-banner-sub   { font-size: 0.78rem; color: var(--muted); line-height: 1.6; }
+/* Detail panel */
+.ssp-detail { background: var(--surface); padding: 1.1rem 1.3rem; display: flex; flex-direction: column; gap: .85rem; }
+.ssp-detail-hero { background: linear-gradient(160deg, rgba(12,20,38,.96), rgba(6,10,18,.98)); border: 1px solid rgba(198,147,10,.32); padding: 1.1rem 1.2rem; position: relative; }
+.ssp-detail-hero::before { content: ''; position: absolute; inset: 6px; border: 1px solid rgba(198,147,10,.07); pointer-events: none; }
+.ssp-detail-hero::after { content: ''; position: absolute; top: -1px; left: 1.5rem; right: 1.5rem; height: 1.5px; background: linear-gradient(90deg, transparent, var(--gold), transparent); }
+.ssp-detail-num { font-family: var(--cinzel); font-size: .4rem; letter-spacing: 4px; color: rgba(198,147,10,.5); text-transform: uppercase; margin-bottom: .35rem; }
+.ssp-detail-title { font-family: var(--display); font-weight: 700; font-size: 1.2rem; letter-spacing: 3px; color: var(--bone); line-height: 1.15; }
+.ssp-detail-desc { font-size: .85rem; color: var(--bone-dim); line-height: 1.75; border-left: 2px solid rgba(198,147,10,.25); padding: .4rem .8rem; background: rgba(198,147,10,.02); margin-top: .55rem; }
 
-/* Progress bar */
-.ssp-progress-wrap { margin-bottom: 1.5rem; }
-.ssp-progress-bar { height: 6px; background: var(--raised); border-radius: 3px; overflow: hidden; }
-.ssp-progress-fill { height: 100%; border-radius: 3px; transition: width 0.6s cubic-bezier(0.22,1,0.36,1); }
+/* Progress ring */
+.ssp-ring-wrap { display: flex; flex-direction: column; align-items: center; gap: .6rem; text-align: center; padding: .5rem; }
+.ssp-ring { width: 80px; height: 80px; border-radius: 50%; position: relative; display: flex; align-items: center; justify-content: center; flex-direction: column; }
+.ssp-ring svg.track { position: absolute; inset: 0; width: 100%; height: 100%; transform: rotate(-90deg); }
+.ssp-ring-num { font-family: var(--display); font-size: 1.4rem; letter-spacing: 1px; color: var(--gold-b); line-height: 1; position: relative; z-index: 1; }
+.ssp-ring-of { font-family: var(--cinzel); font-size: .34rem; letter-spacing: 2px; color: var(--bone-faint); position: relative; z-index: 1; }
+.ssp-ring-title { font-family: var(--display); font-size: .95rem; letter-spacing: 2px; color: var(--gold-b); }
+.ssp-ring-sub { font-family: var(--cinzel); font-size: .38rem; letter-spacing: 2px; color: var(--bone-faint); }
 
-/* Violation reference */
-.ssp-violation-ref {
-  background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
-  padding: 1rem 1.2rem; margin-bottom: 1.5rem;
-}
-.ssp-violation-ref-label { font-size: 0.6rem; letter-spacing: 3px; color: var(--muted); text-transform: uppercase; margin-bottom: 6px; }
-.ssp-violation-ref-color { font-size: 0.78rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 6px; }
-.ssp-violation-ref-items { display: flex; flex-direction: column; gap: 3px; }
-.ssp-violation-ref-item { font-size: 0.8rem; color: rgba(240,232,208,0.65); padding: 3px 0; border-bottom: 1px solid rgba(255,255,255,0.04); }
-.ssp-violation-ref-item:last-child { border-bottom: none; }
+/* Lesson cards (brother view) */
+.ssp-brother-card { background: rgba(8,13,24,.88); border: 1px solid var(--border); padding: 1rem 1.1rem; margin-bottom: 3px; position: relative; transition: border-color .2s; }
+.ssp-brother-card:hover { border-color: var(--border-h); }
+.ssp-brother-card::before { content: ''; position: absolute; inset: 5px; border: 1px solid rgba(198,147,10,.055); pointer-events: none; }
+.ssp-brother-offer { font-family: var(--cinzel); font-size: .38rem; letter-spacing: 3px; color: rgba(198,147,10,.5); text-transform: uppercase; margin-bottom: .4rem; }
 
-/* Completion standard */
-.ssp-standard {
-  background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
-  padding: 1.1rem 1.2rem; margin-bottom: 2rem;
-}
-.ssp-standard-title { font-size: 0.65rem; letter-spacing: 4px; color: var(--gold-dim); text-transform: uppercase; margin-bottom: 0.8rem; }
-.ssp-standard-items { display: flex; flex-direction: column; gap: 6px; margin-bottom: 0.8rem; }
-.ssp-standard-item {
-  display: flex; align-items: center; gap: 10px;
-  font-size: 0.82rem; color: rgba(240,232,208,0.6);
-}
-.ssp-standard-item.done { color: #4ade80; }
-.ssp-check {
-  width: 22px; height: 22px; border-radius: 50%; flex-shrink: 0;
-  border: 1px solid var(--border); background: var(--raised);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 0.65rem; font-weight: 700; color: var(--muted);
-}
-.ssp-standard-item.done .ssp-check { border-color: rgba(74,222,128,0.4); background: rgba(74,222,128,0.1); color: #4ade80; }
-.ssp-standard-note { font-size: 0.7rem; color: rgba(240,232,208,0.25); line-height: 1.6; border-top: 1px solid var(--border); padding-top: 0.7rem; }
-
-/* Lessons */
-.ssp-lessons-title { font-size: 0.65rem; letter-spacing: 4px; color: var(--gold-dim); text-transform: uppercase; margin-bottom: 0.8rem; }
-.ssp-lessons { display: flex; flex-direction: column; gap: 4px; }
-
-.ssp-lesson-card {
-  background: var(--surface); border: 1px solid var(--border);
-  border-radius: 8px; padding: 1.1rem 1.2rem;
-  transition: all 0.2s; animation: fadeUp 0.3s both;
-}
-.ssp-lesson-card:nth-child(1) { animation-delay: 0.05s; }
-.ssp-lesson-card:nth-child(2) { animation-delay: 0.1s; }
-.ssp-lesson-card:nth-child(3) { animation-delay: 0.15s; }
-.ssp-lesson-card:nth-child(4) { animation-delay: 0.2s; }
-.ssp-lesson-card:nth-child(5) { animation-delay: 0.25s; }
-.ssp-lesson-card:nth-child(6) { animation-delay: 0.3s; }
-.ssp-lesson-card:nth-child(7) { animation-delay: 0.35s; }
-.ssp-lesson-card.done { border-color: rgba(74,222,128,0.2); background: rgba(74,222,128,0.03); }
-
-.ssp-lesson-header { display: flex; align-items: center; gap: 10px; margin-bottom: 0.7rem; }
-.ssp-lesson-num {
-  width: 28px; height: 28px; border-radius: 50%; flex-shrink: 0;
-  border: 1px solid var(--border); background: var(--raised);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 0.72rem; font-weight: 800; color: var(--muted);
-}
-.ssp-lesson-card.done .ssp-lesson-num { border-color: rgba(74,222,128,0.4); background: rgba(74,222,128,0.1); color: #4ade80; }
-.ssp-lesson-title-text { flex: 1; font-size: 0.88rem; font-weight: 700; color: var(--bone); }
-.ssp-lesson-card.done .ssp-lesson-title-text { color: rgba(240,232,208,0.5); }
-.ssp-lesson-tag { font-size: 0.58rem; letter-spacing: 1px; text-transform: uppercase; background: rgba(74,222,128,0.1); color: #4ade80; border: 1px solid rgba(74,222,128,0.2); padding: 2px 7px; border-radius: 3px; }
-
-.ssp-lesson-points { padding-left: 1.2rem; display: flex; flex-direction: column; gap: 5px; }
-.ssp-lesson-points li { font-size: 0.82rem; color: rgba(240,232,208,0.6); line-height: 1.6; }
-.ssp-lesson-card.done .ssp-lesson-points li { color: rgba(240,232,208,0.35); }
-
-@media (max-width: 800px) {
-  .ssp-layout { grid-template-columns: 1fr; }
-  .ssp-wrap { padding: 1.5rem 1rem 3rem; }
-}
-
-/* ─── HERO ─── */
-.ssp-hero { padding: 2rem 2rem 1rem; border-bottom: 1px solid var(--border); }
-.ssp-hero-title { font-family: 'Bebas Neue', cursive; font-size: 2rem; letter-spacing: 4px; color: var(--bone); }
-.ssp-hero-sub { font-size: 0.72rem; letter-spacing: 2px; color: var(--muted); text-transform: uppercase; margin-top: 4px; }
-
-/* ─── BROTHER CARD ─── */
-.ssp-brother-card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 1.5rem; margin-bottom: 1.2rem; }
-.ssp-brother-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.2rem; }
-.ssp-brother-title { font-weight: 700; color: var(--bone); font-size: 1rem; margin-bottom: 4px; }
-.ssp-brother-offense { font-size: 0.65rem; letter-spacing: 2px; font-weight: 700; }
-.ssp-status-badge { font-size: 0.65rem; letter-spacing: 2px; padding: 3px 10px; border-radius: 20px; font-weight: 700; text-transform: uppercase; border: 1px solid; }
-.ssp-status-badge.cleared { color: #4ade80; border-color: rgba(74,222,128,0.3); background: rgba(74,222,128,0.08); }
-.ssp-status-badge.enrolled { color: var(--gold); border-color: rgba(198,147,10,0.3); background: rgba(198,147,10,0.08); }
-.ssp-status-badge.in_progress { color: #60a5fa; border-color: rgba(96,165,250,0.3); background: rgba(96,165,250,0.08); }
-.ssp-brother-progress { display: flex; align-items: center; gap: 10px; margin-bottom: 1.2rem; }
-.ssp-brother-bar { flex: 1; height: 4px; background: var(--raised); border-radius: 2px; overflow: hidden; }
-.ssp-brother-bar-fill { height: 100%; border-radius: 2px; transition: width 0.4s; }
-.ssp-brother-pct { font-size: 0.75rem; color: var(--gold); font-family: 'Space Mono', monospace; min-width: 36px; }
-.ssp-brother-steps { display: flex; flex-direction: column; gap: 8px; margin-bottom: 1.2rem; }
-.ssp-brother-step { display: flex; align-items: center; gap: 10px; font-size: 0.82rem; color: var(--muted); }
-.ssp-brother-step.done { color: var(--bone); }
-.ssp-brother-step-dot { width: 20px; height: 20px; border-radius: 50%; border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 0.65rem; flex-shrink: 0; }
-.ssp-brother-step.done .ssp-brother-step-dot { background: rgba(74,222,128,0.15); border-color: rgba(74,222,128,0.4); color: #4ade80; }
-.ssp-brother-notice { display: flex; gap: 10px; align-items: flex-start; padding: 0.8rem; background: rgba(198,147,10,0.06); border: 1px solid rgba(198,147,10,0.15); border-radius: 8px; font-size: 0.75rem; color: rgba(240,232,208,0.5); line-height: 1.5; }
-
-/* ─── FACILITATOR LAYOUT ─── */
-.ssp-layout { display: grid; grid-template-columns: 220px 1fr; gap: 1.5rem; padding: 1.5rem; }
-@media(max-width: 768px) { .ssp-layout { grid-template-columns: 1fr; } }
-
-/* ─── ROSTER ─── */
-.ssp-roster-label { font-size: 0.6rem; letter-spacing: 3px; color: var(--muted); text-transform: uppercase; margin-bottom: 0.8rem; }
-.ssp-roster-item { padding: 0.8rem; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; margin-bottom: 8px; cursor: pointer; transition: border-color 0.15s; }
-.ssp-roster-item:hover, .ssp-roster-item.active { border-color: var(--gold); }
-.ssp-roster-item.cleared { opacity: 0.6; }
-.ssp-roster-name { font-weight: 700; font-size: 0.85rem; color: var(--bone); margin-bottom: 4px; }
-.ssp-roster-meta { display: flex; justify-content: space-between; font-size: 0.65rem; margin-bottom: 6px; }
-.ssp-roster-bar { height: 3px; background: var(--raised); border-radius: 2px; overflow: hidden; }
-.ssp-roster-bar-fill { height: 100%; border-radius: 2px; }
-
-/* ─── PANEL ─── */
-.ssp-panel { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 1.5rem; }
-.ssp-panel-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 1px solid var(--border); }
-.ssp-panel-name { font-family: 'Bebas Neue', cursive; font-size: 1.6rem; letter-spacing: 3px; color: var(--bone); }
-.ssp-panel-sub { font-size: 0.72rem; color: var(--muted); margin-top: 2px; }
-.ssp-clear-btn { background: rgba(74,222,128,0.1); border: 1px solid rgba(74,222,128,0.3); color: #4ade80; border-radius: 8px; padding: 8px 16px; font-family: 'Rajdhani', sans-serif; font-size: 0.82rem; font-weight: 700; cursor: pointer; letter-spacing: 1px; white-space: nowrap; }
-.ssp-clear-btn:hover { background: rgba(74,222,128,0.2); }
-
-/* ─── LESSON CARDS ─── */
-.ssp-lessons { display: flex; flex-direction: column; gap: 10px; }
-.ssp-lesson-card { background: var(--raised); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; transition: border-color 0.2s; }
-.ssp-lesson-card.done { opacity: 0.75; }
-.ssp-lesson-card.open { border-color: var(--gold); }
-.ssp-lesson-header { display: flex; align-items: center; gap: 12px; padding: 0.9rem 1rem; cursor: pointer; }
-.ssp-lesson-num { width: 28px; height: 28px; border-radius: 50%; background: rgba(198,147,10,0.1); border: 1px solid rgba(198,147,10,0.25); display: flex; align-items: center; justify-content: center; font-size: 0.75rem; color: var(--gold); font-weight: 700; flex-shrink: 0; }
-.ssp-lesson-card.done .ssp-lesson-num { background: rgba(74,222,128,0.1); border-color: rgba(74,222,128,0.3); color: #4ade80; }
+/* Lesson step items */
+.ssp-lesson-card { background: rgba(8,13,24,.85); border: 1px solid var(--border); margin-bottom: 2px; transition: border-color .18s; }
+.ssp-lesson-card.done { border-color: rgba(74,222,128,.2); background: rgba(74,222,128,.025); }
+.ssp-lesson-card.open { border-color: rgba(198,147,10,.35); }
+.ssp-lesson-header { display: flex; align-items: center; gap: .7rem; padding: .65rem .8rem; cursor: pointer; }
+.ssp-lesson-num { width: 22px; height: 22px; border-radius: 50%; border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-family: var(--cinzel); font-size: .38rem; letter-spacing: 1px; color: var(--bone-faint); flex-shrink: 0; transition: all .18s; }
+.ssp-lesson-card.done .ssp-lesson-num { background: var(--green-dim); border-color: var(--green-border); color: var(--green); }
+.ssp-lesson-card.open .ssp-lesson-num { background: rgba(198,147,10,.15); border-color: rgba(198,147,10,.4); color: var(--gold-b); }
 .ssp-lesson-info { flex: 1; }
-.ssp-lesson-title { font-weight: 700; font-size: 0.88rem; color: var(--bone); }
-.ssp-lesson-log { font-size: 0.7rem; color: var(--muted); margin-top: 2px; }
-.ssp-lesson-note { font-size: 0.7rem; color: rgba(240,232,208,0.35); margin-top: 2px; font-style: italic; }
-.ssp-lesson-conduct-btn { background: rgba(198,147,10,0.1); border: 1px solid rgba(198,147,10,0.3); color: var(--gold); border-radius: 6px; padding: 5px 12px; font-family: 'Rajdhani', sans-serif; font-size: 0.75rem; font-weight: 700; cursor: pointer; letter-spacing: 1px; white-space: nowrap; }
-.ssp-lesson-conduct-btn:hover { background: rgba(198,147,10,0.2); }
+.ssp-lesson-title { font-family: var(--cinzel); font-size: .42rem; letter-spacing: 1px; color: var(--bone-dim); }
+.ssp-lesson-card.open .ssp-lesson-title { color: var(--bone); }
+.ssp-lesson-body { padding: .65rem .8rem; border-top: 1px solid var(--border); background: rgba(4,6,15,.5); display: flex; flex-direction: column; gap: .5rem; }
+.ssp-lesson-desc { font-size: .84rem; color: var(--bone-dim); line-height: 1.7; }
+.ssp-lesson-point { display: flex; align-items: flex-start; gap: .5rem; font-size: .82rem; color: var(--bone-dim); line-height: 1.5; }
+.ssp-lesson-point::before { content: '◆'; font-size: .35rem; color: rgba(198,147,10,.4); margin-top: .3rem; flex-shrink: 0; }
 
-/* ─── LESSON BODY ─── */
-.ssp-lesson-body { padding: 0 1rem 1rem; border-top: 1px solid var(--border); }
-.ssp-lesson-topics { margin: 1rem 0; padding: 0.8rem; background: var(--surface); border-radius: 8px; }
-.ssp-lesson-topics-label { font-size: 0.6rem; letter-spacing: 3px; color: var(--muted); text-transform: uppercase; margin-bottom: 0.5rem; }
-.ssp-lesson-topic-item { font-size: 0.78rem; color: rgba(240,232,208,0.6); padding: 2px 0; }
-.ssp-lesson-questions { margin: 1rem 0; padding: 1rem; background: rgba(198,147,10,0.04); border: 1px solid rgba(198,147,10,0.15); border-radius: 8px; }
-.ssp-lesson-questions-label { font-size: 0.6rem; letter-spacing: 2px; color: rgba(198,147,10,0.7); text-transform: uppercase; margin-bottom: 0.8rem; font-weight: 700; }
-.ssp-lesson-q { display: flex; gap: 10px; align-items: flex-start; margin-bottom: 0.7rem; font-size: 0.82rem; color: var(--bone); line-height: 1.5; }
-.ssp-lesson-q:last-child { margin-bottom: 0; }
-.ssp-lesson-q-num { min-width: 20px; height: 20px; background: rgba(198,147,10,0.15); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.65rem; color: var(--gold); font-weight: 700; flex-shrink: 0; margin-top: 1px; }
+/* Facilitator view - lesson tracker rows */
+.ssp-lt-row { display: flex; align-items: center; gap: .7rem; padding: .42rem .6rem; border: 1px solid var(--border); background: rgba(7,11,20,.75); cursor: pointer; transition: all .15s; }
+.ssp-lt-row:hover { border-color: var(--border-h); }
+.ssp-lt-row.done { background: rgba(74,222,128,.04); border-color: rgba(74,222,128,.18); }
+.ssp-lt-row.done::before { display: none; }
+.ssp-lt-check { width: 18px; height: 18px; border-radius: 3px; border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: .55rem; flex-shrink: 0; transition: all .15s; }
+.ssp-lt-row.done .ssp-lt-check { background: var(--green-dim); border-color: var(--green-border); color: var(--green); }
+.ssp-lt-title { font-family: var(--cinzel); font-size: .38rem; letter-spacing: 1px; color: var(--bone-faint); flex: 1; line-height: 1.4; }
+.ssp-lt-row.done .ssp-lt-title { color: var(--bone-dim); }
 
-/* ─── CONDUCT FORM ─── */
-.ssp-conduct-form { margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--border); }
-.ssp-conduct-label { font-size: 0.6rem; letter-spacing: 3px; color: var(--muted); text-transform: uppercase; margin-bottom: 0.6rem; }
-.ssp-conduct-pass-row { display: flex; gap: 8px; margin-bottom: 0.8rem; }
-.ssp-conduct-pass, .ssp-conduct-fail { flex: 1; padding: 6px; border-radius: 6px; font-family: 'Rajdhani', sans-serif; font-size: 0.8rem; font-weight: 700; cursor: pointer; border: 1px solid var(--border); background: var(--surface); color: var(--muted); }
-.ssp-conduct-pass.active { background: rgba(74,222,128,0.1); border-color: rgba(74,222,128,0.3); color: #4ade80; }
-.ssp-conduct-fail.active { background: rgba(224,80,112,0.1); border-color: rgba(224,80,112,0.3); color: #e05070; }
-.ssp-conduct-notes { width: 100%; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 0.6rem 0.8rem; color: var(--bone); font-family: 'Rajdhani', sans-serif; font-size: 0.85rem; resize: vertical; margin-bottom: 0.8rem; }
-.ssp-conduct-notes:focus { outline: none; border-color: var(--gold); }
-.ssp-conduct-notes::placeholder { color: var(--muted); }
-.ssp-conduct-submit { width: 100%; background: var(--gold); color: #000; border: none; border-radius: 8px; padding: 0.7rem; font-family: 'Bebas Neue', cursive; font-size: 1rem; letter-spacing: 2px; cursor: pointer; }
-.ssp-conduct-submit:disabled { opacity: 0.4; cursor: not-allowed; }
+/* Session log items */
+.ssp-log-item { padding: .5rem .65rem; border: 1px solid var(--border); background: rgba(7,11,20,.7); display: flex; flex-direction: column; gap: .2rem; position: relative; }
+.ssp-log-lesson { font-family: var(--cinzel); font-size: .38rem; letter-spacing: 2px; color: var(--gold); }
+.ssp-log-note { font-size: .78rem; color: var(--bone-faint); line-height: 1.5; }
+.ssp-log-date { font-family: var(--cinzel); font-size: .33rem; letter-spacing: 1px; color: rgba(198,147,10,.3); }
 
-/* ─── HISTORY ─── */
-.ssp-history { margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid var(--border); }
-.ssp-history-label { font-size: 0.6rem; letter-spacing: 3px; color: var(--muted); text-transform: uppercase; margin-bottom: 0.8rem; }
-.ssp-history-item { padding: 0.6rem 0; border-bottom: 1px solid var(--border); }
-.ssp-history-item:last-child { border-bottom: none; }
-.ssp-history-lesson { font-size: 0.82rem; color: var(--bone); font-weight: 600; }
-.ssp-history-meta { font-size: 0.7rem; color: var(--muted); margin-top: 2px; }
-.ssp-history-note { font-size: 0.7rem; color: rgba(240,232,208,0.35); font-style: italic; margin-top: 2px; }
+/* Status badges */
+.ssp-badge { font-family: var(--cinzel); font-size: .36rem; letter-spacing: 1px; padding: 2px 7px; border-radius: 2px; }
+.ssp-badge.enrolled { background: rgba(198,147,10,.1); border: 1px solid rgba(198,147,10,.28); color: var(--gold-b); }
+.ssp-badge.cleared  { background: var(--green-dim); border: 1px solid var(--green-border); color: var(--green); }
+.ssp-badge.offered  { background: rgba(107,131,184,.08); border: 1px solid rgba(107,131,184,.22); color: #6b83b8; }
+.ssp-badge.opted-out{ background: rgba(178,34,52,.07); border: 1px solid rgba(178,34,52,.22); color: var(--crimson); }
 
-/* ─── PANEL HEADER ENHANCEMENTS ─── */
-.ssp-panel-for-label {
-  font-size: 0.55rem;
-  letter-spacing: 3px;
-  text-transform: uppercase;
-  color: var(--gold);
-  opacity: 0.7;
-  margin-bottom: 2px;
-}
-
-/* ─── CONDUCT SESSION BROTHER BANNER ─── */
-.ssp-conduct-brother-banner {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  background: rgba(198,147,10,0.08);
-  border: 1px solid rgba(198,147,10,0.2);
-  border-radius: 8px;
-  padding: 0.6rem 0.9rem;
-  margin-bottom: 1rem;
-  font-size: 0.82rem;
-  color: var(--bone);
-}
-.ssp-conduct-brother-icon {
-  font-size: 1rem;
-  flex-shrink: 0;
-}
-.ssp-conduct-brother-banner strong {
-  color: var(--gold);
-  font-weight: 700;
-}
+/* Buttons */
+.ssp-btn { font-family: var(--cinzel); font-size: .4rem; letter-spacing: 3px; padding: .38rem 1rem; border-radius: 2px; cursor: pointer; border: 1px solid; background: none; transition: all .15s; }
+.ssp-btn-gold  { border-color: rgba(198,147,10,.32); color: var(--gold); background: rgba(198,147,10,.08); }
+.ssp-btn-gold:hover { background: rgba(198,147,10,.16); }
+.ssp-btn-solid { border-color: var(--gold); color: var(--deep); background: var(--gold); }
+.ssp-btn-solid:hover { background: var(--gold-b); }
+.ssp-btn-green { border-color: var(--green-border); color: var(--green); background: var(--green-dim); }
+.ssp-btn-green:hover { background: rgba(74,222,128,.18); }
+.ssp-btn-clear { width: 100%; text-align: center; border-color: var(--green-border); color: var(--green); background: var(--green-dim); font-family: var(--cinzel); font-size: .4rem; letter-spacing: 3px; padding: .42rem; border-radius: 2px; cursor: pointer; border: 1px solid; transition: all .15s; }
+.ssp-btn-clear:hover { background: rgba(74,222,128,.18); }
+.ssp-btn-clear:disabled { opacity: .35; cursor: not-allowed; }

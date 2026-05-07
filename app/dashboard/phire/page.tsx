@@ -45,7 +45,7 @@ export default function PhireHome() {
   }
 
   return (
-    <div className="dash-app phire-root">
+    <div className="dash-app">
       <DashSidebar member={member} profile={data?.profile} />
       <main className="dash-main">
         {/* Hero */}

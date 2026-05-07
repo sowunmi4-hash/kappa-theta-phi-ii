@@ -28,6 +28,15 @@
   --display:     'Cormorant SC', Georgia, serif;
   --cinzel:      'Cinzel', Georgia, serif;
   --body:        'Rajdhani', 'Arial Narrow', Arial, sans-serif;
+
+  /* ── Legacy variable aliases (for page-specific CSS files) ── */
+  --ink:      #04060f;
+  --muted:    rgba(240,232,208,.28);
+  --gold-dim: rgba(198,147,10,.18);
+  --surface:  rgba(8,13,24,.92);
+  --raised:   rgba(12,20,36,.95);
+  --crimson-dim: rgba(178,34,52,.12);
+
   --rail-w:      58px;
 }
 
