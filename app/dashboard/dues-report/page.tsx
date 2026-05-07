@@ -10,15 +10,15 @@ function pct(paid: number, sweat: number, due: number) { return Math.min(100, Ma
 function dateFmt(d: string) { return new Date(d).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}); }
 
 function timerStr(r: any) {
-  if(!r.casperlet_expiry) return 'EXPIRED';
-  const ms = new Date(r.casperlet_expiry).getTime() - Date.now();
+  if(!r.expires_at) return '—';
+  const ms = new Date(r.expires_at).getTime() - Date.now();
   if(ms<=0) return 'EXPIRED';
   const d=Math.floor(ms/86400000), h=Math.floor((ms%86400000)/3600000);
   return `${d}d ${String(h).padStart(2,'0')}h`;
 }
 function timerCls(r: any) {
-  if(!r.casperlet_expiry) return 'urgent';
-  const ms=new Date(r.casperlet_expiry).getTime()-Date.now();
+  if(!r.expires_at) return 'ok';
+  const ms=new Date(r.expires_at).getTime()-Date.now();
   if(ms<=0) return 'urgent';
   if(ms<3*86400000) return 'warn';
   return 'ok';
@@ -139,7 +139,7 @@ export default function DuesReportPage() {
 
                   {/* Brother name + timer */}
                   <div className="dr-brother-col">
-                    <div className="dr-brother-name">{rec.frat_name}</div>
+                    <div className="dr-brother-name">{rec.member_name}</div>
                     <span className={`dr-brother-timer ${timerCls(rec)}`}>{timerStr(rec)}</span>
                   </div>
 
@@ -157,7 +157,7 @@ export default function DuesReportPage() {
                   {/* Linden */}
                   <div className="dr-amount-col">
                     <div className="dr-amount-val" style={{color:rec.linden_paid?'var(--green)':'var(--bone-faint)'}}>{rec.linden_paid?fmt(rec.linden_paid):'—'}</div>
-                    <div className="dr-amount-lbl">Cash</div>
+                    <div className="dr-amount-lbl">Linden</div>
                   </div>
 
                   {/* Sweat */}
