@@ -29,7 +29,7 @@ export async function POST(req) {
   const member = await getMember(token);
   if (!member) return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
   const { title, content, pinned } = await req.json();
-  await fetch(`${S}/rest/v1/wokou_news`, { method: 'POST', headers: h({ 'Content-Type': 'application/json', 'Content-Profile': 'members' }), body: JSON.stringify({ title, content, pinned: !!pinned, posted_by: member.id, posted_by_name: member.frat_name }) });
+  await fetch(`${S}/rest/v1/wokou_news`, { method: 'POST', headers: h({ 'Content-Type': 'application/json', 'Content-Profile': 'members' }), body: JSON.stringify({ title, content, pinned: !!pinned, posted_by: member.id, posted_by_name: member.frat_name, posted_by_role: member.role }) });
   return NextResponse.json({ success: true });
 }
 

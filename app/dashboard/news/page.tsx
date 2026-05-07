@@ -171,9 +171,11 @@ export default function NewsPage() {
 
               <div className="nw-lead-footer">
                 <Initial name={featured.posted_by_name || 'L'} size={40} />
-                <div>
-                  <div className="nw-author-name">{featured.posted_by_name || 'Leadership'}</div>
-                  {featured.posted_by_role && <div className="nw-author-role">{featured.posted_by_role}</div>}
+                <div className="nw-author-info">
+                  <div className="nw-author-name">
+                    {featured.posted_by_name || 'Leadership'}
+                    {featured.posted_by_role && <span className="nw-author-sep"> · {featured.posted_by_role}</span>}
+                  </div>
                 </div>
                 {/* Delete button */}
                 {(featured.posted_by_name === member?.frat_name || LEADERS.includes(role)) && (
