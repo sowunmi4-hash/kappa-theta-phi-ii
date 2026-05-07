@@ -23,7 +23,7 @@ export async function POST(req) {
     if (records?.length) {
       await fetch(`${S}/rest/v1/dues_records?id=eq.${records[0].id}`, {
         method: 'PATCH', headers: ch(),
-        body: JSON.stringify({ expires_at: expires_at||null,
+        body: JSON.stringify({ expires_at: expires_at||null, updated_at: new Date().toISOString() })
       });
     }
   }
@@ -36,7 +36,7 @@ export async function PATCH(req) {
   if (!record_id) return NextResponse.json({ error: 'Missing record_id' }, { status: 400 });
   await fetch(`${S}/rest/v1/dues_records?id=eq.${record_id}`, {
     method: 'PATCH', headers: ch(),
-    body: JSON.stringify({ expires_at: expires_at||null,
+    body: JSON.stringify({ expires_at: expires_at||null, updated_at: new Date().toISOString() })
   });
   return NextResponse.json({ success: true });
 }
