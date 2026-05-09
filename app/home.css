@@ -78,9 +78,16 @@ body::before { content: ''; position: fixed; inset: 0; background: radial-gradie
 .hn-seal-glow { position: absolute; inset: 0; border-radius: 50%; background: radial-gradient(circle at center, rgba(198,147,10,.07), transparent 70%); opacity: 0; transition: opacity .3s; }
 .hn-seal:hover .hn-seal-glow { opacity: 1; }
 .hn-seal-glow { background: radial-gradient(circle at center, rgba(196,30,58,.15), transparent 70%); }
-.hn-seal-core { position: relative; z-index: 2; text-align: center; }
-.hn-seal-greek { font-family: 'Cinzel Decorative', 'Cinzel', serif; font-size: 1.5rem; letter-spacing: 2px; color: var(--yellow-b); display: block; line-height: 1; }
-.hn-seal-num   { font-family: 'Cinzel', serif; font-size: .65rem; letter-spacing: 6px; color: rgba(244,195,0,.5); display: block; margin-top: .3rem; }
+.hn-seal-logo {
+  position: relative; z-index: 2;
+  width: 90px; height: 90px;
+  object-fit: contain;
+  filter: drop-shadow(0 0 12px rgba(244,195,0,.25));
+  transition: filter .3s;
+}
+.hn-seal:hover .hn-seal-logo {
+  filter: drop-shadow(0 0 20px rgba(244,195,0,.45));
+}
 .hn-seal-tap   { font-family: 'Cinzel', serif; font-size: .45rem; letter-spacing: 5px; color: rgba(198,147,10,.35); text-transform: uppercase; margin-bottom: 1.5rem; }
 
 .hn-title { font-family: 'Cormorant SC', Georgia, serif; font-weight: 700; font-size: clamp(2.2rem, 5vw, 3.5rem); letter-spacing: 4px; color: var(--bone); line-height: 1.1; margin-bottom: .5rem; }

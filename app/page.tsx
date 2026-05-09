@@ -93,10 +93,7 @@ export default function HomePage() {
           <div className="hn-seal-ring r2"/>
           <div className="hn-seal-ring r3"/>
           <div className="hn-seal-glow"/>
-          <div className="hn-seal-core">
-            <span className="hn-seal-greek">KΘΦ</span>
-            <span className="hn-seal-num">II</span>
-          </div>
+          <img src="/logo.png" alt="KΘΦ II Crest" className="hn-seal-logo"/>
         </a>
         <div className="hn-seal-tap">Touch the seal to enter</div>
 
