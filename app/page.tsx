@@ -81,7 +81,6 @@ export default function HomePage() {
           <li><a href="/gallery">Gallery</a></li>
           <li><a href="/philanthropy">Philanthropy</a></li>
         </ul>
-        <a href="/login" className="hn-enter">Enter</a>
       </nav>
 
       {/* ── HERO ── */}
