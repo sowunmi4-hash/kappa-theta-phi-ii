@@ -11,6 +11,7 @@ export default function EditPage() {
   const [profile, setProfile] = useState<any>({});
   const [saving, setSaving]   = useState(false);
   const [saved, setSaved]     = useState(false);
+  const router = useRouter();
   const [uploading, setUploading] = useState<string | null>(null);
   const [uploadError, setUploadError] = useState('');
   const [previews, setPreviews]   = useState<any>({});
