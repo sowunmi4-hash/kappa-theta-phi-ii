@@ -77,15 +77,24 @@ export default function GalleryPage() {
     if (!fileObj) return;
     const tab = tabMode === 'new' ? newTabName.trim() || 'General' : selectedTab;
     setUploading(true);
-    const compressed = await compressImage(fileObj);
-    const fd = new FormData();
-    fd.append('file', compressed);
-    fd.append('caption', caption);
-    fd.append('tab', tab);
-    await fetch('/api/dashboard/private-gallery', { method: 'POST', body: fd });
-    setCaption(''); setNewTabName(''); setFileObj(null); setFilePreview('');
-    setShowUpload(false);
-    await loadGallery();
+    try {
+      const compressed = await compressImage(fileObj);
+      const fd = new FormData();
+      fd.append('file', compressed);
+      fd.append('caption', caption);
+      fd.append('tab', tab);
+      const raw = await fetch('/api/dashboard/private-gallery', { method: 'POST', body: fd });
+      const res = await raw.json();
+      if (!raw.ok || res.error) {
+        alert('Upload failed: ' + (res.error || raw.status));
+        setUploading(false); return;
+      }
+      setCaption(''); setNewTabName(''); setFileObj(null); setFilePreview('');
+      setShowUpload(false);
+      await loadGallery();
+    } catch(err: any) {
+      alert('Upload error: ' + err.message);
+    }
     setUploading(false);
   }
 

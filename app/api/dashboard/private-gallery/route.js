@@ -35,7 +35,11 @@ export async function POST(req) {
   const filename = `private/${member.id}/${Date.now()}.${ext}`;
   const buf = Buffer.from(await file.arrayBuffer());
   const up = await fetch(`${S}/storage/v1/object/dashboard/${filename}`, { method: 'POST', headers: { Authorization: `Bearer ${K}`, 'Content-Type': file.type }, body: buf });
-  if (!up.ok) return NextResponse.json({ error: 'Upload failed' }, { status: 500 });
+  if (!up.ok) {
+    const errText = await up.text();
+    console.error('[private-gallery] storage error:', up.status, errText);
+    return NextResponse.json({ error: `Storage ${up.status}: ${errText}` }, { status: 500 });
+  }
   const file_url = `${S}/storage/v1/object/public/dashboard/${filename}`;
   await fetch(`${S}/rest/v1/private_gallery`, { method: 'POST', headers: h({ 'Content-Type': 'application/json', 'Content-Profile': 'members' }), body: JSON.stringify({ member_id: member.id, file_url, file_type: file.type.startsWith('video') ? 'video' : 'image', caption }) });
   return NextResponse.json({ success: true, file_url });
