@@ -11,7 +11,7 @@ export default function DashHome() {
   const [shareMsg, setShareMsg] = useState('');
 
   useEffect(() => {
-    fetch('/api/dashboard/profile').then(r => r.json()).then(d => {
+    fetch('/api/dashboard/profile?t=' + Date.now()).then(r => r.json()).then(d => {
       if (d.error) { window.location.href = '/login'; return; }
       setData(d);
     });

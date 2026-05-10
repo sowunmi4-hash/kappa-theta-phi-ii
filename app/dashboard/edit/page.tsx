@@ -1,5 +1,6 @@
 'use client';
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import '../dash.css';
 import DashSidebar from '../DashSidebar';
 
@@ -52,6 +53,7 @@ export default function EditPage() {
           return updated;
         });
         setSaved(true); setTimeout(() => setSaved(false), 2500);
+        router.refresh(); // Force Next.js to re-fetch profile data on all pages
       } else {
         setUploadError(res.error || 'Upload failed. Please try again.');
       }

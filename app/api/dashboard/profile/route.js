@@ -22,7 +22,7 @@ export async function GET() {
     fetch(`${S}/rest/v1/member_profiles?member_id=eq.${member.id}&select=*`, { headers: h() }).then(r => r.json()),
     fetch(`${S}/rest/v1/notifications?member_id=eq.${member.id}&is_read=eq.false&select=id`, { headers: h() }).then(r => r.json()),
   ]);
-  return NextResponse.json({ member, profile: profiles[0] || null, unread: notifs.length });
+  return NextResponse.json({ member, profile: profiles[0] || null, unread: notifs.length }, { headers: { 'Cache-Control': 'no-store' } });
 }
 
 export async function POST(req) {
@@ -31,6 +31,7 @@ export async function POST(req) {
   const member = await getMember(token);
   if (!member) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   const body = await req.json();
+  const URLS = ['banner_url','portrait_url'];
   const allowed = ['bio','favourite_quote','hobbies','social_links','banner_url','portrait_url'];
   const data = { updated_at: new Date().toISOString() };
   for (const k of allowed) if (body[k] !== undefined) data[k] = body[k];
