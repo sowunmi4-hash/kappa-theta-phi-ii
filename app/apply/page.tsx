@@ -264,7 +264,11 @@ export default function ApplyPage() {
           </div>
         </div>
 
-        <div style={{marginTop:'1.5rem',fontFamily:'Cinzel,serif',fontSize:'.46rem',letterSpacing:'2px',color:'rgba(245,240,232,.2)',textAlign:'center'}}>
+        <div style={{display:'flex',gap:'2rem',marginTop:'1rem',justifyContent:'center'}}>
+          <a href="/" style={{fontFamily:'Cinzel,serif',fontSize:'.5rem',letterSpacing:'3px',color:'rgba(245,240,232,.25)',textDecoration:'none',textTransform:'uppercase'}}>← Home</a>
+          <a href="/apply/status" style={{fontFamily:'Cinzel,serif',fontSize:'.5rem',letterSpacing:'3px',color:'rgba(196,30,58,.55)',textDecoration:'none',textTransform:'uppercase'}}>Check My Status →</a>
+        </div>
+        <div style={{marginTop:'.75rem',fontFamily:'Cinzel,serif',fontSize:'.44rem',letterSpacing:'2px',color:'rgba(245,240,232,.15)',textAlign:'center'}}>
           KΘΦ II · Death Before Dishonor · Est. 3·14·21
         </div>
       </div>
