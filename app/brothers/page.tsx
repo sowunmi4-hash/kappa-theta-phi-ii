@@ -311,6 +311,7 @@ export default function BrothersPage() {
     window.setTimeout(() => setSpotActive(true), 350);
   }
   function closeSpotlight() {
+    setProfileData(null);
     setSpotActive(false);
     window.setTimeout(() => setSpotlight(null), 500);
   }
@@ -481,6 +482,34 @@ export default function BrothersPage() {
                 {spotlight.member.iron && <span className="spotlight-iron">⚓ Iron Compass</span>}
               </div>
             </div>
+
+              {/* Profile */}
+              {profileLoading && (
+                <div className="spotlight-profile-loading">Loading...</div>
+              )}
+              {!profileLoading && profileData && (
+                <div className="spotlight-profile">
+                  {profileData.favourite_quote && (
+                    <div className="spotlight-quote">
+                      <span className="spotlight-quote-mark">"</span>
+                      {profileData.favourite_quote}
+                      <span className="spotlight-quote-mark">"</span>
+                    </div>
+                  )}
+                  {profileData.bio && (
+                    <div className="spotlight-bio-section">
+                      <div className="spotlight-profile-lbl">About</div>
+                      <p className="spotlight-bio">{profileData.bio}</p>
+                    </div>
+                  )}
+                  {profileData.hobbies && (
+                    <div className="spotlight-bio-section">
+                      <div className="spotlight-profile-lbl">Hobbies & Interests</div>
+                      <p className="spotlight-bio">{profileData.hobbies}</p>
+                    </div>
+                  )}
+                </div>
+              )}
           </div>
         </div>
       )}

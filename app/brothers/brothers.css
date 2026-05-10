@@ -204,3 +204,40 @@
   .brothers-shell .spotlight-content{grid-template-columns:1fr;gap:2rem}
   .brothers-shell .spotlight-portrait{max-width:280px;margin:0 auto}
 }
+
+/* ── SPOTLIGHT PROFILE SECTION ── */
+.spotlight-profile {
+  max-width: 600px; margin: 0 auto;
+  padding: 1.8rem 2rem;
+  border-top: 1px solid rgba(27,58,107,.3);
+  display: flex; flex-direction: column; gap: 1.4rem;
+  background: rgba(6,13,30,.4);
+}
+
+.spotlight-quote {
+  font-family: 'Cormorant SC', serif; font-size: 1.05rem;
+  color: rgba(245,240,232,.65); line-height: 1.8; text-align: center;
+  font-style: italic; letter-spacing: 1px;
+  border-left: 2px solid rgba(196,30,58,.4);
+  padding: .5rem 1.2rem;
+}
+.spotlight-quote-mark {
+  font-size: 1.4rem; color: rgba(196,30,58,.5);
+  font-style: normal; line-height: 0; vertical-align: -0.3em; margin: 0 .2rem;
+}
+
+.spotlight-bio-section { display: flex; flex-direction: column; gap: .4rem; }
+.spotlight-profile-lbl {
+  font-family: 'Cinzel', serif; font-size: .52rem; letter-spacing: 4px;
+  color: rgba(244,195,0,.45); text-transform: uppercase;
+}
+.spotlight-bio {
+  font-family: 'Rajdhani', sans-serif; font-size: .98rem;
+  color: rgba(245,240,232,.6); line-height: 1.8;
+}
+
+.spotlight-profile-loading {
+  text-align: center; padding: 1rem;
+  font-family: 'Cinzel', serif; font-size: .55rem; letter-spacing: 3px;
+  color: rgba(245,240,232,.25); text-transform: uppercase;
+}
