@@ -516,29 +516,7 @@ export default function BrothersPage() {
                       <p className="spotlight-bio">{profileData.hobbies}</p>
                     </div>
                   )}
-                  {profileData.social_links && Object.entries(profileData.social_links).some(([,v]) => v) && (
-                    <div className="spotlight-bio-section">
-                      <div className="spotlight-profile-lbl">Find Me On</div>
-                      <div className="spotlight-socials">
-                        {Object.entries(profileData.social_links as Record<string,string>).filter(([,v]) => v).map(([platform, handle]) => (
-                          <a key={platform} className="spotlight-social-pill"
-                            href={platform === 'Second Life' ? handle : platform === 'Instagram' ? `https://instagram.com/${handle.replace('@','')}` : platform === 'Twitter/X' ? `https://x.com/${handle.replace('@','')}` : platform === 'TikTok' ? `https://tiktok.com/@${handle.replace('@','')}` : platform === 'YouTube' ? `https://youtube.com/@${handle.replace('@','')}` : '#'}
-                            target="_blank" rel="noopener noreferrer">
-                            <span className="spotlight-social-icon">
-                              {platform === 'Instagram' && '📸'}
-                              {platform === 'Twitter/X' && '𝕏'}
-                              {platform === 'TikTok' && '🎵'}
-                              {platform === 'YouTube' && '▶'}
-                              {platform === 'Discord' && '💬'}
-                              {platform === 'Second Life' && '⚓'}
-                            </span>
-                            <span className="spotlight-social-name">{platform}</span>
-                            <span className="spotlight-social-handle">{handle.startsWith('secondlife') ? 'View Profile' : handle}</span>
-                          </a>
-                        ))}
-                      </div>
-                    </div>
-                  )}
+                  <BrotherSocials links={profileData.social_links}/>
                 </div>
               )}
             </div>
@@ -548,6 +526,45 @@ export default function BrothersPage() {
     </div>
   );
 }
+
+function socialLink(platform: string, handle: string): string {
+  if (!handle) return '#';
+  const h = handle.replace('@', '');
+  if (platform === 'Second Life') return handle;
+  if (platform === 'Instagram') return `https://instagram.com/${h}`;
+  if (platform === 'Twitter/X') return `https://x.com/${h}`;
+  if (platform === 'TikTok') return `https://tiktok.com/@${h}`;
+  if (platform === 'YouTube') return `https://youtube.com/@${h}`;
+  return '#';
+}
+
+const SOCIAL_ICONS: Record<string, string> = {
+  Instagram: '📸', 'Twitter/X': '𝕏', TikTok: '🎵',
+  YouTube: '▶', Discord: '💬', 'Second Life': '⚓',
+};
+
+function BrotherSocials({ links }: { links: any }) {
+  if (!links || typeof links !== 'object') return null;
+  const entries = Object.entries(links).filter(([, v]) => v) as [string, string][];
+  if (!entries.length) return null;
+  return (
+    <div className="spotlight-bio-section">
+      <div className="spotlight-profile-lbl">Find Me On</div>
+      <div className="spotlight-socials">
+        {entries.map(([platform, handle]) => (
+          <a key={platform} className="spotlight-social-pill"
+            href={socialLink(platform, handle)}
+            target="_blank" rel="noopener noreferrer">
+            <span className="spotlight-social-icon">{SOCIAL_ICONS[platform] || '🔗'}</span>
+            <span className="spotlight-social-name">{platform}</span>
+            <span className="spotlight-social-handle">{handle.startsWith('secondlife') ? 'View Profile' : handle}</span>
+          </a>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 
 function FilterPill({ active, onClick, children }: { active: boolean; onClick: () => void; children: React.ReactNode }) {
   return (
