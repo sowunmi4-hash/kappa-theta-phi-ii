@@ -19,6 +19,14 @@ export async function GET() {
   if (!token) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   const member = await getMember(token);
   if (!member) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+
+  // Auto-delete notifications older than 24 hours
+  const cutoff = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
+  fetch(`${S}/rest/v1/notifications?member_id=eq.${member.id}&created_at=lt.${cutoff}`, {
+    method: 'DELETE',
+    headers: h({ 'Content-Profile': 'members' })
+  }).catch(() => {});
+
   const notifs = await fetch(`${S}/rest/v1/notifications?member_id=eq.${member.id}&order=created_at.desc&limit=30`, { headers: h() }).then(r => r.json());
   return NextResponse.json({ notifications: notifs });
 }
