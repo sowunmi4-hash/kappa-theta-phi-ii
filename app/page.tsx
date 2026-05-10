@@ -80,6 +80,7 @@ export default function HomePage() {
           <li><a href="/brothers">Brothers</a></li>
           <li><a href="/gallery">Gallery</a></li>
           <li><a href="/philanthropy">Philanthropy</a></li>
+          <li><a href="/apply">Apply</a></li>
         </ul>
       </nav>
 

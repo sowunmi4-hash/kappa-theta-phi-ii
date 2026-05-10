@@ -39,6 +39,7 @@ export default function DashSidebar({ member, profile, unread = 0 }: Props) {
   const canSeeDuesReport = member?.fraction === 'Ishi No Faction' || member?.frat_name === 'Big Brother Substance' || member?.frat_name === 'Big Brother Cool Breeze';
   const canSeeTransactions = member?.frat_name === 'Big Brother Cool Breeze';
   const canSeeSSPReport  = member?.fraction === 'Ishi No Faction' || member?.role === 'Head Founder' || member?.role === 'Co-Founder';
+  const canSeeApplications = member?.fraction === 'Kuro Kanda Fraction';
 
   function openPanel()  { clearTimeout(leaveTimer.current); setOpen(true); }
   function closePanel() { leaveTimer.current = setTimeout(() => setOpen(false), 220); }
@@ -186,6 +187,11 @@ export default function DashSidebar({ member, profile, unread = 0 }: Props) {
             ))}
 
             <div className="dash-glass-divider" />
+
+            <a href="/dashboard/applications" className={`dash-glass-item${pathname.startsWith('/dashboard/applications') ? ' active' : ''}`} style={{display:canSeeApplications?'flex':'none'}}>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+              Applications
+            </a>
 
             <a href="/dashboard/grievances" className={`dash-glass-item${pathname.startsWith('/dashboard/grievances') ? ' active' : ''}`}>
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M12 2L8 8H3l4 5-2 7 7-3 7 3-2-7 4-5h-5z"/></svg>
