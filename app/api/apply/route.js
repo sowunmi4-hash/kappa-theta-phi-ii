@@ -64,13 +64,15 @@ export async function PATCH(req) {
   const { id, status, review_notes, interview_date, interview_notes } = await req.json();
   if (!id) return NextResponse.json({ error: 'Missing id' }, { status: 400 });
 
+  const now = new Date().toISOString();
   const update = {
     ...(status           && { status }),
+    ...(status           && { reviewed_at: now }),
     ...(review_notes !== undefined && { review_notes }),
     ...(interview_date !== undefined && { interview_date: interview_date || null }),
     ...(interview_notes !== undefined && { interview_notes: interview_notes || null }),
     reviewed_by_name: member.frat_name,
-    updated_at: new Date().toISOString(),
+    updated_at: now,
   };
 
   await fetch(`${S}/rest/v1/applications?id=eq.${id}`, {

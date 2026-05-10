@@ -20,6 +20,7 @@ export default function ApplicationsPage() {
   const [notes,setNotes]=useState('');
   const [newStatus,setNewStatus]=useState('');
   const [saving,setSaving]=useState(false);
+  const [saveError,setSaveError]=useState('');
   const [interviewDate,setInterviewDate]=useState('');
   const [interviewNotes,setInterviewNotes]=useState('');
 
@@ -38,9 +39,11 @@ export default function ApplicationsPage() {
 
   async function save(){
     if(!sel||!newStatus)return;
-    setSaving(true);
-    await fetch('/api/apply',{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:sel.id,status:newStatus,review_notes:notes,interview_date:interviewDate||null,interview_notes:interviewNotes||null})});
-    setSaving(false);setSel(null);load();
+    setSaving(true);setSaveError('');
+    const res=await fetch('/api/apply',{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:sel.id,status:newStatus,review_notes:notes,interview_date:interviewDate||null,interview_notes:interviewNotes||null})}).then(r=>r.json());
+    setSaving(false);
+    if(res.error){setSaveError(res.error);return;}
+    setSel(null);load();
   }
 
   function select(a:any){setSel(a);setNewStatus(a.status);setNotes(a.review_notes||'');setInterviewDate(a.interview_date?a.interview_date.slice(0,16):'');setInterviewNotes(a.interview_notes||'');}
@@ -150,6 +153,7 @@ export default function ApplicationsPage() {
                       </div>
                     )}
                     <textarea className="ap-dash-notes" value={notes} onChange={e=>setNotes(e.target.value)} placeholder="Review notes (optional)..." rows={3}/>
+                    {saveError&&<div style={{fontFamily:'var(--cinzel)',fontSize:'.58rem',letterSpacing:'1px',color:'#e05070',background:'rgba(224,80,112,.07)',border:'1px solid rgba(224,80,112,.2)',borderRadius:'3px',padding:'.5rem .75rem'}}>{saveError}</div>}
                     <button className="ap-dash-save-btn" onClick={save} disabled={saving||!newStatus}>{saving?'Saving...':'Save Decision'}</button>
                   </div>
                 </div>
