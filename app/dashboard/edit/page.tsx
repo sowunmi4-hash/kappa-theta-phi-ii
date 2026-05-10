@@ -11,6 +11,7 @@ export default function EditPage() {
   const [saving, setSaving]   = useState(false);
   const [saved, setSaved]     = useState(false);
   const [uploading, setUploading] = useState<string | null>(null);
+  const [uploadError, setUploadError] = useState('');
   const [previews, setPreviews]   = useState<any>({});
 
   useEffect(() => {
@@ -36,12 +37,27 @@ export default function EditPage() {
   async function uploadFile(e: any, type: string) {
     const file = e.target.files[0];
     if (!file) return;
-    setUploading(type);
+    setUploading(type); setUploadError('');
     setPreviews((p: any) => ({ ...p, [type]: URL.createObjectURL(file) }));
     const fd = new FormData();
     fd.append('file', file); fd.append('type', type);
-    const res = await fetch('/api/dashboard/upload', { method: 'POST', body: fd }).then(r => r.json());
-    if (res.file_url) update(`${type}_url`, res.file_url);
+    try {
+      const res = await fetch('/api/dashboard/upload', { method: 'POST', body: fd }).then(r => r.json());
+      if (res.file_url) {
+        update(`${type}_url`, res.file_url);
+        // Auto-save so user doesn't need to click Save Changes
+        setProfile((p: any) => {
+          const updated = { ...p, [`${type}_url`]: res.file_url };
+          fetch('/api/dashboard/profile', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(updated) });
+          return updated;
+        });
+        setSaved(true); setTimeout(() => setSaved(false), 2500);
+      } else {
+        setUploadError(res.error || 'Upload failed. Please try again.');
+      }
+    } catch {
+      setUploadError('Upload failed. Check your connection and try again.');
+    }
     setUploading(null);
   }
 
@@ -104,6 +120,10 @@ export default function EditPage() {
                 </div>
               </div>
             </div>
+
+            {uploadError && (
+              <div style={{fontFamily:'var(--cinzel)',fontSize:'.58rem',letterSpacing:'1px',color:'#e05070',background:'rgba(224,80,112,.07)',border:'1px solid rgba(224,80,112,.2)',borderRadius:'3px',padding:'.5rem .75rem',marginBottom:'.5rem'}}>{uploadError}</div>
+            )}
 
             {/* About */}
             <div>
