@@ -490,9 +490,8 @@ export default function BrothersPage() {
                 )}
                 {spotlight.member.iron && <span className="spotlight-iron">⚓ Iron Compass</span>}
               </div>
-            </div>
 
-              {/* Profile */}
+              {/* Profile — integrated inside right panel */}
               {profileLoading && (
                 <div className="spotlight-profile-loading">Loading...</div>
               )}
@@ -519,6 +518,7 @@ export default function BrothersPage() {
                   )}
                 </div>
               )}
+            </div>
           </div>
         </div>
       )}
