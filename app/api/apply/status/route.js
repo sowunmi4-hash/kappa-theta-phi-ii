@@ -10,18 +10,11 @@ export async function GET(req) {
   if (!sl_name) return NextResponse.json({ error: 'SL name required.' }, { status: 400 });
 
   const data = await fetch(
-    `${S}/rest/v1/applications?sl_name=ilike.${encodeURIComponent(sl_name)}&select=sl_name,status,created_at,reviewed_at&order=created_at.desc&limit=1`,
+    `${S}/rest/v1/applications?sl_name=ilike.${encodeURIComponent(sl_name)}&select=sl_name,status,created_at,reviewed_at,interview_date,interview_notes&order=created_at.desc&limit=1`,
     { headers: h() }
   ).then(r => r.json());
 
   if (!data?.length) return NextResponse.json({ found: false });
-
   const app = data[0];
-  return NextResponse.json({
-    found: true,
-    sl_name: app.sl_name,
-    status: app.status,
-    submitted_at: app.created_at,
-    reviewed_at: app.reviewed_at || null,
-  });
+  return NextResponse.json({ found: true, ...app });
 }

@@ -3,8 +3,8 @@ import { cookies } from 'next/headers';
 
 const S = process.env.SUPABASE_URL;
 const K = process.env.SUPABASE_SECRET_KEY;
-const h  = (x={}) => ({ apikey: K, Authorization: `Bearer ${K}`, 'Accept-Profile': 'members', ...x });
-const ch = ()     => h({ 'Content-Type': 'application/json', 'Content-Profile': 'members', Prefer: 'return=representation' });
+const h  = () => ({ apikey: K, Authorization: `Bearer ${K}`, 'Accept-Profile': 'members' });
+const ch = () => ({ ...h(), 'Content-Type': 'application/json', 'Content-Profile': 'members', Prefer: 'return=representation' });
 
 const canReview = (m) => m?.fraction === 'Kuro Kanda Fraction';
 
@@ -23,7 +23,7 @@ export async function POST(req) {
   const { email, sl_name } = body;
   if (!email || !sl_name) return NextResponse.json({ error: 'Email and SL name are required.' }, { status: 400 });
 
-  const existing = await fetch(`${S}/rest/v1/applications?sl_name=ilike.${encodeURIComponent(sl_name)}&status=in.(pending,approved)&select=id`, { headers: h() }).then(r => r.json());
+  const existing = await fetch(`${S}/rest/v1/applications?sl_name=ilike.${encodeURIComponent(sl_name)}&status=in.(pending,interview,approved)&select=id`, { headers: h() }).then(r => r.json());
   if (existing?.length) return NextResponse.json({ error: 'An application for this SL name is already on file.' }, { status: 409 });
 
   const res = await fetch(`${S}/rest/v1/applications`, {
@@ -45,8 +45,9 @@ export async function GET() {
   return NextResponse.json({
     applications: list,
     summary: {
-      total: list.length,
+      total:      list.length,
       pending:    list.filter(a => a.status === 'pending').length,
+      interview:  list.filter(a => a.status === 'interview').length,
       approved:   list.filter(a => a.status === 'approved').length,
       denied:     list.filter(a => a.status === 'denied').length,
       waitlisted: list.filter(a => a.status === 'waitlisted').length,
@@ -54,16 +55,28 @@ export async function GET() {
   });
 }
 
-// PATCH — update status (Kuro Kanda Fraction only)
+// PATCH — update status / interview date (Kuro Kanda Fraction only)
 export async function PATCH(req) {
   const member = await getMember();
   if (!member) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   if (!canReview(member)) return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
 
-  const { id, status, review_notes } = await req.json();
+  const { id, status, review_notes, interview_date, interview_notes } = await req.json();
+  if (!id) return NextResponse.json({ error: 'Missing id' }, { status: 400 });
+
+  const update = {
+    ...(status           && { status }),
+    ...(review_notes !== undefined && { review_notes }),
+    ...(interview_date !== undefined && { interview_date: interview_date || null }),
+    ...(interview_notes !== undefined && { interview_notes: interview_notes || null }),
+    reviewed_by_name: member.frat_name,
+    updated_at: new Date().toISOString(),
+  };
+
   await fetch(`${S}/rest/v1/applications?id=eq.${id}`, {
     method: 'PATCH', headers: ch(),
-    body: JSON.stringify({ status, review_notes, reviewed_by_name: member.frat_name, reviewed_at: new Date().toISOString() })
+    body: JSON.stringify(update)
   });
+
   return NextResponse.json({ ok: true });
 }

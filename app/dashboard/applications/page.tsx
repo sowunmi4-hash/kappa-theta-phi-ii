@@ -7,7 +7,7 @@ import DashSidebar from '../DashSidebar';
 
 function fmt(d:string){ return new Date(d).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}); }
 function timeAgo(d:string){ const s=Math.floor((Date.now()-new Date(d).getTime())/1000); if(s<3600)return`${Math.floor(s/60)}m ago`; if(s<86400)return`${Math.floor(s/3600)}h ago`; if(s<604800)return`${Math.floor(s/86400)}d ago`; return fmt(d); }
-const STATUS_LABELS: Record<string,string> = { pending:'Pending', approved:'Approved', denied:'Denied', waitlisted:'Waitlisted' };
+const STATUS_LABELS: Record<string,string> = { pending:'Pending', interview:'Interview', approved:'Approved', denied:'Denied', waitlisted:'Waitlisted' };
 
 export default function ApplicationsPage() {
   const [member,setMember]=useState<any>(null);
@@ -20,6 +20,8 @@ export default function ApplicationsPage() {
   const [notes,setNotes]=useState('');
   const [newStatus,setNewStatus]=useState('');
   const [saving,setSaving]=useState(false);
+  const [interviewDate,setInterviewDate]=useState('');
+  const [interviewNotes,setInterviewNotes]=useState('');
 
   useEffect(()=>{
     fetch('/api/dashboard/profile').then(r=>r.json()).then(d=>{
@@ -37,11 +39,11 @@ export default function ApplicationsPage() {
   async function save(){
     if(!sel||!newStatus)return;
     setSaving(true);
-    await fetch('/api/apply',{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:sel.id,status:newStatus,review_notes:notes})});
+    await fetch('/api/apply',{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:sel.id,status:newStatus,review_notes:notes,interview_date:interviewDate||null,interview_notes:interviewNotes||null})});
     setSaving(false);setSel(null);load();
   }
 
-  function select(a:any){setSel(a);setNewStatus(a.status);setNotes(a.review_notes||'');}
+  function select(a:any){setSel(a);setNewStatus(a.status);setNotes(a.review_notes||'');setInterviewDate(a.interview_date?a.interview_date.slice(0,16):'');setInterviewNotes(a.interview_notes||'');}
   const filtered=filter==='all'?apps:apps.filter(a=>a.status===filter);
 
   if(!member||loading)return <div className="dash-loading">LOADING...</div>;
@@ -60,7 +62,7 @@ export default function ApplicationsPage() {
 
         {/* Stats */}
         <div className="ap-dash-stats">
-          {[{v:summary.total||0,l:'Total',c:'var(--bone)'},{v:summary.pending||0,l:'Pending',c:'var(--gold-b)'},{v:summary.approved||0,l:'Approved',c:'var(--green)'},{v:summary.denied||0,l:'Denied',c:'#e05070'},{v:summary.waitlisted||0,l:'Waitlisted',c:'#60a5fa'}].map((s,i)=>(
+          {[{v:summary.total||0,l:'Total',c:'var(--bone)'},{v:summary.pending||0,l:'Pending',c:'var(--gold-b)'},{v:summary.interview||0,l:'Interview',c:'#60a5fa'},{v:summary.approved||0,l:'Approved',c:'var(--green)'},{v:summary.denied||0,l:'Denied',c:'#e05070'},{v:summary.waitlisted||0,l:'Waitlisted',c:'#94a3b8'}].map((s,i)=>(
             <div key={i} className="ap-dash-stat-cell"><div className="ap-dash-stat-val" style={{color:s.c}}>{s.v}</div><div className="ap-dash-stat-lbl">{s.l}</div></div>
           ))}
         </div>
@@ -69,7 +71,7 @@ export default function ApplicationsPage() {
           {/* LEFT */}
           <div className="ap-dash-list-col">
             <div className="ap-dash-filter-bar">
-              {['all','pending','approved','denied','waitlisted'].map(f=>(
+              {['all','pending','interview','approved','denied','waitlisted'].map(f=>(
                 <button key={f} className={`ap-dash-filter-btn${filter===f?' active':''}`} onClick={()=>setFilter(f)}>
                   {f==='all'?`All (${apps.length})`:STATUS_LABELS[f]}
                 </button>
@@ -120,6 +122,7 @@ export default function ApplicationsPage() {
                       <div><div className="ap-dash-field-k">Can Pledge 4 Weeks</div><div className="ap-dash-field-v" style={{color:sel.can_pledge?'var(--green)':'#e05070'}}>{sel.can_pledge===null?'—':sel.can_pledge?'Yes':'No'}</div></div>
                       <div><div className="ap-dash-field-k">Financially Ready</div><div className="ap-dash-field-v" style={{color:sel.financially_prepared?'var(--green)':'#e05070'}}>{sel.financially_prepared===null?'—':sel.financially_prepared?'Yes':'No'}</div></div>
                       <div><div className="ap-dash-field-k">Communication</div><div className="ap-dash-field-v">{sel.communication_mode||'—'}</div></div>
+                      {sel.interview_date&&<div style={{gridColumn:'1/-1'}}><div className="ap-dash-field-k">Interview Date</div><div className="ap-dash-field-v" style={{color:'#60a5fa'}}>{new Date(sel.interview_date).toLocaleString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric',hour:'2-digit',minute:'2-digit',hour12:true})} SLT</div>{sel.interview_notes&&<div className="ap-dash-field-k" style={{marginTop:'.3rem'}}>{sel.interview_notes}</div>}</div>}
                     </div>
                   </div>
                   <div className="ap-dash-section">
@@ -135,10 +138,17 @@ export default function ApplicationsPage() {
                   <div className="ap-dash-section">
                     <div className="ap-dash-sec-lbl">Decision</div>
                     <div className="ap-dash-status-grid">
-                      {(['pending','approved','denied','waitlisted'] as const).map(s=>(
+                      {(['pending','interview','approved','denied','waitlisted'] as const).map(s=>(
                         <button key={s} className={`ap-dash-status-btn ${s}${newStatus===s?' active':''}`} onClick={()=>setNewStatus(s)}>{STATUS_LABELS[s]}</button>
                       ))}
                     </div>
+                    {newStatus==='interview'&&(
+                      <div style={{display:'flex',flexDirection:'column',gap:'.4rem'}}>
+                        <div style={{fontFamily:'var(--cinzel)',fontSize:'.52rem',letterSpacing:'3px',color:'rgba(96,165,250,.5)',textTransform:'uppercase'}}>Interview Date & Time (SLT)</div>
+                        <input type="datetime-local" className="ap-dash-notes" style={{minHeight:'auto',padding:'.5rem .75rem'}} value={interviewDate} onChange={e=>setInterviewDate(e.target.value)}/>
+                        <input className="ap-dash-notes" style={{minHeight:'auto',padding:'.5rem .75rem'}} value={interviewNotes} onChange={e=>setInterviewNotes(e.target.value)} placeholder="Interview location or additional notes..."/>
+                      </div>
+                    )}
                     <textarea className="ap-dash-notes" value={notes} onChange={e=>setNotes(e.target.value)} placeholder="Review notes (optional)..." rows={3}/>
                     <button className="ap-dash-save-btn" onClick={save} disabled={saving||!newStatus}>{saving?'Saving...':'Save Decision'}</button>
                   </div>
