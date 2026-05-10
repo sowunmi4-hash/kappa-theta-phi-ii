@@ -22,7 +22,7 @@ export async function GET() {
 
   // Auto-delete notifications older than 24 hours
   const cutoff = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
-  fetch(`${S}/rest/v1/notifications?member_id=eq.${member.id}&created_at=lt.${cutoff}`, {
+  await fetch(`${S}/rest/v1/notifications?created_at=lt.${cutoff}`, {
     method: 'DELETE',
     headers: h({ 'Content-Profile': 'members' })
   }).catch(() => {});
