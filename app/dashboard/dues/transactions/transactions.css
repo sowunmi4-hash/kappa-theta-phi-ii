@@ -60,7 +60,7 @@
 .tx-id {
   font-family: 'Courier New', monospace; font-size: .78rem;
   color: var(--gold-b); letter-spacing: 1px;
-  background: rgba(198,147,10,.06); border: 1px solid rgba(198,147,10,.15);
+  background: rgba(27,58,107,.16); border: 1px solid rgba(198,147,10,.15);
   padding: 3px 8px; border-radius: 3px; display: inline-block;
   cursor: pointer; transition: all .15s; white-space: nowrap;
 }

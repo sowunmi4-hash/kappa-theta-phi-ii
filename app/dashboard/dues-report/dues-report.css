@@ -18,7 +18,7 @@
   border-radius: 3px; border: 1px solid; display: inline-block;
 }
 .dr-period-badge.active { background: rgba(74,222,128,.08); border-color: rgba(74,222,128,.2); color: var(--green); }
-.dr-period-badge.closed { background: rgba(198,147,10,.06); border-color: rgba(198,147,10,.18); color: rgba(198,147,10,.6); }
+.dr-period-badge.closed { background: rgba(27,58,107,.16); border-color: rgba(244,195,0,.28); color: rgba(198,147,10,.6); }
 
 /* Access tag */
 .dr-access-tag {
@@ -58,14 +58,14 @@
   transition: all .15s; text-transform: uppercase;
 }
 .dr-filter-btn:hover { color: var(--bone-dim); }
-.dr-filter-btn.active { color: var(--gold-b); background: rgba(198,147,10,.08); border-color: rgba(198,147,10,.2); }
+.dr-filter-btn.active { color: var(--gold-b); background: rgba(27,58,107,.2); border-color: rgba(244,195,0,.3); }
 
 /* Records list */
 .dr-records { padding: 1.2rem 1.8rem 3rem; display: flex; flex-direction: column; gap: 4px; }
 
 /* Dossier row */
 .dr-row {
-  background: rgba(11,18,42,.92); border: 1px solid rgba(27,58,107,.25);
+  background: rgba(11,18,42,.92); border: 1px solid rgba(27,58,107,.38);
   border-radius: 4px; overflow: hidden;
   transition: border-color .15s; border-left: 3px solid transparent;
 }
@@ -97,7 +97,7 @@
 .dr-prog-track { height: 6px; background: rgba(255,255,255,.06); border-radius: 3px; overflow: hidden; }
 .dr-prog-fill  { height: 100%; border-radius: 3px; transition: width .6s ease; }
 .dr-prog-fill.green { background: linear-gradient(90deg, var(--green), #86efac); }
-.dr-prog-fill.gold  { background: linear-gradient(90deg, var(--gold), var(--gold-b)); }
+.dr-prog-fill.gold  { background: linear-gradient(90deg, var(--yellow), var(--yellow-b)); }
 .dr-prog-fill.red   { background: linear-gradient(90deg, #e05070, #f87171); }
 
 /* Amount cells */
@@ -113,7 +113,7 @@
   display: inline-block; white-space: nowrap;
 }
 .dr-badge.paid    { background: rgba(74,222,128,.08); border-color: rgba(74,222,128,.22); color: var(--green); }
-.dr-badge.partial { background: rgba(198,147,10,.08); border-color: rgba(198,147,10,.25); color: var(--gold-b); }
+.dr-badge.partial { background: rgba(27,58,107,.2); border-color: rgba(198,147,10,.25); color: var(--gold-b); }
 .dr-badge.unpaid  { background: rgba(224,80,112,.07); border-color: rgba(224,80,112,.22); color: #e05070; }
 
 /* Chevron */
@@ -127,13 +127,13 @@
   background: rgba(5,8,15,.7);
   display: flex; flex-direction: column; gap: .85rem;
 }
-.dr-detail-section-lbl { font-family: var(--cinzel); font-size: .58rem; letter-spacing: 4px; color: rgba(244,195,0,.42); text-transform: uppercase; margin-bottom: .55rem; }
+.dr-detail-section-lbl { font-family: var(--cinzel); font-size: .58rem; letter-spacing: 4px; color: rgba(244,195,0,.5); text-transform: uppercase; margin-bottom: .55rem; }
 
 /* Payment entries */
 .dr-payment-row {
   display: flex; align-items: center; gap: 1rem;
   padding: .6rem .85rem; background: rgba(10,18,40,.85);
-  border: 1px solid rgba(27,58,107,.22); border-radius: 3px;
+  border: 1px solid rgba(27,58,107,.35); border-radius: 3px;
   transition: border-color .15s;
 }
 .dr-payment-row:hover { border-color: rgba(255,255,255,.08); }
@@ -149,7 +149,7 @@
 
 /* Summary footer */
 .dr-footer {
-  background: rgba(10,18,40,.92); border: 1px solid rgba(27,58,107,.25);
+  background: rgba(10,18,40,.92); border: 1px solid rgba(27,58,107,.38);
   border-radius: 4px; padding: .85rem 1.4rem;
   display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: .8rem;
 }

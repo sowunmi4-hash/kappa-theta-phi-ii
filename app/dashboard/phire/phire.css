@@ -71,7 +71,7 @@
 .ph-tier-check { font-size: .7rem; color: var(--gold); font-weight: 700; }
 
 .ph-tier-bar-track {
-  flex: 1; height: 5px; background: rgba(198,147,10,.08);
+  flex: 1; height: 5px; background: rgba(27,58,107,.2);
   border-radius: 3px; overflow: hidden; margin-left: .5rem;
 }
 .ph-tier-bar-fill {
@@ -115,7 +115,7 @@
 }
 .ph-action-btn:hover {
   border-color: rgba(196,30,58,.45);
-  background: rgba(198,147,10,.06);
+  background: rgba(27,58,107,.16);
 }
 .ph-action-icon {
   font-size: .9rem; flex-shrink: 0;
@@ -136,7 +136,7 @@
   border: 1px solid rgba(198,147,10,.08);
   transition: border-color .15s;
 }
-.ph-tx-row:hover { border-color: rgba(198,147,10,.18); }
+.ph-tx-row:hover { border-color: rgba(244,195,0,.28); }
 .ph-tx-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
 .ph-tx-dot.earn  { background: #4ade80; box-shadow: 0 0 5px rgba(74,222,128,.4); }
 .ph-tx-dot.spend { background: #e05070; box-shadow: 0 0 5px rgba(224,80,112,.4); }

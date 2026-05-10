@@ -15,12 +15,12 @@
 .hy-cols {
   display: grid; grid-template-columns: 18px 1fr 90px 80px 90px;
   gap: .8rem; padding: .55rem 1.2rem;
-  background: rgba(4,6,15,.6); border: 1px solid rgba(27,58,107,.28);
+  background: rgba(4,6,15,.6); border: 1px solid rgba(27,58,107,.4);
   border-bottom: none;
 }
 .hy-col-label {
   font-family: var(--cinzel); font-size: .55rem; letter-spacing: 3px;
-  color: rgba(244,195,0,.38); text-transform: uppercase;
+  color: rgba(244,195,0,.45); text-transform: uppercase;
 }
 
 /* Row */
@@ -28,7 +28,7 @@
   display: grid; grid-template-columns: 18px 1fr 90px 80px 90px;
   gap: .8rem; align-items: center;
   padding: .9rem 1.2rem;
-  background: rgba(7,11,20,.75); border: 1px solid rgba(27,58,107,.28);
+  background: rgba(7,11,20,.75); border: 1px solid rgba(27,58,107,.4);
   border-top: none; transition: background .15s;
 }
 .hy-row:hover { background: rgba(198,147,10,.03); }
@@ -54,7 +54,7 @@
   padding: 2px 8px; border-radius: 2px; border: 1px solid; text-transform: uppercase;
   display: inline-block;
 }
-.hy-badge.pending  { background: rgba(198,147,10,.08); border-color: rgba(198,147,10,.28); color: var(--gold-b); }
+.hy-badge.pending  { background: rgba(27,58,107,.2); border-color: rgba(27,58,107,.55); color: var(--gold-b); }
 .hy-badge.approved { background: var(--green-dim); border-color: var(--green-border); color: var(--green); }
 .hy-badge.denied   { background: rgba(224,80,112,.07); border-color: rgba(224,80,112,.22); color: #e05070; }
 
@@ -67,5 +67,5 @@
 .hy-empty {
   padding: 3rem 2rem; text-align: center;
   font-family: var(--cinzel); font-size: .7rem; letter-spacing: 2px; color: var(--bone-faint);
-  background: rgba(7,11,20,.75); border: 1px solid rgba(27,58,107,.28);
+  background: rgba(7,11,20,.75); border: 1px solid rgba(27,58,107,.4);
 }

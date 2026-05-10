@@ -113,7 +113,7 @@
 }
 .ps-btn.gold   { border-color: var(--gold); color: var(--deep); background: var(--gold); }
 .ps-btn.gold:hover { background: var(--gold-b); }
-.ps-btn.ghost  { border-color: rgba(198,147,10,.3); color: var(--gold); background: rgba(198,147,10,.08); }
+.ps-btn.ghost  { border-color: rgba(198,147,10,.3); color: var(--gold); background: rgba(27,58,107,.2); }
 .ps-btn.ghost:hover { background: rgba(198,147,10,.16); }
 .ps-btn.green  { border-color: var(--green-border); color: var(--green); background: var(--green-dim); }
 .ps-btn.green:hover { background: rgba(74,222,128,.18); }

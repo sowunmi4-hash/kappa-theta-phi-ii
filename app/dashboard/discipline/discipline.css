@@ -27,7 +27,7 @@
 
 /* Violation cards */
 .disc-viol-card {
-  background: rgba(11,18,42,.94); border: 1px solid rgba(27,58,107,.25);
+  background: rgba(11,18,42,.94); border: 1px solid rgba(27,58,107,.38);
   border-radius: 4px; overflow: hidden; border-left: 3px solid transparent;
   transition: border-color .15s; box-shadow: 0 2px 12px rgba(0,0,0,.35);
 }
@@ -61,7 +61,7 @@
 
 /* Violation body */
 .disc-viol-body { padding: 1rem 1.3rem 1.2rem; display: flex; flex-direction: column; gap: .85rem; border-top: 1px solid rgba(27,58,107,.22); }
-.disc-viol-list-label { font-family: var(--cinzel); font-size: .58rem; letter-spacing: 4px; color: rgba(244,195,0,.42); text-transform: uppercase; margin-bottom: .45rem; }
+.disc-viol-list-label { font-family: var(--cinzel); font-size: .58rem; letter-spacing: 4px; color: rgba(244,195,0,.5); text-transform: uppercase; margin-bottom: .45rem; }
 .disc-viol-item { font-family: var(--body); font-size: .92rem; color: var(--bone-dim); padding: .35rem 0; border-bottom: 1px solid rgba(27,58,107,.22); display: flex; align-items: flex-start; gap: .6rem; }
 .disc-viol-item::before { content: '·'; color: rgba(198,147,10,.4); flex-shrink: 0; margin-top: 1px; }
 .disc-viol-notes { font-family: var(--body); font-size: .88rem; color: var(--bone-faint); font-style: italic; padding: .5rem .75rem; border-left: 2px solid rgba(255,255,255,.06); }
@@ -69,7 +69,7 @@
 /* Track blocks */
 .disc-track-grid { display: grid; grid-template-columns: 1fr 1fr; gap: .6rem; }
 .disc-track-block {
-  background: rgba(8,14,32,.82); border: 1px solid rgba(27,58,107,.25);
+  background: rgba(8,14,32,.82); border: 1px solid rgba(27,58,107,.38);
   border-radius: 3px; padding: .85rem 1rem; display: flex; flex-direction: column; gap: .35rem;
 }
 .disc-track-block.ssp-block { background: rgba(107,131,184,.04); border-color: rgba(107,131,184,.15); grid-column: 1/-1; }
@@ -108,7 +108,7 @@
 /* SSP lesson rows */
 .disc-ssp-lesson {
   display: flex; align-items: flex-start; gap: .75rem; padding: .55rem .7rem;
-  background: rgba(8,14,32,.82); border: 1px solid rgba(27,58,107,.22); border-radius: 3px;
+  background: rgba(8,14,32,.82); border: 1px solid rgba(27,58,107,.35); border-radius: 3px;
   cursor: pointer; transition: all .15s;
 }
 .disc-ssp-lesson:hover { border-color: rgba(107,131,184,.2); }
@@ -148,16 +148,16 @@
 
 /* LEFT: violation list */
 .disc-list-col { background: rgba(7,12,28,.65); border-right: 1px solid rgba(27,58,107,.22); display: flex; flex-direction: column; overflow: hidden; }
-.disc-list-hdr { padding: .6rem .85rem; border-bottom: 1px solid rgba(27,58,107,.22); font-family: var(--cinzel); font-size: .52rem; letter-spacing: 4px; color: rgba(244,195,0,.42); text-transform: uppercase; flex-shrink: 0; }
+.disc-list-hdr { padding: .6rem .85rem; border-bottom: 1px solid rgba(27,58,107,.22); font-family: var(--cinzel); font-size: .52rem; letter-spacing: 4px; color: rgba(244,195,0,.5); text-transform: uppercase; flex-shrink: 0; }
 .disc-list-items { flex: 1; overflow-y: auto; padding: .45rem .5rem; display: flex; flex-direction: column; gap: 2px; }
 .disc-list-item {
-  padding: .65rem .75rem; border: 1px solid rgba(27,58,107,.22);
+  padding: .65rem .75rem; border: 1px solid rgba(27,58,107,.35);
   background: rgba(10,18,40,.85); cursor: pointer; position: relative;
   transition: all .15s; border-radius: 3px; display: flex; flex-direction: column; gap: .3rem;
 }
 .disc-list-item:hover { border-color: rgba(255,255,255,.08); background: rgba(12,18,32,.9); }
 .disc-list-item.sel { border-color: rgba(224,80,112,.28); background: rgba(14,8,26,.96); }
-.disc-list-item.sel::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 2px; background: linear-gradient(to bottom, #f87191, var(--crimson)); border-radius: 2px 0 0 2px; }
+.disc-list-item.sel::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 2px; background: linear-gradient(to bottom, var(--crimson-b), var(--crimson)); border-radius: 2px 0 0 2px; }
 .disc-list-item-top { display: flex; align-items: center; justify-content: space-between; gap: .4rem; }
 .disc-list-name  { font-family: var(--display); font-size: .9rem; letter-spacing: 1px; color: var(--bone-faint); }
 .disc-list-item.sel .disc-list-name { color: var(--bone); }
@@ -176,18 +176,18 @@
   background: linear-gradient(160deg, rgba(18,6,12,.96), rgba(8,10,20,.98));
   position: relative; flex-shrink: 0;
 }
-.disc-detail-hdr::after { content: ''; position: absolute; top: 0; left: 1.5rem; right: 1.5rem; height: 1px; background: linear-gradient(90deg, transparent, rgba(224,80,112,.4), transparent); }
+.disc-detail-hdr::after { content: ''; position: absolute; top: 0; left: 1.5rem; right: 1.5rem; height: 1px; background: linear-gradient(90deg, transparent, rgba(196,30,58,.45), transparent); }
 .disc-detail-name { font-family: var(--display); font-weight: 700; font-size: 1.25rem; letter-spacing: 3px; color: var(--bone); }
 .disc-detail-sub  { font-family: var(--cinzel); font-size: .6rem; letter-spacing: 2px; color: var(--bone-faint); margin-top: .3rem; }
 .disc-detail-violations { padding: .85rem 1.3rem; display: flex; flex-direction: column; gap: .6rem; }
 
 /* RIGHT: issue form */
 .disc-issue-col { background: rgba(7,12,28,.45); border-left: 1px solid rgba(27,58,107,.22); display: flex; flex-direction: column; overflow-y: auto; }
-.disc-issue-hdr { padding: .6rem .85rem; border-bottom: 1px solid rgba(27,58,107,.22); font-family: var(--cinzel); font-size: .52rem; letter-spacing: 4px; color: rgba(244,195,0,.42); text-transform: uppercase; flex-shrink: 0; }
+.disc-issue-hdr { padding: .6rem .85rem; border-bottom: 1px solid rgba(27,58,107,.22); font-family: var(--cinzel); font-size: .52rem; letter-spacing: 4px; color: rgba(244,195,0,.5); text-transform: uppercase; flex-shrink: 0; }
 .disc-issue-form { padding: .85rem; display: flex; flex-direction: column; gap: .75rem; }
 .disc-issue-lbl { font-family: var(--cinzel); font-size: .55rem; letter-spacing: 3px; color: rgba(196,30,58,.45); text-transform: uppercase; display: block; margin-bottom: .3rem; }
 .disc-issue-fld {
-  background: rgba(6,11,26,.75); border: 1px solid rgba(27,58,107,.28); border-radius: 3px;
+  background: rgba(6,11,26,.75); border: 1px solid rgba(27,58,107,.4); border-radius: 3px;
   padding: .55rem .75rem; color: var(--bone-dim); font-family: var(--body); font-size: .9rem;
   width: 100%; outline: none; transition: border .15s;
 }
@@ -212,7 +212,7 @@
 
 /* Offense description */
 .disc-offense-desc {
-  background: rgba(6,11,26,.55); border: 1px solid rgba(27,58,107,.25);
+  background: rgba(6,11,26,.55); border: 1px solid rgba(27,58,107,.38);
   border-radius: 3px; padding: .65rem .8rem;
   font-family: var(--body); font-size: .85rem; color: var(--bone-faint); line-height: 1.65;
 }
@@ -221,7 +221,7 @@
 /* Violation inputs */
 .disc-viol-inputs { display: flex; flex-direction: column; gap: 4px; }
 .disc-viol-row    { display: flex; gap: 4px; }
-.disc-remove-btn  { font-size: .8rem; background: none; border: 1px solid rgba(27,58,107,.28); color: var(--bone-faint); cursor: pointer; border-radius: 3px; padding: .3rem .6rem; transition: all .15s; }
+.disc-remove-btn  { font-size: .8rem; background: none; border: 1px solid rgba(27,58,107,.4); color: var(--bone-faint); cursor: pointer; border-radius: 3px; padding: .3rem .6rem; transition: all .15s; }
 .disc-remove-btn:hover { border-color: rgba(224,80,112,.25); color: #e05070; }
 .disc-add-btn  { font-family: var(--cinzel); font-size: .55rem; letter-spacing: 2px; color: rgba(198,147,10,.5); background: none; border: 1px dashed rgba(198,147,10,.2); cursor: pointer; border-radius: 3px; padding: .3rem .75rem; transition: all .15s; text-transform: uppercase; }
 .disc-add-btn:hover { color: var(--gold-b); border-color: rgba(198,147,10,.4); }
@@ -254,6 +254,6 @@
 .disc-modal-close { background: none; border: none; color: var(--bone-faint); font-size: 1rem; cursor: pointer; }
 .disc-modal-body  { padding: 1.1rem 1.2rem; display: flex; flex-direction: column; gap: .8rem; }
 .disc-modal-lbl   { font-family: var(--cinzel); font-size: .6rem; letter-spacing: 3px; color: rgba(198,147,10,.5); text-transform: uppercase; display: block; margin-bottom: .28rem; }
-.disc-modal-fld   { background: rgba(6,11,26,.75); border: 1px solid rgba(27,58,107,.28); border-radius: 3px; padding: .6rem .85rem; color: var(--bone-dim); font-family: var(--body); font-size: .92rem; width: 100%; outline: none; transition: border .15s; }
+.disc-modal-fld   { background: rgba(6,11,26,.75); border: 1px solid rgba(27,58,107,.4); border-radius: 3px; padding: .6rem .85rem; color: var(--bone-dim); font-family: var(--body); font-size: .92rem; width: 100%; outline: none; transition: border .15s; }
 .disc-modal-fld:focus { border-color: rgba(224,80,112,.35); }
 .disc-modal-foot  { display: flex; gap: .5rem; }

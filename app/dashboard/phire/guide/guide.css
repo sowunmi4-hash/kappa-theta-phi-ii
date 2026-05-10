@@ -25,7 +25,7 @@
 }
 .gd-nav-btn:hover { color: var(--bone-dim); background: rgba(198,147,10,.04); }
 .gd-nav-btn.active {
-  background: rgba(198,147,10,.1); border-color: rgba(198,147,10,.28);
+  background: rgba(198,147,10,.1); border-color: rgba(27,58,107,.55);
   color: var(--gold-b);
 }
 

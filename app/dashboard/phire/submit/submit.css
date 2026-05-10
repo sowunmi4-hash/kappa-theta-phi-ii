@@ -4,7 +4,7 @@
 /* Category group */
 .sa-group-label {
   font-family: var(--cinzel); font-size: .7rem; letter-spacing: 6px;
-  color: rgba(244,195,0,.42); text-transform: uppercase;
+  color: rgba(244,195,0,.5); text-transform: uppercase;
   padding-bottom: .5rem; border-bottom: 1px solid rgba(198,147,10,.1);
   margin-bottom: .5rem;
 }
@@ -13,18 +13,18 @@
 .sa-item {
   display: flex; align-items: center; gap: 1rem;
   padding: 1rem 1.2rem;
-  background: rgba(7,11,20,.8); border: 1px solid rgba(27,58,107,.28);
+  background: rgba(7,11,20,.8); border: 1px solid rgba(27,58,107,.4);
   cursor: pointer; transition: all .15s; position: relative;
   margin-bottom: 2px;
 }
-.sa-item:hover { border-color: rgba(198,147,10,.28); background: rgba(198,147,10,.04); }
+.sa-item:hover { border-color: rgba(27,58,107,.55); background: rgba(198,147,10,.04); }
 .sa-item.selected {
   border-color: var(--gold);
   background: rgba(198,147,10,.09);
 }
 .sa-item.selected::before {
   content: ''; position: absolute; left: 0; top: 0; bottom: 0;
-  width: 3px; background: linear-gradient(to bottom, var(--gold-b), var(--gold));
+  width: 3px; background: linear-gradient(to bottom, var(--crimson-b), var(--crimson));
 }
 .sa-item.pending { opacity: .45; cursor: not-allowed; }
 .sa-item-name {
@@ -65,7 +65,7 @@
 .sa-cancel-btn {
   font-family: var(--cinzel); font-size: .72rem; letter-spacing: 3px;
   padding: .7rem 1.4rem; border: 1px solid rgba(198,147,10,.3);
-  color: var(--gold); background: rgba(198,147,10,.08); cursor: pointer;
+  color: var(--gold); background: rgba(27,58,107,.2); cursor: pointer;
   border-radius: 2px; transition: all .15s; text-transform: uppercase;
 }
 .sa-cancel-btn:hover { background: rgba(198,147,10,.16); }

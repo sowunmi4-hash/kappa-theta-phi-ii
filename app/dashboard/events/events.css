@@ -72,7 +72,7 @@
   min-height: 38px;
 }
 .ev-cal-cell.empty { cursor: default; background: rgba(4,6,15,.4); }
-.ev-cal-cell:not(.empty):hover { background: rgba(198,147,10,.06); }
+.ev-cal-cell:not(.empty):hover { background: rgba(27,58,107,.16); }
 .ev-cal-cell.today { background: rgba(198,147,10,.07); box-shadow: inset 0 0 0 1px rgba(198,147,10,.2); }
 .ev-cal-cell.today .ev-cal-num { color: var(--gold); font-weight: 700; }
 .ev-cal-cell.sel { background: rgba(198,147,10,.12); box-shadow: inset 0 0 0 1px rgba(198,147,10,.35); }
@@ -128,7 +128,7 @@
 }
 .ev-rsvp-btn:hover { background: rgba(14,20,34,.95); }
 .ev-rsvp-icon {
-  width: 32px; height: 32px; border-radius: 4px; border: 1px solid rgba(27,58,107,.28);
+  width: 32px; height: 32px; border-radius: 4px; border: 1px solid rgba(27,58,107,.4);
   display: flex; align-items: center; justify-content: center;
   font-size: .85rem; color: var(--bone-faint); transition: all .15s;
 }
@@ -232,7 +232,7 @@
   font-family: var(--cinzel); font-size: .62rem; letter-spacing: 2px;
   padding: 4px 11px; border-radius: 2px; border: 1px solid; text-transform: uppercase;
 }
-.ev-badge.upcoming  { background: rgba(198,147,10,.1); border-color: rgba(198,147,10,.28); color: var(--gold-b); }
+.ev-badge.upcoming  { background: rgba(198,147,10,.1); border-color: rgba(27,58,107,.55); color: var(--gold-b); }
 .ev-badge.completed { background: var(--green-dim); border-color: var(--green-border); color: var(--green); }
 .ev-badge.dress     { background: rgba(107,131,184,.08); border-color: rgba(107,131,184,.22); color: #8ba3d4; }
 
@@ -258,10 +258,10 @@
 /* Meta grid */
 .ev-meta-grid {
   display: grid; grid-template-columns: 1fr 1fr;
-  gap: 1px; background: rgba(255,255,255,.04); border: 1px solid rgba(27,58,107,.28);
+  gap: 1px; background: rgba(255,255,255,.04); border: 1px solid rgba(27,58,107,.4);
 }
 .ev-meta-cell { background: rgba(8,13,24,.88); padding: .85rem 1rem; }
-.ev-meta-key  { font-family: var(--cinzel); font-size: .6rem; letter-spacing: 3px; color: rgba(244,195,0,.42); text-transform: uppercase; margin-bottom: .3rem; }
+.ev-meta-key  { font-family: var(--cinzel); font-size: .6rem; letter-spacing: 3px; color: rgba(244,195,0,.5); text-transform: uppercase; margin-bottom: .3rem; }
 .ev-meta-val  { font-family: var(--display); font-size: 1.05rem; letter-spacing: 1px; color: var(--bone); text-transform: uppercase; }
 
 /* Action row */
@@ -299,7 +299,7 @@
   cursor: pointer; transition: background .15s; position: relative;
 }
 .ev-right-card:hover { background: rgba(198,147,10,.04); }
-.ev-right-card.sel  { background: rgba(198,147,10,.08); border-left: 2px solid var(--gold); }
+.ev-right-card.sel  { background: rgba(27,58,107,.2); border-left: 2px solid var(--gold); }
 .ev-right-card.past { opacity: .55; }
 .ev-right-card.past:hover { opacity: .8; }
 .ev-right-card-date { display: flex; align-items: center; justify-content: space-between; margin-bottom: .3rem; }
@@ -328,13 +328,13 @@
 .ev-create-field { display: flex; flex-direction: column; gap: .35rem; }
 .ev-create-label { font-family: var(--cinzel); font-size: .62rem; letter-spacing: 3px; color: rgba(198,147,10,.5); text-transform: uppercase; }
 .ev-create-input {
-  background: rgba(4,6,15,.7); border: 1px solid rgba(27,58,107,.28); border-radius: 2px;
+  background: rgba(4,6,15,.7); border: 1px solid rgba(27,58,107,.4); border-radius: 2px;
   padding: .65rem .9rem; color: var(--bone-dim); font-family: var(--body); font-size: .95rem;
   width: 100%; outline: none; transition: border .15s;
 }
 .ev-create-input:focus { border-color: rgba(196,30,58,.45); }
 .ev-create-textarea {
-  background: rgba(4,6,15,.7); border: 1px solid rgba(27,58,107,.28); border-radius: 2px;
+  background: rgba(4,6,15,.7); border: 1px solid rgba(27,58,107,.4); border-radius: 2px;
   padding: .65rem .9rem; color: var(--bone-dim); font-family: var(--body); font-size: .95rem;
   width: 100%; outline: none; resize: vertical; min-height: 100px; transition: border .15s;
 }
@@ -397,7 +397,7 @@
   position: relative;
   overflow: hidden;
 }
-.ev-countdown.normal  { background: rgba(198,147,10,.06); border-color: rgba(198,147,10,.2); }
+.ev-countdown.normal  { background: rgba(27,58,107,.16); border-color: rgba(244,195,0,.3); }
 .ev-countdown.urgent  { background: rgba(224,80,112,.07); border-color: rgba(224,80,112,.3); }
 .ev-countdown.live    { background: rgba(74,222,128,.07); border-color: var(--green-border); }
 .ev-countdown.started { background: rgba(198,147,10,.04); border-color: rgba(198,147,10,.15); }
