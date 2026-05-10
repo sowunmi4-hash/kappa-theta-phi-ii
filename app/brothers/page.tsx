@@ -516,6 +516,29 @@ export default function BrothersPage() {
                       <p className="spotlight-bio">{profileData.hobbies}</p>
                     </div>
                   )}
+                  {profileData.social_links && Object.entries(profileData.social_links).some(([,v]) => v) && (
+                    <div className="spotlight-bio-section">
+                      <div className="spotlight-profile-lbl">Find Me On</div>
+                      <div className="spotlight-socials">
+                        {Object.entries(profileData.social_links as Record<string,string>).filter(([,v]) => v).map(([platform, handle]) => (
+                          <a key={platform} className="spotlight-social-pill"
+                            href={platform === 'Second Life' ? handle : platform === 'Instagram' ? `https://instagram.com/${handle.replace('@','')}` : platform === 'Twitter/X' ? `https://x.com/${handle.replace('@','')}` : platform === 'TikTok' ? `https://tiktok.com/@${handle.replace('@','')}` : platform === 'YouTube' ? `https://youtube.com/@${handle.replace('@','')}` : '#'}
+                            target="_blank" rel="noopener noreferrer">
+                            <span className="spotlight-social-icon">
+                              {platform === 'Instagram' && '📸'}
+                              {platform === 'Twitter/X' && '𝕏'}
+                              {platform === 'TikTok' && '🎵'}
+                              {platform === 'YouTube' && '▶'}
+                              {platform === 'Discord' && '💬'}
+                              {platform === 'Second Life' && '⚓'}
+                            </span>
+                            <span className="spotlight-social-name">{platform}</span>
+                            <span className="spotlight-social-handle">{handle.startsWith('secondlife') ? 'View Profile' : handle}</span>
+                          </a>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                 </div>
               )}
             </div>

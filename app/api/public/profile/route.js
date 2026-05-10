@@ -20,13 +20,13 @@ export async function GET(req) {
 
   // Get their profile
   const profiles = await fetch(
-    `${S}/rest/v1/member_profiles?member_id=eq.${member.id}&select=bio,favourite_quote,hobbies,portrait_url,banner_url`,
+    `${S}/rest/v1/member_profiles?member_id=eq.${member.id}&select=bio,favourite_quote,hobbies,portrait_url,banner_url,social_links`,
     { headers: h() }
   ).then(r => r.json());
 
   const profile = profiles?.[0] || null;
 
   // Only return if they've actually filled something in
-  const hasProfile = profile && (profile.bio || profile.favourite_quote || profile.hobbies);
+  const hasProfile = profile && (profile.bio || profile.favourite_quote || profile.hobbies || profile.social_links);
   return NextResponse.json({ profile: hasProfile ? profile : null });
 }

@@ -334,3 +334,26 @@
   .brothers-shell .spotlight-text { padding: 2rem 1.5rem 3rem; }
 }
 
+
+/* Social links */
+.spotlight-socials { display: flex; flex-wrap: wrap; gap: .5rem; }
+.spotlight-social-pill {
+  display: inline-flex; align-items: center; gap: .5rem;
+  padding: .42rem .9rem; border-radius: 3px;
+  border: 1px solid rgba(27,58,107,.4);
+  background: rgba(12,22,48,.6);
+  text-decoration: none; transition: all .15s;
+}
+.spotlight-social-pill:hover {
+  border-color: rgba(244,195,0,.35);
+  background: rgba(244,195,0,.06);
+}
+.spotlight-social-icon { font-size: .85rem; line-height: 1; }
+.spotlight-social-name {
+  font-family: 'Cinzel',serif; font-size: .52rem; letter-spacing: 2px;
+  color: rgba(245,240,232,.45); text-transform: uppercase;
+}
+.spotlight-social-handle {
+  font-family: 'Rajdhani',sans-serif; font-size: .88rem;
+  color: rgba(244,195,0,.75);
+}
