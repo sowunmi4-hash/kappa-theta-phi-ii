@@ -35,13 +35,35 @@ export default function EditPage() {
     setTimeout(() => setSaved(false), 2500);
   }
 
+
+  async function compressImage(file: File, maxPx = 800, quality = 0.85): Promise<Blob> {
+    return new Promise((resolve) => {
+      const img = new Image();
+      const url = URL.createObjectURL(file);
+      img.onload = () => {
+        const scale = Math.min(1, maxPx / Math.max(img.width, img.height));
+        const w = Math.round(img.width * scale);
+        const h = Math.round(img.height * scale);
+        const canvas = document.createElement('canvas');
+        canvas.width = w; canvas.height = h;
+        const ctx = canvas.getContext('2d')!;
+        ctx.drawImage(img, 0, 0, w, h);
+        URL.revokeObjectURL(url);
+        canvas.toBlob(blob => resolve(blob!), 'image/jpeg', quality);
+      };
+      img.src = url;
+    });
+  }
+
   async function uploadFile(e: any, type: string) {
     const file = e.target.files[0];
     if (!file) return;
     setUploading(type); setUploadError('');
     setPreviews((p: any) => ({ ...p, [type]: URL.createObjectURL(file) }));
+    const compressed = await compressImage(file, type === 'banner' ? 1200 : 800);
     const fd = new FormData();
-    fd.append('file', file); fd.append('type', type);
+    fd.append('file', new File([compressed], 'photo.jpg', { type: 'image/jpeg' }));
+    fd.append('type', type);
     try {
       const raw = await fetch('/api/dashboard/upload', {
         method: 'POST', body: fd, credentials: 'include'
