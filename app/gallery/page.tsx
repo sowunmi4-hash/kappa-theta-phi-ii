@@ -228,12 +228,32 @@ export default function GalleryPage() {
     loadGallery();
   }
 
+
+  async function compressImage(file: File, maxPx = 1200): Promise<File> {
+    if (file.type.startsWith('video')) return file;
+    return new Promise((resolve) => {
+      const img = new Image();
+      const url = URL.createObjectURL(file);
+      img.onload = () => {
+        const scale = Math.min(1, maxPx / Math.max(img.width, img.height));
+        const w = Math.round(img.width * scale), h = Math.round(img.height * scale);
+        const canvas = document.createElement('canvas');
+        canvas.width = w; canvas.height = h;
+        canvas.getContext('2d')!.drawImage(img, 0, 0, w, h);
+        URL.revokeObjectURL(url);
+        canvas.toBlob(blob => resolve(new File([blob!], 'photo.jpg', { type: 'image/jpeg' })), 'image/jpeg', 0.85);
+      };
+      img.src = url;
+    });
+  }
+
   async function handleUpload() {
     if (!file) { setStatus({ msg: 'Please select a file.', type: 'error' }); return; }
     setUploading(true); setStatus(null);
     try {
-      const form = new FormData();
-      form.append('file', file);
+      const compressed = await compressImage(file);
+    const form = new FormData();
+      form.append('file', compressed);
       form.append('caption', caption);
       const tab = tabMode === 'new' ? (newTabName.trim() || 'General') : (selectedTab || 'General');
       form.append('uploaded_by', name || 'Anonymous');

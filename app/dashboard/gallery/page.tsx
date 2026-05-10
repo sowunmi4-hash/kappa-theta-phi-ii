@@ -53,12 +53,33 @@ export default function GalleryPage() {
     setFilePreview(URL.createObjectURL(file));
   }
 
+
+  async function compressImage(file: File, maxPx = 1200): Promise<File> {
+    if (file.type === 'video/mp4') return file; // don't compress video
+    return new Promise((resolve) => {
+      const img = new Image();
+      const url = URL.createObjectURL(file);
+      img.onload = () => {
+        const scale = Math.min(1, maxPx / Math.max(img.width, img.height));
+        const w = Math.round(img.width * scale);
+        const h = Math.round(img.height * scale);
+        const canvas = document.createElement('canvas');
+        canvas.width = w; canvas.height = h;
+        canvas.getContext('2d')!.drawImage(img, 0, 0, w, h);
+        URL.revokeObjectURL(url);
+        canvas.toBlob(blob => resolve(new File([blob!], 'photo.jpg', { type: 'image/jpeg' })), 'image/jpeg', 0.85);
+      };
+      img.src = url;
+    });
+  }
+
   async function upload() {
     if (!fileObj) return;
     const tab = tabMode === 'new' ? newTabName.trim() || 'General' : selectedTab;
     setUploading(true);
+    const compressed = await compressImage(fileObj);
     const fd = new FormData();
-    fd.append('file', fileObj);
+    fd.append('file', compressed);
     fd.append('caption', caption);
     fd.append('tab', tab);
     await fetch('/api/dashboard/private-gallery', { method: 'POST', body: fd });
