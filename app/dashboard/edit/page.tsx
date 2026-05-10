@@ -43,23 +43,27 @@ export default function EditPage() {
     const fd = new FormData();
     fd.append('file', file); fd.append('type', type);
     try {
-      const res = await fetch('/api/dashboard/upload', { method: 'POST', body: fd }).then(r => r.json());
+      const raw = await fetch('/api/dashboard/upload', {
+        method: 'POST', body: fd, credentials: 'include'
+      });
+      const text = await raw.text();
+      let res: any = {};
+      try { res = JSON.parse(text); } catch { setUploadError(`Server error (${raw.status}): ${text.slice(0,120)}`); setUploading(null); return; }
       if (res.file_url) {
         update(`${type}_url`, res.file_url);
-        // Auto-save so user doesn't need to click Save Changes
         setProfile((p: any) => {
           const updated = { ...p, [`${type}_url`]: res.file_url };
           fetch('/api/dashboard/profile', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(updated) });
           return updated;
         });
         setSaved(true); setTimeout(() => setSaved(false), 2500);
-        router.refresh(); // Force Next.js to re-fetch profile data on all pages
+        router.refresh();
       } else {
-        setUploadError(res.error || 'Upload failed. Please try again.');
-        console.error('[upload] error:', res.error);
+        setUploadError(res.error || `Upload failed (${raw.status}). Please try again.`);
+        console.error('[upload] error:', res.error, raw.status);
       }
-    } catch {
-      setUploadError('Upload failed. Check your connection and try again.');
+    } catch (err: any) {
+      setUploadError('Network error: ' + err.message);
     }
     setUploading(null);
   }
