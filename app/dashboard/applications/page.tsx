@@ -6,6 +6,25 @@ import './applications.css';
 import DashSidebar from '../DashSidebar';
 
 function fmt(d:string){ return new Date(d).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}); }
+
+// SLT = America/Los_Angeles. Convert UTC ISO → SLT string for datetime-local input
+function utcToSLTInput(iso:string):string {
+  if(!iso) return '';
+  const d = new Date(iso);
+  const inLA = new Date(d.toLocaleString('en-US',{timeZone:'America/Los_Angeles'}));
+  const y=inLA.getFullYear(), mo=String(inLA.getMonth()+1).padStart(2,'0'),
+        dd=String(inLA.getDate()).padStart(2,'0'), h=String(inLA.getHours()).padStart(2,'0'),
+        mi=String(inLA.getMinutes()).padStart(2,'0');
+  return `${y}-${mo}-${dd}T${h}:${mi}`;
+}
+// Convert datetime-local string (treated as SLT) → UTC ISO for storage
+function sltInputToUTC(sltStr:string):string|null {
+  if(!sltStr) return null;
+  const naive = new Date(sltStr);
+  const inLA  = new Date(naive.toLocaleString('en-US',{timeZone:'America/Los_Angeles'}));
+  const offset = naive.getTime() - inLA.getTime();
+  return new Date(naive.getTime() - offset).toISOString();
+}
 function timeAgo(d:string){ const s=Math.floor((Date.now()-new Date(d).getTime())/1000); if(s<3600)return`${Math.floor(s/60)}m ago`; if(s<86400)return`${Math.floor(s/3600)}h ago`; if(s<604800)return`${Math.floor(s/86400)}d ago`; return fmt(d); }
 const STATUS_LABELS: Record<string,string> = { pending:'Pending', interview:'Interview', approved:'Approved', denied:'Denied', waitlisted:'Waitlisted' };
 
@@ -40,13 +59,13 @@ export default function ApplicationsPage() {
   async function save(){
     if(!sel||!newStatus)return;
     setSaving(true);setSaveError('');
-    const res=await fetch('/api/apply',{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:sel.id,status:newStatus,review_notes:notes,interview_date:interviewDate||null,interview_notes:interviewNotes||null})}).then(r=>r.json());
+    const res=await fetch('/api/apply',{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:sel.id,status:newStatus,review_notes:notes,interview_date:sltInputToUTC(interviewDate),interview_notes:interviewNotes||null})}).then(r=>r.json());
     setSaving(false);
     if(res.error){setSaveError(res.error);return;}
     setSel(null);load();
   }
 
-  function select(a:any){setSel(a);setNewStatus(a.status);setNotes(a.review_notes||'');setInterviewDate(a.interview_date?a.interview_date.slice(0,16):'');setInterviewNotes(a.interview_notes||'');}
+  function select(a:any){setSel(a);setNewStatus(a.status);setNotes(a.review_notes||'');setInterviewDate(a.interview_date?utcToSLTInput(a.interview_date):'');setInterviewNotes(a.interview_notes||'');}
   const filtered=filter==='all'?apps:apps.filter(a=>a.status===filter);
 
   if(!member||loading)return <div className="dash-loading">LOADING...</div>;
@@ -147,7 +166,7 @@ export default function ApplicationsPage() {
                     </div>
                     {newStatus==='interview'&&(
                       <div style={{display:'flex',flexDirection:'column',gap:'.4rem'}}>
-                        <div style={{fontFamily:'var(--cinzel)',fontSize:'.52rem',letterSpacing:'3px',color:'rgba(96,165,250,.5)',textTransform:'uppercase'}}>Interview Date & Time (SLT)</div>
+                        <div style={{fontFamily:'var(--cinzel)',fontSize:'.52rem',letterSpacing:'3px',color:'rgba(96,165,250,.5)',textTransform:'uppercase'}}>Interview Date & Time — Enter in SLT</div>
                         <input type="datetime-local" className="ap-dash-notes" style={{minHeight:'auto',padding:'.5rem .75rem'}} value={interviewDate} onChange={e=>setInterviewDate(e.target.value)}/>
                         <input className="ap-dash-notes" style={{minHeight:'auto',padding:'.5rem .75rem'}} value={interviewNotes} onChange={e=>setInterviewNotes(e.target.value)} placeholder="Interview location or additional notes..."/>
                       </div>
