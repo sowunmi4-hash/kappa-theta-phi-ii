@@ -140,6 +140,8 @@ export default function BrothersPage() {
   const [spotlight, setSpotlight] = useState<View | null>(null);
   const [spotActive, setSpotActive] = useState(false);
   const [imgErrors, setImgErrors] = useState<Set<string>>(new Set());
+  const [profileData, setProfileData] = useState<any>(null);
+  const [profileLoading, setProfileLoading] = useState(false);
 
   const wallRef = useRef<HTMLElement | null>(null);
   const cardRefsRef = useRef<Map<string, HTMLElement>>(new Map());
@@ -306,11 +308,18 @@ export default function BrothersPage() {
 
   // ── SPOTLIGHT ─────────────────────────────────────────────
   function openSpotlight(v: View) {
+    setProfileData(null);
+    setProfileLoading(true);
+    fetch(`/api/public/profile?frat_name=${encodeURIComponent(v.member.frat)}`)
+      .then(r => r.json())
+      .then(d => { setProfileData(d.profile); setProfileLoading(false); })
+      .catch(() => setProfileLoading(false));
     setSpotlight(v);
     setSpotActive(false);
     window.setTimeout(() => setSpotActive(true), 350);
   }
   function closeSpotlight() {
+    setProfileData(null); setProfileLoading(false);
     setProfileData(null);
     setSpotActive(false);
     window.setTimeout(() => setSpotlight(null), 500);
