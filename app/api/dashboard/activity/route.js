@@ -27,7 +27,7 @@ export async function GET() {
 
   // Get the most recent session per member
   const sessions = await fetch(
-    `${S}/rest/v1/website_sessions?select=member_id,is_active,last_seen_at,created_at,expires_at&order=last_seen_at.desc`,
+    `${S}/rest/v1/website_sessions?is_admin_login=eq.false&select=member_id,is_active,last_seen_at,created_at,expires_at&order=last_seen_at.desc`,
     { headers: h() }
   ).then(r => r.json());
 

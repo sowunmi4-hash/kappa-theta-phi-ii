@@ -80,7 +80,8 @@ export default function ActivityPage() {
             <div className="dash-page-title">Member Activity</div>
           </div>
           <div style={{display:'flex',alignItems:'center',gap:'1rem'}}>
-            <span style={{fontFamily:'var(--cinzel)',fontSize:'.52rem',letterSpacing:'2px',color:'var(--bone-faint)'}}>
+            <span style={{fontFamily:'var(--cinzel)',fontSize:'.5rem',letterSpacing:'2px',color:'rgba(196,30,58,.45)'}}>Admin logins excluded</span>
+          <span style={{fontFamily:'var(--cinzel)',fontSize:'.52rem',letterSpacing:'2px',color:'var(--bone-faint)'}}>
               Refreshed {timeAgo(lastRefresh.toISOString())}
             </span>
             <button className="dash-btn gold-ghost" onClick={() => { load(); setLastRefresh(new Date()); }}>
