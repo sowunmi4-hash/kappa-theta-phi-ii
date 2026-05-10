@@ -1,6 +1,8 @@
 'use client';
 import { useEffect, useRef } from 'react';
 import './bloodline.css';
+import '../../public.css';
+import PublicNav from '../../components/PublicNav';
 
 const LINES = [
   { numeral: 'I',   name: 'Founding',  kanji: '火', mark: 'The Spark · Origin' },
@@ -60,19 +62,12 @@ export default function BloodlinePage() {
 
       <canvas ref={dustRef} id="bloodline-dust"></canvas>
 
-      <nav id="navbar">
-        <a href="/" className="nav-brand">KΘΦ <span>II</span></a>
-        <ul className="nav-links" id="navLinks">
-          <li><a href="/">Home</a></li>
-          <li><a href="/about" className="active">About</a></li>
-          <li><a href="/brothers">Brothers</a></li>
-          <li><a href="/gallery">Gallery</a></li>
-          <li><a href="/philanthropy">Philanthropy</a></li>
-        </ul>
-        <div className="mobile-toggle" onClick={() => document.getElementById('navLinks')?.classList.toggle('open')}>
-          <span></span><span></span><span></span>
-        </div>
-      </nav>
+      <PublicNav/>
+      <div className="pub-kanji" aria-hidden="true">
+        <span className="k1">統</span>
+        <span className="k2">義</span>
+        <span className="k3">兄</span>
+      </div>
 
       <main className="lineage">
 

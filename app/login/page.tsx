@@ -1,6 +1,8 @@
 'use client';
 import { useState, useEffect, useRef } from 'react';
 import './login.css';
+import '../public.css';
+import PublicNav from '../components/PublicNav';
 
 export default function LoginPage() {
   const [step, setStep] = useState<'login' | 'create-password' | 'logged-in'>('login');
@@ -115,16 +117,12 @@ export default function LoginPage() {
 
       <canvas ref={dustRef} id="login-dust"></canvas>
 
-      <nav id="navbar">
-        <a href="/" className="nav-brand">KΘΦ <span>II</span></a>
-        <ul className="nav-links" id="navLinks">
-          <li><a href="/">Home</a></li>
-          <li><a href="/about">About</a></li>
-          <li><a href="/brothers">Brothers</a></li>
-          <li><a href="/gallery">Gallery</a></li>
-          <li><a href="/philanthropy">Philanthropy</a></li>
-        </ul>
-      </nav>
+      <PublicNav/>
+      <div className="pub-kanji" aria-hidden="true">
+        <span className="k1">⚓</span>
+        <span className="k2">武</span>
+        <span className="k3">海</span>
+      </div>
 
       <main className="login-page">
 

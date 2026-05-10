@@ -4,12 +4,12 @@
 :root{
   --gold:#c6930a;
   --gold-bright:#e8b84b;
-  --gold-soft:rgba(198,147,10,.5);
+  --gold-soft:rgba(244,195,0,.5);
   --bone:#f0e8d0;
   --bone-dim:rgba(240,232,208,.6);
   --bone-faint:rgba(240,232,208,.32);
   --crimson:#b22234;
-  --deep:#04060f;
+  --deep:#060D1E;
   --deep-2:#080d18;
   --frame:rgba(198,147,10,.45);
   --border:rgba(198,147,10,.18);
@@ -19,7 +19,7 @@
 html{scroll-behavior:smooth}
 body{
   background:
-    radial-gradient(ellipse at 30% 0%,rgba(198,147,10,.06) 0%,transparent 45%),
+    radial-gradient(ellipse at 30% 0%,rgba(27,58,107,.4) 0%,transparent 45%),
     radial-gradient(ellipse at 80% 100%,rgba(198,147,10,.04) 0%,transparent 50%),
     var(--deep);
   color:var(--bone);
@@ -102,7 +102,7 @@ img{display:block;max-width:100%}
 }
 .gate-logo-wrap::before{
   content:'';position:absolute;inset:-8px;
-  border:1px solid rgba(198,147,10,.3);pointer-events:none;
+  border:1px solid rgba(244,195,0,.3);pointer-events:none;
 }
 .gl-tl,.gl-tr,.gl-bl,.gl-br{position:absolute;width:10px;height:10px;pointer-events:none}
 .gl-tl{top:-9px;left:-9px;border-top:1px solid var(--gold);border-left:1px solid var(--gold)}
@@ -111,7 +111,7 @@ img{display:block;max-width:100%}
 .gl-br{bottom:-9px;right:-9px;border-bottom:1px solid var(--gold);border-right:1px solid var(--gold)}
 .gate-logo{
   width:100%;height:100%;object-fit:contain;
-  filter:drop-shadow(0 2px 8px rgba(198,147,10,.2));
+  filter:drop-shadow(0 2px 8px rgba(244,195,0,.25));
 }
 
 /* ── HEADER LANG ── */
@@ -126,7 +126,7 @@ img{display:block;max-width:100%}
   font-family:var(--display);font-weight:700;
   font-size:2rem;letter-spacing:5px;line-height:1;
   color:var(--bone);margin-bottom:.8rem;
-  text-shadow:0 0 30px rgba(198,147,10,.15);
+  text-shadow:0 0 30px rgba(244,195,0,.2);
 }
 
 .welcome-name{
@@ -155,7 +155,7 @@ img{display:block;max-width:100%}
   content:'';position:absolute;left:50%;top:50%;
   width:8px;height:8px;background:var(--gold);
   transform:translate(-50%,-50%) rotate(45deg);
-  box-shadow:0 0 10px rgba(198,147,10,.5);
+  box-shadow:0 0 10px rgba(244,195,0,.5);
 }
 
 /* ── ERROR ── */
@@ -188,7 +188,7 @@ img{display:block;max-width:100%}
 .form-group input::placeholder{color:var(--bone-faint);font-weight:400}
 .form-group input:focus{
   border-color:var(--gold);background:rgba(8,14,28,.85);
-  box-shadow:0 0 0 1px rgba(198,147,10,.2),0 0 14px rgba(198,147,10,.08);
+  box-shadow:0 0 0 1px rgba(244,195,0,.25),0 0 14px rgba(198,147,10,.08);
 }
 
 /* Custom checkbox */
@@ -199,7 +199,7 @@ img{display:block;max-width:100%}
   display:flex;align-items:center;justify-content:center;
   transition:all .15s;flex-shrink:0;
 }
-.remember.checked .remember-box{border-color:var(--gold);background:rgba(198,147,10,.15)}
+.remember.checked .remember-box{border-color:var(--gold);background:rgba(244,195,0,.2)}
 .remember-box span{color:var(--gold);font-size:.7rem;font-weight:700;display:none}
 .remember.checked .remember-box span{display:inline}
 .remember-text{
@@ -211,7 +211,7 @@ img{display:block;max-width:100%}
 .gate-submit{
   margin-top:.5rem;
   padding:.85rem 1.4rem;
-  background:linear-gradient(180deg,rgba(198,147,10,.22),rgba(198,147,10,.1));
+  background:linear-gradient(180deg,rgba(198,147,10,.22),rgba(27,58,107,.28));
   border:1px solid var(--gold);
   color:var(--gold);
   font-family:'Cinzel',serif;font-weight:600;font-size:.65rem;letter-spacing:5px;
@@ -247,7 +247,7 @@ img{display:block;max-width:100%}
   color:var(--deep);font-size:1.6rem;
   box-shadow:
     0 6px 20px rgba(0,0,0,.6),
-    0 0 18px rgba(198,147,10,.4),
+    0 0 18px rgba(244,195,0,.4),
     inset 0 -3px 6px rgba(0,0,0,.2),
     inset 0 3px 4px rgba(255,255,255,.3);
   font-family:var(--display);font-weight:700;letter-spacing:2px;
@@ -286,7 +286,7 @@ img{display:block;max-width:100%}
 .session-cta{
   display:flex;align-items:center;justify-content:center;gap:10px;
   padding:.85rem 1.4rem;
-  background:linear-gradient(180deg,rgba(198,147,10,.22),rgba(198,147,10,.1));
+  background:linear-gradient(180deg,rgba(198,147,10,.22),rgba(27,58,107,.28));
   border:1px solid var(--gold);
   color:var(--gold);
   font-family:'Cinzel',serif;font-size:.6rem;letter-spacing:5px;
@@ -299,7 +299,7 @@ img{display:block;max-width:100%}
   letter-spacing:6px;
 }
 .session-logout{
-  background:transparent;border:1px solid rgba(198,147,10,.3);color:var(--bone-dim);
+  background:transparent;border:1px solid rgba(244,195,0,.3);color:var(--bone-dim);
   padding:.7rem 1.2rem;
   font-family:'Cinzel',serif;font-size:.55rem;letter-spacing:4px;
   text-transform:uppercase;cursor:pointer;
