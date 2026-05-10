@@ -544,20 +544,36 @@ const SOCIAL_ICONS: Record<string, string> = {
 };
 
 function BrotherSocials({ links }: { links: any }) {
+  const [copied, setCopied] = useState<string|null>(null);
   if (!links || typeof links !== 'object') return null;
   const entries = Object.entries(links).filter(([, v]) => v) as [string, string][];
   if (!entries.length) return null;
+
+  function handleClick(e: React.MouseEvent, platform: string, handle: string) {
+    if (platform === 'Discord') {
+      e.preventDefault();
+      navigator.clipboard.writeText(handle).catch(() => {});
+      setCopied(handle);
+      setTimeout(() => setCopied(null), 2000);
+    }
+  }
+
   return (
     <div className="spotlight-bio-section">
       <div className="spotlight-profile-lbl">Find Me On</div>
       <div className="spotlight-socials">
         {entries.map(([platform, handle]) => (
-          <a key={platform} className="spotlight-social-pill"
-            href={socialLink(platform, handle)}
-            target="_blank" rel="noopener noreferrer">
+          <a key={platform} className={`spotlight-social-pill${copied===handle?' copied':''}`}
+            href={platform === 'Discord' ? '#' : socialLink(platform, handle)}
+            onClick={(e) => handleClick(e, platform, handle)}
+            target={platform === 'Discord' ? undefined : '_blank'}
+            rel="noopener noreferrer"
+            title={platform === 'Discord' ? 'Click to copy Discord username' : undefined}>
             <span className="spotlight-social-icon">{SOCIAL_ICONS[platform] || '🔗'}</span>
             <span className="spotlight-social-name">{platform}</span>
-            <span className="spotlight-social-handle">{handle.startsWith('secondlife') ? 'View Profile' : handle}</span>
+            <span className="spotlight-social-handle">
+              {copied === handle ? '✓ Copied!' : handle.startsWith('secondlife') ? 'View Profile' : handle}
+            </span>
           </a>
         ))}
       </div>

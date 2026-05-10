@@ -357,3 +357,8 @@
   font-family: 'Rajdhani',sans-serif; font-size: .88rem;
   color: rgba(244,195,0,.75);
 }
+.spotlight-social-pill.copied {
+  border-color: rgba(74,222,128,.4);
+  background: rgba(74,222,128,.08);
+}
+.spotlight-social-pill.copied .spotlight-social-handle { color: #4ade80; }
