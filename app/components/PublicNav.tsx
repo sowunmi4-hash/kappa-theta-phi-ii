@@ -34,7 +34,7 @@ export default function PublicNav() {
           </li>
         ))}
       </ul>
-      <a href="/login" className="pub-nav-login">Dashboard</a>
+
       {/* Mobile hamburger */}
       <button className="pub-nav-burger" onClick={() => setOpen(o => !o)}>
         <span/><span/><span/>
@@ -42,7 +42,6 @@ export default function PublicNav() {
       {open && (
         <div className="pub-nav-mobile" onClick={() => setOpen(false)}>
           {LINKS.map(l => <a key={l.href} href={l.href} className="pub-nav-mobile-link">{l.label}</a>)}
-          <a href="/login" className="pub-nav-mobile-link" style={{color:'rgba(196,30,58,.8)'}}>Dashboard</a>
         </div>
       )}
     </nav>
