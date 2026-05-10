@@ -41,7 +41,7 @@
 
 /* Create activity card */
 .mg-create {
-  background: rgba(8,13,24,.9); border: 1px solid rgba(198,147,10,.2);
+  background: rgba(8,13,24,0.6); border: 1px solid rgba(198,147,10,.2);
   padding: 1.2rem 1.4rem; position: relative;
 }
 .mg-create::after { content:''; position:absolute; top:0; left:0; right:0; height:1.5px; background:linear-gradient(90deg,transparent,var(--gold),transparent); }
@@ -62,7 +62,7 @@
 /* Activity row */
 .mg-act-row {
   display: flex; align-items: center; gap: 1rem;
-  padding: .85rem 1.2rem; background: rgba(7,11,20,.75); border: 1px solid rgba(27,58,107,.4);
+  padding: .85rem 1.2rem; background: rgba(8,14,32,.42); border: 1px solid rgba(27,58,107,.4);
   border-top: none; transition: background .15s;
 }
 .mg-act-row:first-of-type { border-top: 1px solid var(--border); }
@@ -74,7 +74,7 @@
 
 /* Adjust panel */
 .mg-adjust-card {
-  background: rgba(8,13,24,.9); border: 1px solid rgba(27,58,107,.4);
+  background: rgba(8,13,24,0.6); border: 1px solid rgba(27,58,107,.4);
   padding: 1.5rem; display: flex; flex-direction: column; gap: 1rem; max-width: 520px;
   position: relative;
 }
@@ -89,17 +89,17 @@
 
 /* Buttons */
 .mg-btn-green { font-family:var(--cinzel); font-size:.65rem; letter-spacing:2px; padding:.48rem 1rem; border:1px solid var(--green-border); color:var(--green); background:var(--green-dim); cursor:pointer; border-radius:2px; transition:all .15s; }
-.mg-btn-green:hover { background:rgba(74,222,128,.18); }
-.mg-btn-red   { font-family:var(--cinzel); font-size:.65rem; letter-spacing:2px; padding:.48rem 1rem; border:1px solid rgba(224,80,112,.28); color:#e05070; background:rgba(224,80,112,.07); cursor:pointer; border-radius:2px; transition:all .15s; }
-.mg-btn-red:hover   { background:rgba(224,80,112,.15); }
-.mg-btn-ghost { font-family:var(--cinzel); font-size:.65rem; letter-spacing:2px; padding:.48rem 1rem; border:1px solid rgba(198,147,10,.3); color:var(--gold); background:rgba(198,147,10,.08); cursor:pointer; border-radius:2px; transition:all .15s; }
-.mg-btn-ghost:hover { background:rgba(198,147,10,.16); }
+.mg-btn-green:hover { background: background:rgba(74,222,128,.18); }
+.mg-btn-red   { font-family:var(--cinzel); font-size:.65rem; letter-spacing:2px; padding:.48rem 1rem; border:1px solid rgba(224,80,112,.28); color:#e05070; background: background:rgba(224,80,112,.07); cursor:pointer; border-radius:2px; transition:all .15s; }
+.mg-btn-red:hover   { background: background:rgba(224,80,112,.15); }
+.mg-btn-ghost { font-family:var(--cinzel); font-size:.65rem; letter-spacing:2px; padding:.48rem 1rem; border:1px solid rgba(198,147,10,.3); color:var(--gold); background: background:rgba(198,147,10,.08); cursor:pointer; border-radius:2px; transition:all .15s; }
+.mg-btn-ghost:hover { background: background:rgba(198,147,10,.16); }
 .mg-btn-gold  { font-family:var(--cinzel); font-size:.65rem; letter-spacing:3px; padding:.6rem 1.5rem; border:1px solid var(--gold); color:var(--deep); background:var(--gold); cursor:pointer; border-radius:2px; transition:all .15s; }
 .mg-btn-gold:hover { background:var(--gold-b); }
 .mg-btn-gold:disabled,.mg-btn-green:disabled,.mg-btn-red:disabled { opacity:.4; cursor:not-allowed; }
 
 .mg-msg { padding:.7rem 1rem; border-radius:2px; font-family:var(--cinzel); font-size:.65rem; letter-spacing:1px; border:1px solid; }
 .mg-msg.ok  { background:var(--green-dim); border-color:var(--green-border); color:var(--green); }
-.mg-msg.err { background:rgba(224,80,112,.07); border-color:rgba(224,80,112,.25); color:#e05070; }
+.mg-msg.err { background: background:rgba(224,80,112,.07); border-color:rgba(224,80,112,.25); color:#e05070; }
 
-.mg-empty { padding:2.5rem; text-align:center; font-family:var(--cinzel); font-size:.7rem; letter-spacing:2px; color:var(--bone-faint); background:rgba(7,11,20,.75); border:1px solid var(--border); }
+.mg-empty { padding:2.5rem; text-align:center; font-family:var(--cinzel); font-size:.7rem; letter-spacing:2px; color:var(--bone-faint); background: background:rgba(8,14,32,.42); border:1px solid var(--border); }

@@ -65,7 +65,7 @@
   padding: 1.8rem 2rem;
   display: flex; flex-direction: column; gap: .9rem;
   border-right: 1px solid var(--border);
-  background: rgba(8,13,24,.92);
+  background: rgba(8,13,24,0.62);
   position: relative;
 }
 
@@ -115,7 +115,7 @@
 .nw-delete-btn:hover { background: rgba(224,80,112,.08); border-color: rgba(224,80,112,.45); }
 
 /* RIGHT: Stacked dispatches */
-.nw-stack { display: flex; flex-direction: column; background: rgba(6,9,18,.9); }
+.nw-stack { display: flex; flex-direction: column; background: rgba(6,9,18,0.6); }
 .nw-item {
   padding: 1.2rem 1.5rem; border-bottom: 1px solid var(--border);
   display: flex; flex-direction: column; gap: .5rem;

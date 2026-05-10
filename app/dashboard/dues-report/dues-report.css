@@ -34,7 +34,7 @@
   border-bottom: 1px solid rgba(27,58,107,.22);
 }
 .dr-stat-cell {
-  background: rgba(10,18,40,.92); padding: 1rem 1.5rem;
+  background: rgba(10,18,40,0.62); padding: 1rem 1.5rem;
   border-right: 1px solid rgba(27,58,107,.22);
   display: flex; align-items: center; gap: .85rem;
 }
@@ -65,7 +65,7 @@
 
 /* Dossier row */
 .dr-row {
-  background: rgba(11,18,42,.92); border: 1px solid rgba(27,58,107,.38);
+  background: rgba(11,18,42,0.62); border: 1px solid rgba(27,58,107,.38);
   border-radius: 4px; overflow: hidden;
   transition: border-color .15s; border-left: 3px solid transparent;
 }
@@ -132,7 +132,7 @@
 /* Payment entries */
 .dr-payment-row {
   display: flex; align-items: center; gap: 1rem;
-  padding: .6rem .85rem; background: rgba(10,18,40,.85);
+  padding: .6rem .85rem; background: rgba(10,18,40,0.55);
   border: 1px solid rgba(27,58,107,.35); border-radius: 3px;
   transition: border-color .15s;
 }
@@ -149,7 +149,7 @@
 
 /* Summary footer */
 .dr-footer {
-  background: rgba(10,18,40,.92); border: 1px solid rgba(27,58,107,.38);
+  background: rgba(10,18,40,0.62); border: 1px solid rgba(27,58,107,.38);
   border-radius: 4px; padding: .85rem 1.4rem;
   display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: .8rem;
 }

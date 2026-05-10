@@ -6,7 +6,7 @@
   border-bottom: 1px solid rgba(27,58,107,.22);
 }
 .tx-summary-cell {
-  background: rgba(10,18,40,.92); padding: 1rem 1.5rem;
+  background: rgba(10,18,40,0.62); padding: 1rem 1.5rem;
   border-right: 1px solid rgba(27,58,107,.22);
   display: flex; flex-direction: column; gap: .25rem;
 }
@@ -48,9 +48,9 @@
   gap: 1rem; align-items: center;
   padding: .9rem 1.8rem;
   border-bottom: 1px solid rgba(255,255,255,.03);
-  background: rgba(10,18,40,.9); transition: background .15s;
+  background: rgba(10,18,40,0.6); transition: background .15s;
 }
-.tx-row:hover { background: rgba(12,18,30,.95); }
+.tx-row:hover { background: rgba(12,18,30,0.65); }
 
 /* Brother name */
 .tx-brother { font-family: var(--display); font-size: 1rem; letter-spacing: 1px; color: var(--bone); }
@@ -80,7 +80,7 @@
 
 /* Footer total */
 .tx-footer {
-  background: rgba(10,18,40,.92); border-top: 1px solid rgba(27,58,107,.22);
+  background: rgba(10,18,40,0.62); border-top: 1px solid rgba(27,58,107,.22);
   padding: .85rem 1.8rem;
   display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap;
 }

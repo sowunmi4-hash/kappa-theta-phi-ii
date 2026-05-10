@@ -20,7 +20,7 @@
 
 /* ══ LEFT PANEL ══ */
 .ph-left {
-  background: rgba(4,6,14,.97);
+  background: rgba(4,6,14,0.67);
   border-right: 1px solid rgba(198,147,10,.15);
   display: flex; flex-direction: column; align-items: center;
   padding: 1.8rem 1rem 1.4rem;
@@ -54,11 +54,11 @@
 }
 .ph-tier-row.done {
   border-color: rgba(198,147,10,.32);
-  background: rgba(8,12,24,.85);
+  background: rgba(8,12,24,0.55);
 }
 .ph-tier-row.current {
   border-color: rgba(198,147,10,.55);
-  background: rgba(14,20,36,.9);
+  background: rgba(14,20,36,0.6);
   box-shadow: 0 0 0 1px rgba(198,147,10,.12) inset;
 }
 .ph-tier-row-name {
@@ -91,7 +91,7 @@
 
 /* ══ RIGHT PANEL ══ */
 .ph-right {
-  background: rgba(6,9,18,.92);
+  background: rgba(6,9,18,0.62);
   padding: 1.6rem 1.8rem 2rem;
   display: flex; flex-direction: column; gap: 1.3rem;
 }
@@ -109,7 +109,7 @@
 .ph-action-btn {
   display: flex; align-items: center; gap: .65rem;
   padding: .82rem 1rem;
-  background: rgba(8,13,26,.9); border: 1px solid rgba(198,147,10,.2);
+  background: rgba(8,13,26,0.6); border: 1px solid rgba(198,147,10,.2);
   border-radius: 3px; text-decoration: none; cursor: pointer;
   transition: all .15s;
 }
@@ -132,7 +132,7 @@
 .ph-tx-row {
   display: flex; align-items: center; gap: .85rem;
   padding: .78rem .85rem;
-  background: rgba(7,11,20,.75);
+  background: rgba(8,14,32,.42);
   border: 1px solid rgba(198,147,10,.08);
   transition: border-color .15s;
 }

@@ -15,7 +15,7 @@
 
 /* Cards */
 .ps-card {
-  background: rgba(8,13,24,.9);
+  background: rgba(8,13,24,0.6);
   border: 1px solid var(--border);
   border-radius: 2px;
   position: relative;
@@ -68,7 +68,7 @@
   display: flex; align-items: center; gap: .85rem;
   padding: .9rem 1.1rem;
   border: 1px solid var(--border);
-  background: rgba(7,11,20,.75);
+  background: rgba(8,14,32,.42);
   transition: border-color .15s;
 }
 .ps-row:hover { border-color: var(--border-h); }

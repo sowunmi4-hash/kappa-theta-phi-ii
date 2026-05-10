@@ -6,7 +6,7 @@
   border-bottom: 1px solid rgba(27,58,107,.22);
 }
 .sr-stat-cell {
-  background: rgba(10,18,40,.92); padding: .8rem 1.1rem;
+  background: rgba(10,18,40,0.62); padding: .8rem 1.1rem;
   border-right: 1px solid rgba(27,58,107,.22);
   display: flex; flex-direction: column; gap: .2rem;
 }
@@ -48,10 +48,10 @@
 
 .sr-row {
   border-bottom: 1px solid rgba(27,58,107,.22);
-  background: rgba(10,18,40,.9); transition: background .15s;
+  background: rgba(10,18,40,0.6); transition: background .15s;
 }
-.sr-row:hover { background: rgba(12,18,30,.9); }
-.sr-row.open  { background: rgba(13,22,50,.96); }
+.sr-row:hover { background: rgba(12,18,30,0.6); }
+.sr-row.open  { background: rgba(13,22,50,0.66); }
 .sr-row-main {
   display: grid;
   grid-template-columns: 40px 1fr 100px 120px 80px 90px 60px 20px;
