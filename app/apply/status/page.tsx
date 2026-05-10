@@ -3,11 +3,12 @@ import { useState } from 'react';
 import '../apply.css';
 import './status.css';
 
+const SLT = 'America/Los_Angeles';
 function fmt(d: string) {
-  return new Date(d).toLocaleDateString('en-GB', { weekday:'long', day:'numeric', month:'long', year:'numeric' });
+  return new Date(d).toLocaleDateString('en-US', { weekday:'long', day:'numeric', month:'long', year:'numeric', timeZone: SLT });
 }
 function fmtTime(d: string) {
-  return new Date(d).toLocaleTimeString('en-GB', { hour:'2-digit', minute:'2-digit', hour12:true });
+  return new Date(d).toLocaleTimeString('en-US', { hour:'numeric', minute:'2-digit', hour12:true, timeZone: SLT });
 }
 function fmtSubmit(d: string) {
   return new Date(d).toLocaleDateString('en-GB', { day:'numeric', month:'long', year:'numeric' });
