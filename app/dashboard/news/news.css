@@ -72,7 +72,7 @@
 .nw-lead-meta { display: flex; align-items: center; gap: .7rem; flex-wrap: wrap; }
 .nw-dispatched-badge {
   font-family: var(--cinzel); font-size: .56rem; letter-spacing: 2px;
-  background: rgba(198,147,10,.12); border: 1px solid rgba(198,147,10,.38);
+  background: rgba(198,147,10,.12); border: 1px solid rgba(196,30,58,.38);
   color: var(--gold); padding: 2px 10px; border-radius: 2px; text-transform: uppercase;
 }
 .nw-pinned-badge {
@@ -133,7 +133,7 @@
   font-size: .84rem; color: var(--bone-faint); line-height: 1.65;
   display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
 }
-.nw-item-byline { font-family: var(--cinzel); font-size: .56rem; letter-spacing: 2px; color: rgba(198,147,10,.35); text-transform: uppercase; }
+.nw-item-byline { font-family: var(--cinzel); font-size: .56rem; letter-spacing: 2px; color: rgba(244,195,0,.38); text-transform: uppercase; }
 
 /* Footer */
 .nw-footer {

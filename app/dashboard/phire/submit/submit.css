@@ -4,7 +4,7 @@
 /* Category group */
 .sa-group-label {
   font-family: var(--cinzel); font-size: .7rem; letter-spacing: 6px;
-  color: rgba(198,147,10,.4); text-transform: uppercase;
+  color: rgba(244,195,0,.42); text-transform: uppercase;
   padding-bottom: .5rem; border-bottom: 1px solid rgba(198,147,10,.1);
   margin-bottom: .5rem;
 }
@@ -13,7 +13,7 @@
 .sa-item {
   display: flex; align-items: center; gap: 1rem;
   padding: 1rem 1.2rem;
-  background: rgba(7,11,20,.8); border: 1px solid rgba(255,255,255,.06);
+  background: rgba(7,11,20,.8); border: 1px solid rgba(27,58,107,.28);
   cursor: pointer; transition: all .15s; position: relative;
   margin-bottom: 2px;
 }

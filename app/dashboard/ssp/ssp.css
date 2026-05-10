@@ -8,7 +8,7 @@
 .ssp-bro-body {
   display: grid; grid-template-columns: 200px 1fr;
   width: 100%; max-width: 780px;
-  background: rgba(255,255,255,.03); border: 1px solid rgba(255,255,255,.05);
+  background: rgba(255,255,255,.03); border: 1px solid rgba(27,58,107,.25);
   border-radius: 4px; box-shadow: 0 4px 32px rgba(0,0,0,.5);
   height: fit-content; overflow: hidden;
 }
@@ -16,7 +16,7 @@
 /* LEFT: ring + program info */
 .ssp-bro-left {
   background: rgba(6,9,18,.95);
-  border-right: 1px solid rgba(255,255,255,.05);
+  border-right: 1px solid rgba(27,58,107,.25);
   padding: 1.5rem 1rem;
   display: flex; flex-direction: column; align-items: center; gap: .7rem;
   text-align: center;
@@ -38,7 +38,7 @@
 .ssp-step {
   display: flex; align-items: flex-start; gap: .85rem;
   padding: .85rem 1.2rem;
-  border-bottom: 1px solid rgba(255,255,255,.04);
+  border-bottom: 1px solid rgba(27,58,107,.22);
   position: relative; transition: background .15s;
 }
 .ssp-step:last-child { border-bottom: none; }
@@ -52,7 +52,7 @@
 }
 .ssp-step-dot.done    { background: rgba(74,222,128,.12); border: 1px solid rgba(74,222,128,.3); color: var(--green); }
 .ssp-step-dot.current { background: rgba(198,147,10,.12); border: 1px solid rgba(198,147,10,.35); color: var(--gold-b); }
-.ssp-step-dot.pending { background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.08); color: var(--bone-faint); }
+.ssp-step-dot.pending { background: rgba(255,255,255,.04); border: 1px solid rgba(27,58,107,.32); color: var(--bone-faint); }
 .ssp-step-num { font-family: var(--cinzel); font-size: .52rem; letter-spacing: 1px; color: var(--bone-faint); }
 .ssp-step-title { font-family: var(--cinzel); font-size: .68rem; letter-spacing: 1px; color: var(--bone-dim); line-height: 1.4; }
 .ssp-step.current .ssp-step-title { color: var(--bone); }
@@ -84,23 +84,23 @@
 /* LEFT: enrolled brothers */
 .ssp-roster {
   background: rgba(5,7,15,.6);
-  border-right: 1px solid rgba(255,255,255,.04);
+  border-right: 1px solid rgba(27,58,107,.22);
   display: flex; flex-direction: column;
 }
 .ssp-roster-hdr {
-  padding: .6rem .8rem; border-bottom: 1px solid rgba(255,255,255,.04);
+  padding: .6rem .8rem; border-bottom: 1px solid rgba(27,58,107,.22);
   font-family: var(--cinzel); font-size: .5rem; letter-spacing: 4px;
-  color: rgba(198,147,10,.4); text-transform: uppercase; flex-shrink: 0;
+  color: rgba(244,195,0,.42); text-transform: uppercase; flex-shrink: 0;
 }
 .ssp-roster-items { flex: 1; overflow-y: auto; padding: .4rem .5rem; display: flex; flex-direction: column; gap: 2px; }
 .ssp-roster-item {
-  padding: .6rem .7rem; border: 1px solid rgba(255,255,255,.04);
-  background: rgba(8,12,22,.8); cursor: pointer;
+  padding: .6rem .7rem; border: 1px solid rgba(27,58,107,.22);
+  background: rgba(10,18,40,.85); cursor: pointer;
   position: relative; transition: all .15s;
   display: flex; flex-direction: column; gap: .28rem; border-radius: 3px;
 }
 .ssp-roster-item:hover { border-color: rgba(255,255,255,.08); background: rgba(12,18,32,.9); }
-.ssp-roster-item.sel { border-color: rgba(198,147,10,.28); background: rgba(14,22,38,.95); }
+.ssp-roster-item.sel { border-color: rgba(198,147,10,.28); background: rgba(13,22,50,.96); }
 .ssp-roster-item.sel::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 2px; background: linear-gradient(to bottom, var(--gold-b), var(--gold)); border-radius: 2px 0 0 2px; }
 .ssp-roster-item.cleared { opacity: .5; }
 .ssp-roster-item-top { display: flex; align-items: center; justify-content: space-between; gap: .4rem; }
@@ -112,12 +112,12 @@
 
 /* CENTRE: lesson tracker */
 .ssp-tracker {
-  border-right: 1px solid rgba(255,255,255,.04);
+  border-right: 1px solid rgba(27,58,107,.22);
   display: flex; flex-direction: column; overflow-y: auto;
-  background: rgba(7,11,20,.9);
+  background: rgba(9,15,36,.9);
 }
 .ssp-tracker-hdr {
-  padding: 1rem 1.2rem; border-bottom: 1px solid rgba(255,255,255,.04);
+  padding: 1rem 1.2rem; border-bottom: 1px solid rgba(27,58,107,.22);
   background: linear-gradient(160deg, rgba(14,22,38,.96), rgba(8,12,22,.98));
   position: relative; flex-shrink: 0;
 }
@@ -128,7 +128,7 @@
 /* Lesson rows */
 .ssp-lesson-rows { display: flex; flex-direction: column; }
 .ssp-lesson-row {
-  border-bottom: 1px solid rgba(255,255,255,.04);
+  border-bottom: 1px solid rgba(27,58,107,.22);
   transition: background .15s;
 }
 .ssp-lesson-row:last-child { border-bottom: none; }
@@ -160,7 +160,7 @@
 
 /* Expanded lesson body */
 .ssp-lesson-body { padding: 0 1.2rem 1rem 3.8rem; display: flex; flex-direction: column; gap: .75rem; }
-.ssp-lesson-body-section-lbl { font-family: var(--cinzel); font-size: .5rem; letter-spacing: 4px; color: rgba(198,147,10,.45); text-transform: uppercase; margin-bottom: .3rem; }
+.ssp-lesson-body-section-lbl { font-family: var(--cinzel); font-size: .5rem; letter-spacing: 4px; color: rgba(196,30,58,.45); text-transform: uppercase; margin-bottom: .3rem; }
 .ssp-lesson-topic-item { font-family: var(--body); font-size: .88rem; color: var(--bone-faint); padding: .18rem 0; }
 .ssp-lesson-q-warning {
   font-family: var(--cinzel); font-size: .5rem; letter-spacing: 1px;
@@ -174,18 +174,18 @@
 
 /* RIGHT: session log panel */
 .ssp-session-panel {
-  background: rgba(5,7,14,.5);
+  background: rgba(7,12,28,.55);
   display: flex; flex-direction: column; overflow-y: auto;
 }
 .ssp-session-panel-hdr {
-  padding: .6rem .85rem; border-bottom: 1px solid rgba(255,255,255,.04);
+  padding: .6rem .85rem; border-bottom: 1px solid rgba(27,58,107,.22);
   font-family: var(--cinzel); font-size: .5rem; letter-spacing: 4px;
-  color: rgba(198,147,10,.4); text-transform: uppercase; flex-shrink: 0;
+  color: rgba(244,195,0,.42); text-transform: uppercase; flex-shrink: 0;
   display: flex; align-items: center; justify-content: space-between;
 }
 .ssp-conduct-form {
   padding: .85rem; display: flex; flex-direction: column; gap: .6rem;
-  border-bottom: 1px solid rgba(255,255,255,.04);
+  border-bottom: 1px solid rgba(27,58,107,.22);
 }
 .ssp-conduct-title { font-family: var(--cinzel); font-size: .6rem; letter-spacing: 3px; color: var(--gold-b); text-transform: uppercase; }
 .ssp-conduct-for   { font-family: var(--cinzel); font-size: .55rem; letter-spacing: 1px; color: var(--bone-faint); }
@@ -200,7 +200,7 @@
 .ssp-conduct-fail { border-color: rgba(224,80,112,.2); color: rgba(224,80,112,.5); }
 .ssp-conduct-fail:hover, .ssp-conduct-fail.active { background: rgba(224,80,112,.08); border-color: rgba(224,80,112,.38); color: #e05070; }
 .ssp-conduct-notes {
-  background: rgba(4,6,12,.7); border: 1px solid rgba(255,255,255,.06); border-radius: 3px;
+  background: rgba(6,11,26,.75); border: 1px solid rgba(27,58,107,.28); border-radius: 3px;
   padding: .55rem .75rem; color: var(--bone-dim); font-family: var(--body); font-size: .88rem;
   outline: none; resize: vertical; min-height: 72px; width: 100%; transition: border .15s;
 }
@@ -224,8 +224,8 @@
 
 /* Session history */
 .ssp-history-section { padding: .7rem .85rem; display: flex; flex-direction: column; gap: .4rem; }
-.ssp-history-lbl { font-family: var(--cinzel); font-size: .5rem; letter-spacing: 4px; color: rgba(198,147,10,.4); text-transform: uppercase; margin-bottom: .3rem; }
-.ssp-history-item { padding: .6rem .75rem; background: rgba(8,12,22,.8); border: 1px solid rgba(255,255,255,.04); border-radius: 3px; display: flex; flex-direction: column; gap: .2rem; }
+.ssp-history-lbl { font-family: var(--cinzel); font-size: .5rem; letter-spacing: 4px; color: rgba(244,195,0,.42); text-transform: uppercase; margin-bottom: .3rem; }
+.ssp-history-item { padding: .6rem .75rem; background: rgba(10,18,40,.85); border: 1px solid rgba(27,58,107,.22); border-radius: 3px; display: flex; flex-direction: column; gap: .2rem; }
 .ssp-history-lesson { font-family: var(--cinzel); font-size: .62rem; letter-spacing: 1px; color: var(--bone-dim); }
 .ssp-history-meta   { font-family: var(--cinzel); font-size: .52rem; letter-spacing: 1px; color: var(--bone-faint); }
 .ssp-history-note   { font-family: var(--body); font-size: .8rem; color: var(--bone-faint); margin-top: 2px; }

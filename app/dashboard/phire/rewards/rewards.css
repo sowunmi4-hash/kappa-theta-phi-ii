@@ -4,7 +4,7 @@
 /* Reward card */
 .rw-card {
   display: grid; grid-template-columns: 110px 1fr auto;
-  background: rgba(8,13,24,.9); border: 1px solid rgba(255,255,255,.06);
+  background: rgba(8,13,24,.9); border: 1px solid rgba(27,58,107,.28);
   position: relative; transition: border-color .2s; overflow: hidden;
 }
 .rw-card.unlocked { border-color: rgba(198,147,10,.32); }
@@ -32,7 +32,7 @@
   letter-spacing: 3px; color: var(--bone); text-transform: uppercase;
 }
 .rw-card-desc { font-family: var(--body); font-size: .9rem; color: var(--bone-faint); line-height: 1.7; }
-.rw-card-req  { font-family: var(--cinzel); font-size: .62rem; letter-spacing: 3px; color: rgba(198,147,10,.45); }
+.rw-card-req  { font-family: var(--cinzel); font-size: .62rem; letter-spacing: 3px; color: rgba(196,30,58,.45); }
 .rw-card-locked-msg { font-family: var(--cinzel); font-size: .62rem; letter-spacing: 1px; color: var(--bone-faint); }
 
 /* Action column */

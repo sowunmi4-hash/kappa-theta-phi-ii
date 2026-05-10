@@ -98,7 +98,7 @@
 
 .ph-section-label {
   font-family: var(--cinzel); font-size: .6rem; letter-spacing: 5px;
-  color: rgba(198,147,10,.38); text-transform: uppercase; margin-bottom: .6rem;
+  color: rgba(196,30,58,.38); text-transform: uppercase; margin-bottom: .6rem;
 }
 
 /* Action grid */
@@ -114,7 +114,7 @@
   transition: all .15s;
 }
 .ph-action-btn:hover {
-  border-color: rgba(198,147,10,.45);
+  border-color: rgba(196,30,58,.45);
   background: rgba(198,147,10,.06);
 }
 .ph-action-icon {
