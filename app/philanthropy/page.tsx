@@ -1,6 +1,8 @@
 'use client';
 import { useEffect, useRef } from 'react';
 import './philanthropy.css';
+import '../public.css';
+import PublicNav from '../components/PublicNav';
 
 const BIFIDA_PHOTOS = [
   'https://uamhroebetbacvxdvzxo.supabase.co/storage/v1/object/public/gallery/bifida-1777258950193.jpg',
@@ -106,19 +108,12 @@ export default function PhilanthropyPage() {
 
       <canvas ref={dustRef} id="phil-dust"></canvas>
 
-      <nav id="navbar">
-        <a href="/" className="nav-brand">KΘΦ <span>II</span></a>
-        <ul className="nav-links" id="navLinks">
-          <li><a href="/">Home</a></li>
-          <li><a href="/about">About</a></li>
-          <li><a href="/brothers">Brothers</a></li>
-          <li><a href="/gallery">Gallery</a></li>
-          <li><a href="/philanthropy" className="active">Philanthropy</a></li>
-        </ul>
-        <div className="mobile-toggle" onClick={() => document.getElementById('navLinks')?.classList.toggle('open')}>
-          <span></span><span></span><span></span>
-        </div>
-      </nav>
+      <PublicNav/>
+      <div className="pub-kanji" aria-hidden="true">
+        <span className="k1">慈</span>
+        <span className="k2">義</span>
+        <span className="k3">海</span>
+      </div>
 
       <main className="phil-main">
 

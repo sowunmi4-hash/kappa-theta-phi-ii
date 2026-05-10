@@ -1,0 +1,136 @@
+/* ══ KΘΦ II PUBLIC PAGES — Shared Base ══ */
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Cinzel+Decorative:wght@400;700&family=Cormorant+SC:wght@300;400;600;700&family=Rajdhani:wght@300;400;500;600&display=swap');
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --crimson:   #C41E3A; --crimson-b: #E8274A; --crimson-d: rgba(196,30,58,.18);
+  --navy:      #1B3A6B; --navy-b:    #2451A0;  --navy-d:    rgba(27,58,107,.35);
+  --yellow:    #F4C300; --yellow-b:  #FFD740;  --yellow-d:  rgba(244,195,0,.15);
+  --bone:      #F5F0E8; --bone-d:    rgba(245,240,232,.7); --bone-f: rgba(245,240,232,.35);
+  --deep:      #060D1E;
+  --display:   'Cormorant SC', Georgia, serif;
+  --cinzel:    'Cinzel', Georgia, serif;
+  --body:      'Rajdhani', 'Arial Narrow', Arial, sans-serif;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--deep); color: var(--bone);
+  font-family: var(--body); min-height: 100vh;
+}
+body::before {
+  content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 0;
+  background:
+    radial-gradient(ellipse at 18% 5%,  rgba(27,58,107,.55) 0%, transparent 52%),
+    radial-gradient(ellipse at 85% 92%, rgba(196,30,58,.28) 0%, transparent 50%);
+}
+
+/* Kanji watermarks */
+.pub-kanji { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+.pub-kanji span { position: absolute; font-family: 'Noto Serif JP',serif; font-weight: 900; color: rgba(244,195,0,.025); user-select: none; line-height: 1; }
+.pub-kanji .k1 { top: -5%;  left: 3%;  font-size: clamp(120px,18vw,200px); }
+.pub-kanji .k2 { top: 30%;  right:-2%; font-size: clamp(130px,20vw,220px); }
+.pub-kanji .k3 { bottom:-5%;left: 10%; font-size: clamp(140px,22vw,240px); }
+
+/* Page wrapper */
+.pub-page { position: relative; z-index: 5; padding-top: 72px; min-height: 100vh; }
+
+/* ── NAV ── */
+.pub-nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  display: flex; align-items: center; gap: 2rem;
+  padding: 1.1rem 3rem;
+  background: linear-gradient(to bottom, rgba(6,13,30,.88), transparent);
+  transition: background .3s, border .3s;
+}
+.pub-nav.scrolled {
+  background: rgba(6,13,30,.94);
+  border-bottom: 1px solid rgba(27,58,107,.3);
+  backdrop-filter: blur(14px);
+}
+.pub-nav-brand {
+  font-family: 'Cinzel Decorative','Cinzel',serif; font-size: .78rem;
+  letter-spacing: 4px; color: rgba(244,195,0,.8); text-decoration: none; flex-shrink: 0;
+}
+.pub-nav-links {
+  display: flex; align-items: center; gap: 2rem; list-style: none; flex: 1; justify-content: center;
+}
+.pub-nav-link {
+  font-family: 'Cinzel',serif; font-size: .5rem; letter-spacing: 4px;
+  color: rgba(245,240,232,.35); text-decoration: none; text-transform: uppercase;
+  transition: color .18s; position: relative;
+}
+.pub-nav-link:hover { color: rgba(245,240,232,.75); }
+.pub-nav-link.active { color: rgba(245,240,232,.9); }
+.pub-nav-link.active::after {
+  content: ''; position: absolute; bottom: -4px; left: 0; right: 0;
+  height: 1px; background: var(--crimson);
+}
+.pub-nav-login {
+  font-family: 'Cinzel',serif; font-size: .5rem; letter-spacing: 3px;
+  color: rgba(196,30,58,.75); text-decoration: none; text-transform: uppercase;
+  border: 1px solid rgba(196,30,58,.3); padding: .32rem .85rem; border-radius: 2px;
+  transition: all .18s; flex-shrink: 0;
+}
+.pub-nav-login:hover { background: rgba(196,30,58,.12); border-color: rgba(196,30,58,.55); color: var(--bone); }
+.pub-nav-burger { display: none; flex-direction: column; gap: 4px; background: none; border: none; cursor: pointer; padding: 4px; }
+.pub-nav-burger span { display: block; width: 20px; height: 1.5px; background: rgba(245,240,232,.5); transition: .2s; }
+.pub-nav-mobile {
+  position: fixed; top: 60px; left: 0; right: 0;
+  background: rgba(6,13,30,.97); border-bottom: 1px solid rgba(27,58,107,.3);
+  padding: 1rem 2rem; display: flex; flex-direction: column; gap: .5rem; backdrop-filter: blur(14px);
+}
+.pub-nav-mobile-link {
+  font-family: 'Cinzel',serif; font-size: .58rem; letter-spacing: 3px; text-transform: uppercase;
+  color: rgba(245,240,232,.5); text-decoration: none; padding: .5rem 0;
+  border-bottom: 1px solid rgba(27,58,107,.2);
+}
+.pub-nav-mobile-link:hover { color: var(--bone); }
+
+/* ── SHARED SECTION DIVIDER ── */
+.pub-sec {
+  position: relative; text-align: center;
+  padding: 2.5rem 2rem 1.5rem; z-index: 5;
+}
+.pub-sec::before {
+  content: ''; position: absolute; top: 50%; left: 8%; right: 8%;
+  height: 1px; background: linear-gradient(90deg,transparent,rgba(27,58,107,.35),rgba(196,30,58,.2),transparent);
+}
+.pub-sec-label {
+  display: inline-block; font-family: 'Cormorant SC',serif;
+  font-size: 1.15rem; letter-spacing: 6px; color: var(--bone);
+  background: var(--deep); padding: 0 1.5rem; position: relative; z-index: 1;
+}
+.pub-sec-sub {
+  font-family: 'Cinzel',serif; font-size: .48rem; letter-spacing: 3px;
+  color: var(--bone-f); text-transform: uppercase; margin-top: .4rem;
+}
+
+/* ── SHARED CARD ── */
+.pub-card {
+  background: rgba(12,22,48,.65); border: 1px solid rgba(27,58,107,.38);
+  border-radius: 4px; position: relative; overflow: hidden;
+}
+.pub-card::before {
+  content: ''; position: absolute; top: 0; left: 15%; right: 15%;
+  height: 1px; background: linear-gradient(90deg,transparent,rgba(196,30,58,.4),transparent);
+}
+
+/* ── FOOTER ── */
+.pub-footer {
+  position: relative; z-index: 5; text-align: center;
+  padding: 2.5rem 2rem; border-top: 1px solid rgba(27,58,107,.25); margin-top: 2rem;
+}
+.pub-footer-mark { font-family: 'Cormorant SC',serif; font-size: 1rem; letter-spacing: 3px; color: rgba(245,240,232,.25); }
+.pub-footer-tag  { font-family: 'Cinzel',serif; font-size: .46rem; letter-spacing: 3px; color: rgba(196,30,58,.25); margin-top: .4rem; }
+.pub-footer-copy { font-family: 'Cinzel',serif; font-size: .4rem; letter-spacing: 2px; color: rgba(245,240,232,.1); margin-top: .5rem; }
+
+/* ── MOBILE ── */
+@media (max-width: 700px) {
+  .pub-nav { padding: 1rem 1.3rem; }
+  .pub-nav-links, .pub-nav-login { display: none; }
+  .pub-nav-burger { display: flex; }
+  .pub-page { padding-top: 60px; }
+}

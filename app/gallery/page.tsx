@@ -1,6 +1,8 @@
 'use client';
 import { useState, useEffect, useRef, useMemo } from 'react';
 import './gallery.css';
+import '../public.css';
+import PublicNav from '../components/PublicNav';
 
 type GalleryPost = {
   id: string;
@@ -259,19 +261,12 @@ export default function GalleryPage() {
     <div className="gallery-shell">
       <canvas ref={dustRef} id="gallery-dust"></canvas>
 
-      <nav id="navbar">
-        <a href="/" className="nav-brand">KΘΦ <span>II</span></a>
-        <ul className="nav-links" id="navLinks">
-          <li><a href="/">Home</a></li>
-          <li><a href="/about">About</a></li>
-          <li><a href="/brothers">Brothers</a></li>
-          <li><a href="/gallery" className="active">Gallery</a></li>
-          <li><a href="/philanthropy">Philanthropy</a></li>
-        </ul>
-        <div className="mobile-toggle" onClick={() => document.getElementById('navLinks')?.classList.toggle('open')}>
-          <span></span><span></span><span></span>
-        </div>
-      </nav>
+      <PublicNav/>
+      <div className="pub-kanji" aria-hidden="true">
+        <span className="k1">海</span>
+        <span className="k2">記</span>
+        <span className="k3">影</span>
+      </div>
 
       {/* ── HERO ── */}
       <section className="gh-hero">

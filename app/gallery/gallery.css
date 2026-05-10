@@ -3,13 +3,13 @@
 
 .gallery-shell{
   --gold:#c6930a;
-  --gold-soft:rgba(198,147,10,.5);
+  --gold-soft:rgba(244,195,0,.5);
   --bone:#f0e8d0;
   --bone-dim:rgba(240,232,208,.6);
   --bone-faint:rgba(240,232,208,.32);
-  --deep:#04060f;
+  --deep:#060D1E;
   --deep-2:#080d18;
-  --frame:rgba(198,147,10,.45);
+  --frame:rgba(244,195,0,.45);
   --border:rgba(198,147,10,.16);
 
   background:var(--deep);
@@ -32,13 +32,13 @@
 }
 .gallery-shell .gh-hero::before{
   content:'';position:absolute;inset:0;z-index:0;
-  background:radial-gradient(circle at 50% 30%,rgba(198,147,10,.1) 0%,transparent 60%);
+  background:radial-gradient(circle at 50% 30%,rgba(27,58,107,.28) 0%,transparent 60%);
 }
 .gallery-shell .gh-kanji{
   position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
   font-family:'Noto Serif JP',serif;font-weight:700;
   font-size:14rem;line-height:1;
-  color:rgba(198,147,10,.04);z-index:0;user-select:none;letter-spacing:0;
+  color:rgba(196,30,58,.2);z-index:0;user-select:none;letter-spacing:0;
 }
 .gallery-shell .gh-content{position:relative;z-index:2}
 .gallery-shell .gh-tag{
@@ -85,7 +85,7 @@
 }
 .gallery-shell .volume::before{
   content:'';position:absolute;inset:6px;
-  border:1px solid rgba(198,147,10,.06);pointer-events:none;
+  border:1px solid rgba(27,58,107,.45);pointer-events:none;
   transition:border-color .35s;
 }
 .gallery-shell .volume:hover{
@@ -96,9 +96,9 @@
 .gallery-shell .volume.active{
   border-color:var(--frame);
   background:linear-gradient(180deg,rgba(20,28,46,.85),rgba(8,12,22,.95));
-  box-shadow:0 18px 36px -22px rgba(0,0,0,.7),0 0 28px rgba(198,147,10,.06);
+  box-shadow:0 18px 36px -22px rgba(0,0,0,.7),0 0 28px rgba(27,58,107,.45);
 }
-.gallery-shell .volume.active::before{border-color:rgba(198,147,10,.4)}
+.gallery-shell .volume.active::before{border-color:rgba(244,195,0,.4)}
 .gallery-shell .volume.active::after{
   content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);
   width:50%;height:2px;
@@ -299,7 +299,7 @@
 .lb-img,.lb-video{
   max-width:100%;max-height:80vh;object-fit:contain;display:block;
   border:1px solid rgba(198,147,10,.16);
-  box-shadow:0 30px 80px -20px rgba(0,0,0,.7),0 0 80px rgba(198,147,10,.04);
+  box-shadow:0 30px 80px -20px rgba(0,0,0,.7),0 0 80px rgba(196,30,58,.2);
 }
 .lb-yt{
   width:min(90vw,1280px);aspect-ratio:16/9;max-height:80vh;
@@ -320,7 +320,7 @@
   font-family:'Cinzel',serif;font-size:.62rem;letter-spacing:3px;
   color:rgba(240,232,208,.6);text-transform:uppercase;
 }
-.lb-attr strong{color:#c6930a;font-weight:500;margin:0 4px}
+.lb-attr strong{color:#F4C300;font-weight:500;margin:0 4px}
 
 .lb-close,.lb-nav{
   position:absolute;background:transparent;color:rgba(240,232,208,.6);
@@ -341,7 +341,7 @@
 .lb-nav.prev{left:1.6rem}
 .lb-nav.next{right:1.6rem}
 .lb-close:hover,.lb-nav:hover{
-  border-color:#c6930a;color:#c6930a;background:rgba(8,12,22,.85);
+  border-color:#F4C300;color:#F4C300;background:rgba(8,12,22,.85);
 }
 
 /* ── UPLOAD MODAL — refreshed cinematic dressing ── */
@@ -352,7 +352,7 @@
   animation:lb-fade .3s ease;
 }
 .up-modal{
-  background:linear-gradient(180deg,#0a0e1a,#04060f);
+  background:linear-gradient(180deg,#0a0e1a,#060D1E);
   border:1px solid rgba(198,147,10,.32);
   width:100%;max-width:460px;
   position:relative;
@@ -361,12 +361,12 @@
 }
 .up-modal::before{
   content:'';position:absolute;inset:6px;
-  border:1px solid rgba(198,147,10,.1);pointer-events:none;
+  border:1px solid rgba(27,58,107,.28);pointer-events:none;
 }
 .up-head{
   padding:1.4rem 1.6rem 1rem;
   display:flex;justify-content:space-between;align-items:center;
-  border-bottom:1px solid rgba(198,147,10,.12);
+  border-bottom:1px solid rgba(27,58,107,.35);
 }
 .up-title{
   font-family:'Bebas Neue',cursive;font-size:1.5rem;letter-spacing:5px;
@@ -374,7 +374,7 @@
 }
 .up-title small{
   display:block;font-family:'Cinzel',serif;font-size:.55rem;letter-spacing:4px;
-  color:#c6930a;font-weight:500;margin-top:.3rem;
+  color:#F4C300;font-weight:500;margin-top:.3rem;
 }
 .up-close{
   background:none;border:none;color:rgba(240,232,208,.5);
@@ -383,7 +383,7 @@
   display:flex;align-items:center;justify-content:center;
   transition:color .25s;
 }
-.up-close:hover{color:#c6930a}
+.up-close:hover{color:#F4C300}
 .up-body{padding:1.4rem 1.6rem}
 .up-label{
   font-family:'Cinzel',serif;font-size:.55rem;letter-spacing:3px;
@@ -398,7 +398,7 @@
   margin-bottom:.9rem;box-sizing:border-box;
   transition:border-color .25s;
 }
-.up-input:focus,.up-select:focus{outline:none;border-color:#c6930a}
+.up-input:focus,.up-select:focus{outline:none;border-color:#F4C300}
 .up-file{
   display:block;width:100%;text-align:center;cursor:pointer;
   background:rgba(4,6,15,.6);
@@ -408,8 +408,8 @@
   margin-bottom:.9rem;box-sizing:border-box;
   transition:border-color .25s,color .25s;
 }
-.up-file:hover{border-color:#c6930a;color:#c6930a}
-.up-file.has-file{color:#c6930a;border-style:solid;border-color:rgba(198,147,10,.4)}
+.up-file:hover{border-color:#F4C300;color:#F4C300}
+.up-file.has-file{color:#F4C300;border-style:solid;border-color:rgba(244,195,0,.4)}
 .up-tab-toggle{
   display:flex;gap:6px;margin-bottom:.6rem;
 }
@@ -420,7 +420,7 @@
   text-transform:uppercase;cursor:pointer;
   transition:border-color .25s,color .25s,background .25s;
 }
-.up-tab-toggle button.active{border-color:#c6930a;color:#c6930a;background:rgba(198,147,10,.06)}
+.up-tab-toggle button.active{border-color:#F4C300;color:#F4C300;background:rgba(27,58,107,.45)}
 .up-status{
   font-family:'Cinzel',serif;font-size:.65rem;letter-spacing:2px;
   text-transform:uppercase;margin-bottom:.9rem;
@@ -429,13 +429,13 @@
 .up-status.success{color:#4ade80}
 .up-submit{
   width:100%;padding:.9rem;cursor:pointer;
-  background:#c6930a;border:none;color:#04060f;
+  background:#c6930a;border:none;color:#060D1E;
   font-family:'Bebas Neue',cursive;font-size:1rem;letter-spacing:5px;
   text-transform:uppercase;
   transition:background .25s,letter-spacing .25s;
 }
 .up-submit:hover:not(:disabled){background:#dca81c;letter-spacing:6px}
-.up-submit:disabled{background:rgba(198,147,10,.2);color:rgba(240,232,208,.4);cursor:not-allowed}
+.up-submit:disabled{background:rgba(244,195,0,.25);color:rgba(240,232,208,.4);cursor:not-allowed}
 
 /* ── FOOTER inside gallery shell ── */
 .gallery-shell .gallery-footer{

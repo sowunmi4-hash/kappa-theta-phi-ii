@@ -1,6 +1,8 @@
 'use client';
 import { useEffect, useRef, useState } from 'react';
 import './brothers.css';
+import '../public.css';
+import PublicNav from '../components/PublicNav';
 
 type Member = {
   frat: string;
@@ -325,19 +327,12 @@ export default function BrothersPage() {
     <div className="brothers-shell">
       <canvas ref={dustCanvasRef} id="dust-canvas"></canvas>
 
-      <nav id="navbar">
-        <a href="/" className="nav-brand">KΘΦ <span>II</span></a>
-        <ul className="nav-links" id="navLinks">
-          <li><a href="/">Home</a></li>
-          <li><a href="/about">About</a></li>
-          <li><a href="/brothers" className="current">Brothers</a></li>
-          <li><a href="/gallery">Gallery</a></li>
-          <li><a href="/philanthropy">Philanthropy</a></li>
-        </ul>
-        <div className="mobile-toggle" onClick={() => document.getElementById('navLinks')?.classList.toggle('open')}>
-          <span></span><span></span><span></span>
-        </div>
-      </nav>
+      <PublicNav/>
+      <div className="pub-kanji" aria-hidden="true">
+        <span className="k1">兄</span>
+        <span className="k2">統</span>
+        <span className="k3">義</span>
+      </div>
 
       <audio ref={audioRef} src="/brothers/anthem.mp3" preload="metadata" />
 

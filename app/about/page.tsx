@@ -1,6 +1,8 @@
 'use client';
 import { useEffect, useRef, useState } from 'react';
 import './about.css';
+import '../public.css';
+import PublicNav from '../components/PublicNav';
 
 export default function AboutPage() {
   // ── ANTHEM AUDIO PLAYER (matches /brothers) ──
@@ -154,17 +156,12 @@ export default function AboutPage() {
       <canvas id="bg-canvas"></canvas>
       <div id="prog"></div>
 
-      <nav id="navbar">
-        <a href="/" className="nav-brand">KΘΦ <span>II</span></a>
-        <ul className="nav-links" id="navLinks">
-          <li><a href="/">Home</a></li>
-          <li><a href="/about">About</a></li>
-          <li><a href="/brothers">Brothers</a></li>
-          <li><a href="/gallery">Gallery</a></li>
-          <li><a href="/philanthropy">Philanthropy</a></li>
-        </ul>
-        <div className="mobile-toggle"><span></span><span></span><span></span></div>
-      </nav>
+      <PublicNav/>
+      <div className="pub-kanji" aria-hidden="true">
+        <span className="k1">义</span>
+        <span className="k2">海</span>
+        <span className="k3">武</span>
+      </div>
 
       {/* Anthem audio — floating player, matches /brothers */}
       <audio ref={audioRef} src="/brothers/anthem.mp3" preload="metadata" />
