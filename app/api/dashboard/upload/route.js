@@ -27,7 +27,11 @@ export async function POST(req) {
   const buf = Buffer.from(await file.arrayBuffer());
   await fetch(`${S}/storage/v1/object/dashboard/${filename}`, { method: 'DELETE', headers: { Authorization: `Bearer ${K}` } });
   const up = await fetch(`${S}/storage/v1/object/dashboard/${filename}`, { method: 'POST', headers: { Authorization: `Bearer ${K}`, 'Content-Type': file.type }, body: buf });
-  if (!up.ok) return NextResponse.json({ error: 'Upload failed' }, { status: 500 });
+  if (!up.ok) {
+    const errText = await up.text();
+    console.error('[upload] storage error:', up.status, errText);
+    return NextResponse.json({ error: `Storage error ${up.status}: ${errText}` }, { status: 500 });
+  }
   const file_url = `${S}/storage/v1/object/public/dashboard/${filename}?t=${Date.now()}`;
   const field = type === 'banner' ? 'banner_url' : type === 'portrait' ? 'portrait_url' : null;
   if (field) {

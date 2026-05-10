@@ -56,6 +56,7 @@ export default function EditPage() {
         router.refresh(); // Force Next.js to re-fetch profile data on all pages
       } else {
         setUploadError(res.error || 'Upload failed. Please try again.');
+        console.error('[upload] error:', res.error);
       }
     } catch {
       setUploadError('Upload failed. Check your connection and try again.');
