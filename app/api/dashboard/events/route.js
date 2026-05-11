@@ -59,13 +59,13 @@ export async function POST(req) {
 
   // Create event
   const body = await req.json();
-  const { title, event_date, event_time, location, sl_url, dress_code, description, flyer_url } = body;
+  const { title, event_date, event_time, location, sl_url, dress_code, theme, description, flyer_url } = body;
   if (!title || !event_date) return NextResponse.json({ error: 'Title and date required' }, { status: 400 });
 
   const res = await fetch(`${S}/rest/v1/events`, {
     method: 'POST',
     headers: ch({ Prefer: 'return=representation' }),
-    body: JSON.stringify({ title, event_date, event_time: event_time || null, location, sl_url, dress_code, description, flyer_url, created_by: member.id, created_by_name: member.frat_name }),
+    body: JSON.stringify({ title, event_date, event_time: event_time || null, location, sl_url, dress_code, theme, description, flyer_url, created_by: member.id, created_by_name: member.frat_name }),
   });
   const data = await res.json();
 
@@ -119,7 +119,7 @@ export async function PATCH(req) {
     await fetch(`${S}/rest/v1/events?${filter}`, {
       method: 'PATCH',
       headers: ch(),
-      body: JSON.stringify({ title, event_date, event_time: event_time || null, location, sl_url, dress_code, description, flyer_url }),
+      body: JSON.stringify({ title, event_date, event_time: event_time || null, location, sl_url, dress_code, theme, description, flyer_url }),
     });
     return NextResponse.json({ success: true });
   }
