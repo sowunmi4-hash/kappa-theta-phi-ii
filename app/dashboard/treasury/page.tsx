@@ -40,6 +40,27 @@ export default function TreasuryPage() {
     setLoading(false);
   }
 
+  function download() {
+    if (!txns.length) return;
+    const headers = ['Date','Type','Amount (L$)','From','Description','Event'];
+    const rows = txns.map(t => [
+      new Date(t.created_at).toLocaleString('en-GB'),
+      t.type,
+      t.amount_ls,
+      t.payer_name || '',
+      t.description || '',
+      t.event_name || '',
+    ]);
+    const csv = [headers, ...rows].map(r => r.map((v:any) => `"${String(v).replace(/"/g,'""')}"`).join(',')).join('\n');
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url  = URL.createObjectURL(blob);
+    const a    = document.createElement('a');
+    const label = monthFilter ? monthFilter : 'all-time';
+    const type  = typeFilter  ? '-' + typeFilter : '';
+    a.href = url; a.download = `ktpii-treasury-${label}${type}.csv`; a.click();
+    URL.revokeObjectURL(url);
+  }
+
   function filter(type: string, month: string) {
     setTypeFilter(type); setMonthFilter(month); load(type, month);
   }
@@ -63,7 +84,12 @@ export default function TreasuryPage() {
             <div style={{fontFamily:'var(--cinzel)',fontSize:'.52rem',letterSpacing:'4px',color:'rgba(244,195,0,.45)',textTransform:'uppercase',marginBottom:'.25rem'}}>Cool Breeze · Confidential</div>
             <div className="dash-page-title">The War Chest</div>
           </div>
-          <span style={{fontFamily:'var(--cinzel)',fontSize:'.58rem',letterSpacing:'2px',color:'var(--bone-faint)'}}>{fmtL(totals.all||0)} total</span>
+          <div style={{display:'flex',alignItems:'center',gap:'1rem'}}>
+            <span style={{fontFamily:'var(--cinzel)',fontSize:'.58rem',letterSpacing:'2px',color:'var(--bone-faint)'}}>{fmtL(totals.all||0)} total</span>
+            <button className="dash-btn gold-ghost" onClick={download} disabled={!txns.length} style={{fontSize:'.58rem',letterSpacing:'2px'}}>
+              ↓ Download CSV
+            </button>
+          </div>
         </div>
 
         {/* Stats */}
