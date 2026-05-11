@@ -9,7 +9,7 @@ const MONTHS_SHORT = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct
 const DAYS = ['Su','Mo','Tu','We','Th','Fr','Sa'];
 
 type Event = {
-  id: string; title: string; event_date: string; event_time?: string; theme?: string;
+  id: string; title: string; event_date: string; event_time?: string; end_time?: string; theme?: string;
   location?: string; sl_url?: string; dress_code?: string;
   description?: string; flyer_url?: string; created_by_name?: string;
   rsvp_count: number; attending: boolean; attendees: string[];
@@ -100,8 +100,8 @@ export default function EventsPage() {
   const [uploading, setUploading] = useState(false);
   const [saving, setSaving]       = useState(false);
   const [editSaving, setEditSaving] = useState(false);
-  const [form, setForm]     = useState({ title:'', event_date:'', event_time:'', location:'', sl_url:'', dress_code:'', theme:'', description:'', flyer_url:'' });
-  const [editForm, setEditForm] = useState({ title:'', event_date:'', event_time:'', location:'', sl_url:'', dress_code:'', theme:'', description:'', flyer_url:'' });
+  const [form, setForm]     = useState({ title:'', event_date:'', event_time:'', end_time:'', location:'', sl_url:'', dress_code:'', theme:'', description:'', flyer_url:'' });
+  const [editForm, setEditForm] = useState({ title:'', event_date:'', event_time:'', end_time:'', location:'', sl_url:'', dress_code:'', theme:'', description:'', flyer_url:'' });
   const flyerRef     = useRef<HTMLInputElement>(null);
   const editFlyerRef = useRef<HTMLInputElement>(null);
 
@@ -155,7 +155,7 @@ export default function EventsPage() {
     setSaving(true);
     await fetch('/api/dashboard/events', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(form) });
     setCreating(false);
-    setForm({ title:'', event_date:'', event_time:'', location:'', sl_url:'', dress_code:'', theme:'', description:'', flyer_url:'' });
+    setForm({ title:'', event_date:'', event_time:'', end_time:'', location:'', sl_url:'', dress_code:'', theme:'', description:'', flyer_url:'' });
     await loadEvents(); setSaving(false);
   }
 
@@ -179,7 +179,7 @@ export default function EventsPage() {
   }
 
   function openEdit(ev: Event) {
-    setEditForm({ title:ev.title, event_date:ev.event_date, event_time:ev.event_time||'', location:ev.location||'', sl_url:ev.sl_url||'', dress_code:ev.dress_code||'', theme:ev.theme||'', description:ev.description||'', flyer_url:ev.flyer_url||'' });
+    setEditForm({ title:ev.title, event_date:ev.event_date, event_time:ev.event_time||'', end_time:ev.end_time||'', location:ev.location||'', sl_url:ev.sl_url||'', dress_code:ev.dress_code||'', theme:ev.theme||'', description:ev.description||'', flyer_url:ev.flyer_url||'' });
     setEditing(ev); setSelected(null);
   }
 
