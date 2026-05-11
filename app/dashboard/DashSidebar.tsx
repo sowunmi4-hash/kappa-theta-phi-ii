@@ -40,7 +40,8 @@ export default function DashSidebar({ member, profile, unread = 0 }: Props) {
   const canSeeTransactions = member?.frat_name === 'Big Brother Cool Breeze';
   const canSeeSSPReport  = member?.fraction === 'Ishi No Faction' || member?.role === 'Head Founder' || member?.role === 'Co-Founder';
   const canSeeApplications = member?.fraction === 'Kuro Kanda Fraction';
-  const canSeeActivity = member?.frat_name === 'Big Brother Wildwon';
+  const canSeeActivity  = member?.frat_name === 'Big Brother Wildwon';
+  const canSeeTreasury  = member?.frat_name === 'Big Brother Cool Breeze';
 
   function openPanel()  { clearTimeout(leaveTimer.current); setOpen(true); }
   function closePanel() { leaveTimer.current = setTimeout(() => setOpen(false), 220); }
@@ -189,6 +190,12 @@ export default function DashSidebar({ member, profile, unread = 0 }: Props) {
 
             <div className="dash-glass-divider" />
 
+            {canSeeTreasury && (
+              <a href="/dashboard/treasury" className={`dash-glass-item${pathname.startsWith('/dashboard/treasury') ? ' active' : ''}`}>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/><line x1="12" y1="12" x2="12" y2="16"/><line x1="10" y1="14" x2="14" y2="14"/></svg>
+                The War Chest
+              </a>
+            )}
             {canSeeActivity && (
               <a href="/dashboard/activity" className={`dash-glass-item${pathname.startsWith('/dashboard/activity') ? ' active' : ''}`}>
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.93 4.93l2.12 2.12M16.95 16.95l2.12 2.12M4.93 19.07l2.12-2.12M16.95 7.05l2.12-2.12"/></svg>
