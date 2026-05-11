@@ -471,7 +471,13 @@ export default function EventsPage() {
                     {selected.event_time && (
                       <div className="ev-meta-cell">
                         <div className="ev-meta-key">Time</div>
-                        <div className="ev-meta-val">{fmtTime(selected.event_time)}</div>
+                        <div className="ev-meta-val">{fmtTime(selected.event_time)}{selected.end_time ? ' — ' + fmtTime(selected.end_time) : ''} SLT</div>
+                      </div>
+                    )}
+                    {selected.theme && (
+                      <div className="ev-meta-cell">
+                        <div className="ev-meta-key">Theme</div>
+                        <div className="ev-meta-val">{selected.theme}</div>
                       </div>
                     )}
                     {selected.dress_code && (
@@ -482,7 +488,7 @@ export default function EventsPage() {
                     )}
                     {selected.created_by_name && (
                       <div className="ev-meta-cell">
-                        <div className="ev-meta-key">Organised By</div>
+                        <div className="ev-meta-key">Created By</div>
                         <div className="ev-meta-val">{selected.created_by_name}</div>
                       </div>
                     )}
