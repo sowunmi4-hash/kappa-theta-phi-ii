@@ -366,8 +366,12 @@ export default function EventsPage() {
                       <input className="ev-create-input" type="date" value={form.event_date} onChange={e => setForm(f => ({ ...f, event_date:e.target.value }))} />
                     </div>
                     <div className="ev-create-field">
-                      <label className="ev-create-label">Time</label>
+                      <label className="ev-create-label">Start Time</label>
                       <input className="ev-create-input" type="time" value={form.event_time} onChange={e => setForm(f => ({ ...f, event_time:e.target.value }))} />
+                    </div>
+                    <div className="ev-create-field">
+                      <label className="ev-create-label">End Time</label>
+                      <input className="ev-create-input" type="time" value={form.end_time} onChange={e => setForm(f => ({ ...f, end_time:e.target.value }))} />
                     </div>
                   </div>
                   <div className="ev-create-row">
@@ -542,7 +546,8 @@ export default function EventsPage() {
               <div><label className="dash-field-label">Title *</label><input className="dash-input" value={editForm.title} onChange={e => setEditForm(f => ({ ...f, title:e.target.value }))} /></div>
               <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:'.6rem' }}>
                 <div><label className="dash-field-label">Date *</label><input className="dash-input" type="date" value={editForm.event_date} onChange={e => setEditForm(f => ({ ...f, event_date:e.target.value }))} /></div>
-                <div><label className="dash-field-label">Time (SLT)</label><input className="dash-input" type="time" value={editForm.event_time} onChange={e => setEditForm(f => ({ ...f, event_time:e.target.value }))} /></div>
+                <div><label className="dash-field-label">Start Time (SLT)</label><input className="dash-input" type="time" value={editForm.event_time} onChange={e => setEditForm(f => ({ ...f, event_time:e.target.value }))} /></div>
+                <div><label className="dash-field-label">End Time (SLT)</label><input className="dash-input" type="time" value={editForm.end_time} onChange={e => setEditForm(f => ({ ...f, end_time:e.target.value }))} /></div>
               </div>
               <div><label className="dash-field-label">SL Location</label><input className="dash-input" value={editForm.location} onChange={e => setEditForm(f => ({ ...f, location:e.target.value }))} /></div>
               <div><label className="dash-field-label">SL URL</label><input className="dash-input" value={editForm.sl_url} onChange={e => setEditForm(f => ({ ...f, sl_url:e.target.value }))} /></div>
