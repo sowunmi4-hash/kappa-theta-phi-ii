@@ -21,7 +21,7 @@ export async function getMember() {
 export function canManage(member) {
   if (!member) return false;
   return (
-    member.fraction === 'Ishi No Faction' ||
+    member.faction === 'Ishi No Faction' ||
     member.role === 'Head Founder' ||
     member.role === 'Co-Founder'
   );

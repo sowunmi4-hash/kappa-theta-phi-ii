@@ -153,7 +153,7 @@ export default function ActivityPage() {
                   <div className="act-name">{m.frat_name}</div>
                   <div className="act-meta">
                     {m.role && <span>{m.role}</span>}
-                    {m.fraction && <span>· {m.fraction.replace(' Fraction','').replace(' Faction','')}</span>}
+                    {m.faction && <span>· {m.faction.replace(' Fraction','').replace(' Faction','')}</span>}
                   </div>
                 </div>
 

@@ -83,7 +83,7 @@ export default function DashHome() {
   // Stats for the right column
   const stats = [
     { key: 'Role',    val: member.role,                       color: 'var(--crimson)' },
-    { key: 'Faction', val: member.fraction || '—',            color: 'var(--bone-dim)' },
+    { key: 'Faction', val: member.faction || '—',            color: 'var(--bone-dim)' },
     { key: 'Joined',  val: '3·14·21',                         color: 'var(--bone-dim)' },
   ];
 
@@ -117,9 +117,9 @@ export default function DashHome() {
           <div className="dash-identity-info">
             <div className="dash-identity-name">{member.frat_name}</div>
             <div className="dash-identity-role">{member.role}</div>
-            {member.fraction && (
+            {member.faction && (
               <div className="dash-identity-faction">
-                {member.fraction}{member.fraction_title ? ` · ${member.fraction_title}` : ''}
+                {member.faction}{member.faction_title ? ` · ${member.faction_title}` : ''}
               </div>
             )}
             {member.iron_compass && <div className="dash-identity-badge">⚓ Iron Compass</div>}

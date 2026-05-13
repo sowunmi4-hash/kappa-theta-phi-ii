@@ -56,7 +56,7 @@ export default function PhireLeaderboard() {
                     {isMe&&<span className="lb-you-tag">YOU</span>}
                     <span className="lb-tier-tag">{getTier(b.lifetime_earned)}</span>
                   </div>
-                  <div className="lb-role">{b.role}{b.fraction?` · ${b.fraction}`:''}</div>
+                  <div className="lb-role">{b.role}{b.faction?` · ${b.faction}`:''}</div>
                 </div>
                 <div className="lb-pts-cell">
                   <div className="lb-lifetime">{b.lifetime_earned.toLocaleString()}</div>

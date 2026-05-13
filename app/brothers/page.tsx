@@ -7,7 +7,7 @@ import PublicNav from '../components/PublicNav';
 type Member = {
   frat: string;
   role?: string;
-  fraction?: string | null;
+  faction?: string | null;
   title?: string | null;
   iron?: boolean;
   image?: string | null;
@@ -16,18 +16,18 @@ type Member = {
 // Roster — single ordered list (Founders → Iron Fleet → faction members → unranked).
 // Stagger entrance follows this order, so it should reflect ceremonial hierarchy.
 const ROSTER: Member[] = [
-  { frat: 'Big Brother Tactician', role: 'Head Founder', fraction: 'Kuro Kanda', title: 'Shogun', iron: true, image: '/brothers/tactician.png' },
-  { frat: 'Big Brother Boss Sauce', role: 'Co-Founder', fraction: 'Ishi No', title: 'Shogun', iron: true, image: '/brothers/boss-sauce.png' },
-  { frat: 'Big Brother Energy', role: 'Co-Founder', fraction: 'Kurofune', title: 'Shogun', iron: true, image: '/brothers/energy.png' },
+  { frat: 'Big Brother Tactician', role: 'Head Founder', faction: 'Kuro Kanda', title: 'Shogun', iron: true, image: '/brothers/tactician.png' },
+  { frat: 'Big Brother Boss Sauce', role: 'Co-Founder', faction: 'Ishi No', title: 'Shogun', iron: true, image: '/brothers/boss-sauce.png' },
+  { frat: 'Big Brother Energy', role: 'Co-Founder', faction: 'Kurofune', title: 'Shogun', iron: true, image: '/brothers/energy.png' },
   { frat: 'Big Brother Cool Breeze', role: 'Co-Founder', iron: true, image: '/brothers/cool-breeze.png' },
-  { frat: 'Big Brother Substance', role: 'Iron Fleet', fraction: 'Taidō', title: 'Daimyo', iron: true, image: '/brothers/substance.png' },
-  { frat: 'Big Brother Noles', role: 'Iron Fleet', fraction: 'Ishi No', title: 'Daimyo', iron: true, image: '/brothers/noles.png' },
-  { frat: 'Big Brother Wildwon', role: 'Iron Fleet', fraction: 'Kuro Kanda', title: 'Daimyo', iron: true, image: '/brothers/wildwon.png' },
-  { frat: 'Big Brother CATALYST', role: 'Iron Fleet', fraction: 'Kuro Kanda', title: 'KyōKishi — Chief Officer', iron: true, image: '/brothers/catalyst.png' },
-  { frat: 'Big Brother Trench', role: 'Iron Fleet', fraction: 'Ishi No', title: 'Kaizoku Kansatsu — Chief Officer', iron: true, image: '/brothers/trench.png' },
-  { frat: 'Big Brother Sage', fraction: 'Ishi No', title: 'Member', image: '/brothers/sage.png' },
-  { frat: 'Big Brother Fathom', fraction: 'Kuro Kanda', title: 'Member', image: '/brothers/fathom.png' },
-  { frat: 'Big Brother Khaos', fraction: 'Kuro Kanda', title: 'Member', image: '/brothers/khaos.png' },
+  { frat: 'Big Brother Substance', role: 'Iron Fleet', faction: 'Taidō', title: 'Daimyo', iron: true, image: '/brothers/substance.png' },
+  { frat: 'Big Brother Noles', role: 'Iron Fleet', faction: 'Ishi No', title: 'Daimyo', iron: true, image: '/brothers/noles.png' },
+  { frat: 'Big Brother Wildwon', role: 'Iron Fleet', faction: 'Kuro Kanda', title: 'Daimyo', iron: true, image: '/brothers/wildwon.png' },
+  { frat: 'Big Brother CATALYST', role: 'Iron Fleet', faction: 'Kuro Kanda', title: 'KyōKishi — Chief Officer', iron: true, image: '/brothers/catalyst.png' },
+  { frat: 'Big Brother Trench', role: 'Iron Fleet', faction: 'Ishi No', title: 'Kaizoku Kansatsu — Chief Officer', iron: true, image: '/brothers/trench.png' },
+  { frat: 'Big Brother Sage', faction: 'Ishi No', title: 'Member', image: '/brothers/sage.png' },
+  { frat: 'Big Brother Fathom', faction: 'Kuro Kanda', title: 'Member', image: '/brothers/fathom.png' },
+  { frat: 'Big Brother Khaos', faction: 'Kuro Kanda', title: 'Member', image: '/brothers/khaos.png' },
   { frat: 'Big Brother Limitless', image: '/brothers/limitless.png' },
   { frat: 'Big Brother 5 Star General', image: '/brothers/five-star-general.png' },
   { frat: 'Big Brother Pristine', image: '/brothers/pristine.png' },
@@ -87,13 +87,13 @@ function brotherView(b: Member): View {
     b.role === 'Co-Founder'   ? 'tier-co' :
     isOfficer                 ? 'tier-officer' :
     isIron                    ? 'tier-iron' :
-    b.fraction                ? 'tier-member' :
+    b.faction                ? 'tier-member' :
                                 'tier-fleet';
 
   const tierKey: View['tierKey'] =
     isFounder  ? 'founder' :
     isIron     ? 'iron' :
-    b.fraction ? 'member' :
+    b.faction ? 'member' :
                  'unranked';
 
   const stamp =
@@ -103,7 +103,7 @@ function brotherView(b: Member): View {
     isIron                    ? 'Iron Fleet' :
                                 null;
 
-  const glyph = b.fraction ? FACTION_GLYPH[b.fraction] : (isFounder ? '⚓' : null);
+  const glyph = b.faction ? FACTION_GLYPH[b.faction] : (isFounder ? '⚓' : null);
 
   let roleLine: string | null = null;
   if (b.role === 'Head Founder') roleLine = 'Founder · Visionary';
@@ -121,10 +121,10 @@ const COUNTS: Record<string, number> = {
   founder: VIEWS.filter(v => v.tierKey === 'founder').length,
   iron: VIEWS.filter(v => v.tierKey === 'iron').length,
   unranked: VIEWS.filter(v => v.tierKey === 'unranked').length,
-  'kuro-kanda': VIEWS.filter(v => v.member.fraction === 'Kuro Kanda').length,
-  'ishi-no':    VIEWS.filter(v => v.member.fraction === 'Ishi No').length,
-  'kurofune':   VIEWS.filter(v => v.member.fraction === 'Kurofune').length,
-  'taido':      VIEWS.filter(v => v.member.fraction === 'Taidō').length,
+  'kuro-kanda': VIEWS.filter(v => v.member.faction === 'Kuro Kanda').length,
+  'ishi-no':    VIEWS.filter(v => v.member.faction === 'Ishi No').length,
+  'kurofune':   VIEWS.filter(v => v.member.faction === 'Kurofune').length,
+  'taido':      VIEWS.filter(v => v.member.faction === 'Taidō').length,
 };
 
 function shouldShow(v: View, filter: string): boolean {
@@ -132,7 +132,7 @@ function shouldShow(v: View, filter: string): boolean {
   if (filter === 'founder')  return v.tierKey === 'founder';
   if (filter === 'iron')     return v.tierKey === 'iron';
   if (filter === 'unranked') return v.tierKey === 'unranked';
-  return v.member.fraction === FACTION_FROM_KEY[filter];
+  return v.member.faction === FACTION_FROM_KEY[filter];
 }
 
 export default function BrothersPage() {
@@ -397,7 +397,7 @@ export default function BrothersPage() {
               ref={el => { if (el) cardRefsRef.current.set(key, el); else cardRefsRef.current.delete(key); }}
               className={`card ${v.tier} ${v.isFounder ? 'founder' : ''} ${visible ? 'is-visible' : 'is-hidden'}`}
               data-tier={v.tierKey}
-              data-faction={factionKey(v.member.fraction)}
+              data-faction={factionKey(v.member.faction)}
               style={{ ['--idx' as string]: i } as React.CSSProperties}
               onClick={() => openSpotlight(v)}
             >
@@ -419,9 +419,9 @@ export default function BrothersPage() {
                 {v.roleLine && <div className="card-role">{v.roleLine}</div>}
                 <h3 className="card-name">{displayName(v.member.frat)}</h3>
                 <div className="card-faction">
-                  {v.member.fraction ? (
+                  {v.member.faction ? (
                     <>
-                      <strong>{v.member.fraction}</strong>
+                      <strong>{v.member.faction}</strong>
                       {v.member.title && v.member.title !== v.roleLine && !v.member.title.includes('—') && <> · {v.member.title}</>}
                     </>
                   ) : v.isFounder ? 'Founder' : 'Brother'}
@@ -479,9 +479,9 @@ export default function BrothersPage() {
               {spotlight.roleLine && <p className="spotlight-role">{spotlight.roleLine}</p>}
               <div className="spotlight-meta">
                 {spotlight.glyph && <span className="spotlight-faction-glyph">{spotlight.glyph}</span>}
-                {spotlight.member.fraction && (
+                {spotlight.member.faction && (
                   <span className="spotlight-faction">
-                    <strong>{spotlight.member.fraction}</strong>
+                    <strong>{spotlight.member.faction}</strong>
                     {spotlight.member.title && !spotlight.member.title.includes('—') && spotlight.member.title !== 'Member' && <> · {spotlight.member.title}</>}
                   </span>
                 )}

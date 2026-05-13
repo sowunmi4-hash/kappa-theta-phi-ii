@@ -16,7 +16,7 @@ export async function PATCH(req) {
 
   // If a brother self-enrolled (not a leader), notify leadership
   if (status === 'enrolled' && !canManage(member)) {
-    const leaders = await fetch(`${S}/rest/v1/roster?fraction=eq.Ishi No Faction&select=id`, { headers: h() }).then(r => r.json());
+    const leaders = await fetch(`${S}/rest/v1/roster?faction=eq.Ishi No Faction&select=id`, { headers: h() }).then(r => r.json());
     const founders = await fetch(`${S}/rest/v1/roster?role=in.(Head Founder,Co-Founder)&select=id`, { headers: h() }).then(r => r.json());
     const all = [...leaders, ...founders];
     for (const l of all) {

@@ -51,7 +51,7 @@ export async function GET(req) {
     const m = session.roster;
     return Response.json({
       success: true, authenticated: true,
-      member: { id: m.id, frat_name: m.frat_name, sl_name: m.sl_name, role: m.role, fraction: m.fraction, fraction_title: m.fraction_title, iron_compass: m.iron_compass }
+      member: { id: m.id, frat_name: m.frat_name, sl_name: m.sl_name, role: m.role, faction: m.faction, faction_title: m.faction_title, iron_compass: m.iron_compass }
     });
 
   } catch (err) {

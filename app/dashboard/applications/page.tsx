@@ -46,7 +46,7 @@ export default function ApplicationsPage() {
   useEffect(()=>{
     fetch('/api/dashboard/profile').then(r=>r.json()).then(d=>{
       if(d.error){window.location.href='/login';return;}
-      if(d.member?.fraction!=='Kuro Kanda Fraction'){window.location.href='/dashboard';return;}
+      if(d.member?.faction!=='Kuro Kanda Faction'){window.location.href='/dashboard';return;}
       setMember(d.member);setProfile(d.profile);load();
     });
   },[]);
@@ -76,7 +76,7 @@ export default function ApplicationsPage() {
       <main className="dash-main">
         <div className="dash-page-header">
           <div>
-            <div style={{fontFamily:'var(--cinzel)',fontSize:'.52rem',letterSpacing:'4px',color:'rgba(198,147,10,.45)',textTransform:'uppercase',marginBottom:'.25rem'}}>Kuro Kanda Fraction · Confidential</div>
+            <div style={{fontFamily:'var(--cinzel)',fontSize:'.52rem',letterSpacing:'4px',color:'rgba(198,147,10,.45)',textTransform:'uppercase',marginBottom:'.25rem'}}>Kuro Kanda Faction · Confidential</div>
             <div className="dash-page-title">Pledging Applications</div>
           </div>
           <span style={{fontFamily:'var(--cinzel)',fontSize:'.58rem',letterSpacing:'2px',color:'rgba(198,147,10,.6)'}}>{summary.pending||0} awaiting review</span>

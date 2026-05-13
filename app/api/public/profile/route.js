@@ -11,7 +11,7 @@ export async function GET(req) {
 
   // Get member ID by frat name
   const members = await fetch(
-    `${S}/rest/v1/roster?frat_name=ilike.${encodeURIComponent(frat_name)}&select=id,frat_name,role,fraction`,
+    `${S}/rest/v1/roster?frat_name=ilike.${encodeURIComponent(frat_name)}&select=id,frat_name,role,faction`,
     { headers: h() }
   ).then(r => r.json());
 

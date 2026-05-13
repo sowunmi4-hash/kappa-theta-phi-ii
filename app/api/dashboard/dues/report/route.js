@@ -15,12 +15,12 @@ async function getMember() {
   return m[0] || null;
 }
 
-const canSeeDisciplinary = (m) => m && (m.fraction === 'Ishi No Faction' || m.frat_name === 'Big Brother Substance' || m.frat_name === 'Big Brother Cool Breeze');
+const canSeeDisciplinary = (m) => m && (m.faction === 'Ishi No Faction' || m.frat_name === 'Big Brother Substance' || m.frat_name === 'Big Brother Cool Breeze');
 const canSeeFull = (m) => m && (m.frat_name === 'Big Brother Substance' || m.frat_name === 'Big Brother Cool Breeze');
 
 export async function GET(req) {
   const member = await getMember();
-  console.log('[dues/report] member:', member?.frat_name, '| fraction:', member?.fraction);
+  console.log('[dues/report] member:', member?.frat_name, '| faction:', member?.faction);
   if (!member) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   const canSee = canSeeDisciplinary(member);
   console.log('[dues/report] canSeeDisciplinary:', canSee);

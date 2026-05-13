@@ -64,7 +64,7 @@ export async function POST(req) {
       const sessionToken = await createSession(supabase, member, maxAge, true); // tagged as admin login
       return Response.json({
         success: true,
-        member: { id: member.id, frat_name: member.frat_name, sl_name: member.sl_name, role: member.role, fraction: member.fraction, fraction_title: member.fraction_title, iron_compass: member.iron_compass }
+        member: { id: member.id, frat_name: member.frat_name, sl_name: member.sl_name, role: member.role, faction: member.faction, faction_title: member.faction_title, iron_compass: member.iron_compass }
       }, { status: 200, headers: { 'Set-Cookie': buildCookie(sessionToken, maxAge) } });
     }
 
@@ -90,7 +90,7 @@ export async function POST(req) {
     const sessionToken = await createSession(supabase, member, maxAge);
     return Response.json({
       success: true,
-      member: { id: member.id, frat_name: member.frat_name, sl_name: member.sl_name, role: member.role, fraction: member.fraction, fraction_title: member.fraction_title, iron_compass: member.iron_compass }
+      member: { id: member.id, frat_name: member.frat_name, sl_name: member.sl_name, role: member.role, faction: member.faction, faction_title: member.faction_title, iron_compass: member.iron_compass }
     }, { status: 200, headers: { 'Set-Cookie': buildCookie(sessionToken, maxAge) } });
 
   } catch (err) {

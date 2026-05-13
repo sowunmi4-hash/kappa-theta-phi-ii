@@ -52,7 +52,7 @@ export default function DisciplinePage() {
 
   useEffect(()=>{
     if(!member) return;
-    const manage=member.fraction==='Ishi No Faction'||member.role==='Head Founder'||member.role==='Co-Founder';
+    const manage=member.faction==='Ishi No Faction'||member.role==='Head Founder'||member.role==='Co-Founder';
     setCanManage(manage);
     if(manage){
       loadAll();
@@ -64,7 +64,7 @@ export default function DisciplinePage() {
 
   useEffect(()=>{
     if(!member) return;
-    const manage=member.fraction==='Ishi No Faction'||member.role==='Head Founder'||member.role==='Co-Founder';
+    const manage=member.faction==='Ishi No Faction'||member.role==='Head Founder'||member.role==='Co-Founder';
     const poll=setInterval(()=>{
       if(document.activeElement instanceof HTMLInputElement||document.activeElement instanceof HTMLTextAreaElement||document.activeElement instanceof HTMLSelectElement) return;
       if(manage) loadAll();

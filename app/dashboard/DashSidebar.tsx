@@ -36,10 +36,10 @@ export default function DashSidebar({ member, profile, unread = 0 }: Props) {
   const slug     = member?.frat_name?.toLowerCase().replace(/\s+/g, '-').replace('big-brother-', '') || '';
   const portrait = profile?.portrait_url || `/brothers/${slug}.png`;
 
-  const canSeeDuesReport = member?.fraction === 'Ishi No Faction' || member?.frat_name === 'Big Brother Substance' || member?.frat_name === 'Big Brother Cool Breeze';
+  const canSeeDuesReport = member?.faction === 'Ishi No Faction' || member?.frat_name === 'Big Brother Substance' || member?.frat_name === 'Big Brother Cool Breeze';
   const canSeeTransactions = member?.frat_name === 'Big Brother Cool Breeze';
-  const canSeeSSPReport  = member?.fraction === 'Ishi No Faction' || member?.role === 'Head Founder' || member?.role === 'Co-Founder';
-  const canSeeApplications = member?.fraction === 'Kuro Kanda Fraction';
+  const canSeeSSPReport  = member?.faction === 'Ishi No Faction' || member?.role === 'Head Founder' || member?.role === 'Co-Founder';
+  const canSeeApplications = member?.faction === 'Kuro Kanda Faction';
   const canSeeActivity  = member?.frat_name === 'Big Brother Wildwon';
   const canSeeTreasury  = member?.frat_name === 'Big Brother Cool Breeze';
 
@@ -172,7 +172,7 @@ export default function DashSidebar({ member, profile, unread = 0 }: Props) {
             </div>
             <div className="dash-glass-name">{member?.frat_name}</div>
             <div className="dash-glass-role">{member?.role}</div>
-            {member?.fraction && <div className="dash-glass-faction">{member.fraction}</div>}
+            {member?.faction && <div className="dash-glass-faction">{member.faction}</div>}
           </div>
 
           {/* Nav */}

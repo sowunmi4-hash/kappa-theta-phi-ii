@@ -24,13 +24,13 @@ export async function GET() {
   // Only leaders/managers can fetch the full roster
   const canAccess =
     LEADERS.includes(member.role) ||
-    member.fraction === 'Ishi No Faction';
+    member.faction === 'Ishi No Faction';
 
   if (!canAccess) return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
 
   // Fetch all brothers + their current PHIRE balance
   const [roster, balances] = await Promise.all([
-    fetch(`${S}/rest/v1/roster?select=id,frat_name,role,fraction&order=frat_name.asc`, { headers: h() }).then(r => r.json()),
+    fetch(`${S}/rest/v1/roster?select=id,frat_name,role,faction&order=frat_name.asc`, { headers: h() }).then(r => r.json()),
     fetch(`${S}/rest/v1/phire_balances?select=member_id,balance`, { headers: h() }).then(r => r.json()),
   ]);
 
@@ -41,7 +41,7 @@ export async function GET() {
     member_id: r.id,
     frat_name: r.frat_name,
     role: r.role,
-    fraction: r.fraction || '',
+    faction: r.faction || '',
     balance: balMap[r.id] ?? 0,
   }));
 

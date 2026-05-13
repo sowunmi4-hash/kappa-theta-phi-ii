@@ -66,7 +66,7 @@ export default function DuesReportPage() {
     fetch('/api/dashboard/profile').then(r=>r.json()).then(d=>{
       if(d.error){window.location.href='/login';return;}
       const m=d.member;
-      const canSee=m?.fraction==='Ishi No Faction'||m?.frat_name==='Big Brother Substance'||m?.frat_name==='Big Brother Cool Breeze';
+      const canSee=m?.faction==='Ishi No Faction'||m?.frat_name==='Big Brother Substance'||m?.frat_name==='Big Brother Cool Breeze';
       if(!canSee){window.location.href='/dashboard';return;}
       setMember(m); setProfile(d.profile);
       loadReport('');

@@ -21,7 +21,7 @@ export async function GET() {
 
   // Get all brothers from roster (excluding hidden members)
   const roster = await fetch(
-    `${S}/rest/v1/roster?select=id,frat_name,role,fraction&order=frat_name.asc`,
+    `${S}/rest/v1/roster?select=id,frat_name,role,faction&order=frat_name.asc`,
     { headers: h() }
   ).then(r => r.json());
 

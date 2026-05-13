@@ -6,7 +6,7 @@ const K = process.env.SUPABASE_SECRET_KEY;
 const h  = () => ({ apikey: K, Authorization: `Bearer ${K}`, 'Accept-Profile': 'members' });
 const ch = () => ({ ...h(), 'Content-Type': 'application/json', 'Content-Profile': 'members', Prefer: 'return=representation' });
 
-const canReview = (m) => m?.fraction === 'Kuro Kanda Fraction';
+const canReview = (m) => m?.faction === 'Kuro Kanda Faction';
 
 async function getMember() {
   const token = (await cookies()).get(process.env.SESSION_COOKIE_NAME || 'ktf_session')?.value;
@@ -34,7 +34,7 @@ export async function POST(req) {
   return NextResponse.json({ ok: true, id: Array.isArray(res) ? res[0]?.id : res?.id });
 }
 
-// GET — all applications (Kuro Kanda Fraction only)
+// GET — all applications (Kuro Kanda Faction only)
 export async function GET() {
   const member = await getMember();
   if (!member) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
@@ -55,7 +55,7 @@ export async function GET() {
   });
 }
 
-// PATCH — update status / interview date (Kuro Kanda Fraction only)
+// PATCH — update status / interview date (Kuro Kanda Faction only)
 export async function PATCH(req) {
   const member = await getMember();
   if (!member) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
