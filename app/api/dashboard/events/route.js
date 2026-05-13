@@ -111,7 +111,7 @@ export async function PATCH(req) {
 
   // Edit event
   if (body.action === 'edit') {
-    const { event_id, title, event_date, event_time, location, sl_url, dress_code, description, flyer_url } = body;
+    const { event_id, title, event_date, event_time, end_time, location, sl_url, dress_code, theme, description, flyer_url } = body;
     // Only creator or founders can edit
     const filter = FOUNDERS.includes(member.role)
       ? `id=eq.${event_id}`

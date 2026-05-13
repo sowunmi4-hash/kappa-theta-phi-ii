@@ -508,7 +508,7 @@ export default function EventsPage() {
                         {rsvpLocal === 'yes' ? '✓ RSVPed' : 'RSVP →'}
                       </button>
                     )}
-                    {selected.sl_url && (
+                    {selected.sl_url?.trim() && (
                       <a href={selected.sl_url} target="_blank" rel="noopener noreferrer" className="ev-action-btn teleport">
                         Teleport →
                       </a>
