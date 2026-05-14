@@ -31,7 +31,7 @@
 /* Column headers */
 .tx-col-hdr {
   display: grid;
-  grid-template-columns: 180px 140px 90px 200px 1fr;
+  grid-template-columns: 170px 1fr 80px 160px 100px;
   gap: 1rem; padding: .6rem 1.8rem;
   background: rgba(6,11,26,.55); border-bottom: 1px solid rgba(27,58,107,.22);
 }
@@ -44,7 +44,7 @@
 .tx-rows { display: flex; flex-direction: column; }
 .tx-row {
   display: grid;
-  grid-template-columns: 180px 140px 90px 200px 1fr;
+  grid-template-columns: 170px 1fr 80px 160px 100px;
   gap: 1rem; align-items: center;
   padding: .9rem 1.8rem;
   border-bottom: 1px solid rgba(255,255,255,.03);
@@ -58,6 +58,7 @@
 
 /* Transaction ID */
 .tx-id {
+  max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
   font-family: 'Courier New', monospace; font-size: .78rem;
   color: var(--gold-b); letter-spacing: 1px;
   background: rgba(27,58,107,.16); border: 1px solid rgba(198,147,10,.15);
