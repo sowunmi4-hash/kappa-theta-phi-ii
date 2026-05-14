@@ -86,6 +86,7 @@ export default function TreasuryPage() {
           </div>
           <div style={{display:'flex',alignItems:'center',gap:'1rem'}}>
             <span style={{fontFamily:'var(--cinzel)',fontSize:'.58rem',letterSpacing:'2px',color:'var(--bone-faint)'}}>{fmtL(totals.all||0)} total</span>
+            <button className="dash-btn gold-ghost" onClick={()=>load(typeFilter,monthFilter)} disabled={loading} style={{fontSize:'.56rem',letterSpacing:'2px'}}>↻ Refresh</button>
             <button className="dash-btn gold-ghost" onClick={download} disabled={!txns.length} style={{fontSize:'.58rem',letterSpacing:'2px'}}>
               ↓ Download CSV
             </button>
