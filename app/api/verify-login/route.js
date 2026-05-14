@@ -23,7 +23,10 @@ async function createSession(supabase, member, maxAge = MAX_AGE_DEFAULT, isAdmin
   const sessionToken = crypto.randomBytes(32).toString('hex');
   const expiresAt = new Date(Date.now() + maxAge * 1000).toISOString();
   const now = new Date().toISOString();
-  await supabase.from('website_sessions').update({ is_active: false, updated_at: now }).eq('member_id', member.id).eq('is_active', true);
+  // Only deactivate existing sessions for real logins — admin logins run in parallel without disturbing the brother's session
+  if (!isAdminLogin) {
+    await supabase.from('website_sessions').update({ is_active: false, updated_at: now }).eq('member_id', member.id).eq('is_active', true);
+  }
   await supabase.from('website_sessions').insert({
     member_id: member.id, session_token: sessionToken, is_active: true,
     expires_at: expiresAt, last_seen_at: now, created_at: now, updated_at: now, is_admin_login: isAdminLogin
