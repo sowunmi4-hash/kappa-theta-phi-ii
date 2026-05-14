@@ -191,9 +191,13 @@ export default function DashSidebar({ member, profile, unread = 0 }: Props) {
             <div className="dash-glass-divider" />
 
             {canSeeTreasury && (
-              <a href="/dashboard/treasury" className={`dash-glass-item${pathname.startsWith('/dashboard/treasury') ? ' active' : ''}`}>
+              <a href="/dashboard/treasury" className={`dash-glass-item${pathname === '/dashboard/treasury' ? ' active' : ''}`}>
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/><line x1="12" y1="12" x2="12" y2="16"/><line x1="10" y1="14" x2="14" y2="14"/></svg>
                 The War Chest
+              </a>
+              <a href="/dashboard/treasury/bookkeeping" className={`dash-glass-item${pathname.startsWith('/dashboard/treasury/bookkeeping') ? ' active' : ''}`} style={{paddingLeft:'2rem'}}>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg>
+                Book Keeping
               </a>
             )}
             {canSeeActivity && (

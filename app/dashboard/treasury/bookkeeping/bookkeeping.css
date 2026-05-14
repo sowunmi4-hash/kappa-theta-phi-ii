@@ -1,0 +1,59 @@
+/* ── BOOKKEEPING / P&L ── */
+
+/* P&L Summary Strip */
+.bk-summary {
+  display: grid; grid-template-columns: 1fr 1fr 1fr;
+  border-bottom: 1px solid rgba(27,58,107,.25);
+}
+.bk-sum-cell {
+  padding: 1.4rem 1.8rem; border-right: 1px solid rgba(27,58,107,.2);
+  position: relative;
+}
+.bk-sum-cell:last-child { border-right: none; }
+.bk-sum-cell::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; }
+.bk-sum-cell.income::before  { background: linear-gradient(90deg,rgba(74,222,128,.6),transparent); }
+.bk-sum-cell.debit::before   { background: linear-gradient(90deg,rgba(248,113,113,.6),transparent); }
+.bk-sum-cell.profit::before  { background: linear-gradient(90deg,rgba(244,195,0,.6),transparent); }
+.bk-sum-cell.loss::before    { background: linear-gradient(90deg,rgba(248,113,113,.6),transparent); }
+.bk-sum-lbl { font-family:var(--cinzel); font-size:.52rem; letter-spacing:3px; text-transform:uppercase; margin-bottom:.4rem; }
+.bk-sum-cell.income .bk-sum-lbl  { color:rgba(74,222,128,.55); }
+.bk-sum-cell.debit .bk-sum-lbl   { color:rgba(248,113,113,.55); }
+.bk-sum-cell.profit .bk-sum-lbl  { color:rgba(244,195,0,.55); }
+.bk-sum-cell.loss .bk-sum-lbl    { color:rgba(248,113,113,.55); }
+.bk-sum-val { font-family:var(--display); font-size:2rem; letter-spacing:1px; line-height:1; margin-bottom:.5rem; }
+.bk-sum-cell.income .bk-sum-val  { color:#4ade80; }
+.bk-sum-cell.debit .bk-sum-val   { color:#f87171; }
+.bk-sum-cell.profit .bk-sum-val  { color:var(--yellow-b); }
+.bk-sum-cell.loss .bk-sum-val    { color:#f87171; }
+.bk-sum-breakdown { display:flex; gap:.35rem; flex-wrap:wrap; }
+.bk-type-chip { font-family:var(--cinzel); font-size:.5rem; letter-spacing:1px; padding:2px 8px; border:1px solid rgba(255,255,255,.08); border-radius:3px; color:var(--bone-faint); background:rgba(255,255,255,.03); }
+
+/* Log Form */
+.bk-form-wrap { padding:1.2rem 1.5rem; background:rgba(12,22,48,.5); border-bottom:1px solid rgba(27,58,107,.3); }
+.bk-form-title { font-family:var(--cinzel); font-size:.6rem; letter-spacing:4px; color:rgba(244,195,0,.5); text-transform:uppercase; margin-bottom:.85rem; }
+.bk-form-grid { display:grid; grid-template-columns:1fr 1fr; gap:.65rem; }
+.bk-field-lbl { font-family:var(--cinzel); font-size:.54rem; letter-spacing:3px; color:rgba(248,113,113,.5); text-transform:uppercase; margin-bottom:.3rem; }
+.bk-input { width:100%; background:rgba(6,13,30,.8); border:1px solid rgba(27,58,107,.4); border-radius:3px; padding:.55rem .8rem; color:var(--bone-dim); font-family:var(--body); font-size:.92rem; outline:none; transition:border .15s; }
+.bk-input:focus { border-color:rgba(248,113,113,.4); }
+.bk-input option { background:#060d1e; }
+.bk-error { font-family:var(--cinzel); font-size:.58rem; letter-spacing:1px; color:#f87171; background:rgba(248,113,113,.07); border:1px solid rgba(248,113,113,.2); border-radius:3px; padding:.5rem .75rem; margin-bottom:.6rem; }
+
+/* Section header */
+.bk-section-hdr { display:flex; justify-content:space-between; align-items:center; padding:.7rem 1.5rem; border-bottom:1px solid rgba(27,58,107,.22); background:rgba(6,11,26,.3); font-family:var(--cinzel); font-size:.58rem; letter-spacing:3px; color:var(--bone-dim); text-transform:uppercase; }
+
+/* Debits table */
+.bk-col-hdr { display:grid; grid-template-columns:160px 1fr 110px 130px 90px 32px; gap:.75rem; padding:.55rem 1.5rem; background:rgba(8,14,32,.4); border-bottom:1px solid rgba(27,58,107,.22); font-family:var(--cinzel); font-size:.5rem; letter-spacing:3px; color:rgba(248,113,113,.35); text-transform:uppercase; }
+.bk-row { display:grid; grid-template-columns:160px 1fr 110px 130px 90px 32px; gap:.75rem; padding:.75rem 1.5rem; border-bottom:1px solid rgba(27,58,107,.15); background:rgba(10,18,40,.5); align-items:center; transition:background .15s; }
+.bk-row:hover { background:rgba(14,25,55,.65); }
+.bk-date  { font-family:var(--cinzel); font-size:.55rem; letter-spacing:1px; color:var(--bone-faint); }
+.bk-desc  { font-family:var(--body); font-size:.92rem; color:var(--bone); }
+.bk-cat   { font-family:var(--cinzel); font-size:.52rem; letter-spacing:1px; color:var(--bone-faint); }
+.bk-recip { font-family:var(--body); font-size:.88rem; color:var(--bone-faint); }
+.bk-amount { font-family:var(--display); font-size:1rem; letter-spacing:1px; color:#f87171; }
+.bk-del { background:none; border:1px solid rgba(248,113,113,.2); color:rgba(248,113,113,.5); font-size:.65rem; width:26px; height:26px; border-radius:3px; cursor:pointer; transition:all .15s; }
+.bk-del:hover { background:rgba(248,113,113,.1); border-color:rgba(248,113,113,.5); color:#f87171; }
+
+/* Income breakdown */
+.bk-income-grid { display:grid; grid-template-columns:repeat(4,1fr); border-bottom:1px solid rgba(27,58,107,.2); }
+.bk-income-cell { padding:1rem 1.5rem; border-right:1px solid rgba(27,58,107,.18); background:rgba(10,18,40,.4); }
+.bk-income-cell:last-child { border-right:none; }
