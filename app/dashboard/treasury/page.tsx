@@ -51,7 +51,22 @@ export default function TreasuryPage() {
       t.description || '',
       t.event_name || '',
     ]);
-    const csv = [headers, ...rows].map(r => r.map((v:any) => `"${String(v).replace(/"/g,'""')}"`).join(',')).join('\n');
+    // Totals row
+    const total = txns.reduce((a,t) => a + t.amount_ls, 0);
+    const gearT = txns.filter(t=>t.type==='gear').reduce((a,t)=>a+t.amount_ls,0);
+    const eventT = txns.filter(t=>t.type==='event').reduce((a,t)=>a+t.amount_ls,0);
+    const charityT = txns.filter(t=>t.type==='charity').reduce((a,t)=>a+t.amount_ls,0);
+    const duesT = txns.filter(t=>t.type==='dues').reduce((a,t)=>a+t.amount_ls,0);
+    const blankRow = ['','','','','',''];
+    const totalRow = ['TOTAL','All',total,'','',''];
+    const breakdownRows = [
+      ['','Gear',gearT,'','',''],
+      ['','Event',eventT,'','',''],
+      ['','Charity',charityT,'','',''],
+      ['','Dues',duesT,'','',''],
+    ].filter(r => (r[2] as number) > 0);
+    const csv = [headers, ...rows, blankRow, totalRow, ...breakdownRows]
+      .map(r => r.map((v:any) => `"${String(v).replace(/"/g,'""')}"`).join(',')).join('\n');
     const blob = new Blob([csv], { type: 'text/csv' });
     const url  = URL.createObjectURL(blob);
     const a    = document.createElement('a');
