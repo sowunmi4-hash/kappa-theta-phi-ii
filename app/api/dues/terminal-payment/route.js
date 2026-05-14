@@ -119,6 +119,27 @@ export async function POST(req) {
     })
   });
 
+  // Log to War Chest treasury
+  fetch(`${process.env.SUPABASE_URL}/rest/v1/treasury_transactions`, {
+    method: 'POST',
+    headers: {
+      apikey: process.env.SUPABASE_SECRET_KEY,
+      Authorization: `Bearer ${process.env.SUPABASE_SECRET_KEY}`,
+      'Content-Type': 'application/json',
+      'Accept-Profile': 'members',
+      'Content-Profile': 'members',
+      Prefer: 'return=minimal'
+    },
+    body: JSON.stringify({
+      type: 'dues',
+      amount_ls: amount_ls,
+      payer_name: member.frat_name,
+      payer_uuid: sl_uuid,
+      description: `Dues — ${period.label}`,
+      transaction_id: `dues-${txn_id}`
+    })
+  }).catch(() => {}); // fire and forget
+
   return NextResponse.json({
     frat_name:      member.frat_name,
     period:         period.label,
