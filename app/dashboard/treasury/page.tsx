@@ -25,7 +25,8 @@ export default function TreasuryPage() {
       if (d.error) { window.location.href='/login'; return; }
       if (d.member?.frat_name !== 'Big Brother Cool Breeze') { window.location.href='/dashboard'; return; }
       setMember(d.member); setProfile(d.profile);
-      load('', '');
+      const m = new Date().toLocaleDateString('en-CA',{timeZone:'America/Los_Angeles',year:'numeric',month:'2-digit'}).slice(0,7);
+      setMonthFilter(m); load('', m);
     });
   }, []);
 

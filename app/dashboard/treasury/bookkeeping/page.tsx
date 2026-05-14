@@ -13,6 +13,8 @@ function fmt(d:string){ return new Date(d).toLocaleDateString('en-GB',{day:'nume
 export default function BookkeepingPage() {
   const [member,setMember]=useState<any>(null);
   const [profile,setProfile]=useState<any>(null);
+  const getSLTMonth = () => new Date().toLocaleDateString('en-CA',{timeZone:'America/Los_Angeles',year:'numeric',month:'2-digit'}).slice(0,7);
+  const [monthFilter,setMonthFilter]=useState(getSLTMonth);
   const [data,setData]=useState<any>(null);
   const [loading,setLoading]=useState(true);
   const [showForm,setShowForm]=useState(false);
@@ -24,13 +26,16 @@ export default function BookkeepingPage() {
     fetch('/api/dashboard/profile').then(r=>r.json()).then(d=>{
       if(d.error){window.location.href='/login';return;}
       if(d.member?.frat_name!=='Big Brother Cool Breeze'){window.location.href='/dashboard';return;}
-      setMember(d.member);setProfile(d.profile);load();
+      setMember(d.member);setProfile(d.profile);
+      const m=new Date().toLocaleDateString('en-CA',{timeZone:'America/Los_Angeles',year:'numeric',month:'2-digit'}).slice(0,7);
+      setMonthFilter(m);load(m);
     });
   },[]);
 
-  async function load(){
+  async function load(month?:string){
     setLoading(true);
-    const d=await fetch('/api/treasury/bookkeeping').then(r=>r.json());
+    const m=month||monthFilter;
+    const d=await fetch('/api/treasury/bookkeeping'+(m?`?month=${m}`:'')).then(r=>r.json());
     setData(d);setLoading(false);
   }
 
@@ -62,7 +67,11 @@ export default function BookkeepingPage() {
             <div className="dash-page-title">Book Keeping</div>
           </div>
           <div style={{display:'flex',gap:'1rem',alignItems:'center'}}>
-            <button className="dash-btn gold-ghost" onClick={load} style={{fontSize:'.56rem',letterSpacing:'2px'}}>↻ Refresh</button>
+            <select style={{fontFamily:'var(--cinzel)',fontSize:'.54rem',letterSpacing:'2px',padding:'.3rem .7rem',border:'1px solid rgba(27,58,107,.3)',cursor:'pointer',color:'var(--bone-faint)',background:'rgba(6,11,26,.8)',borderRadius:'3px',outline:'none'}} value={monthFilter} onChange={e=>{setMonthFilter(e.target.value);load(e.target.value);}}>
+              <option value="">All Time</option>
+              {Array.from({length:6},(_,i)=>{const d=new Date();d.setMonth(d.getMonth()-i);return d.toLocaleDateString('en-CA',{timeZone:'America/Los_Angeles',year:'numeric',month:'2-digit'}).slice(0,7);}).map(m=><option key={m} value={m}>{new Date(m+'-15').toLocaleDateString('en-GB',{month:'long',year:'numeric'})}</option>)}
+            </select>
+            <button className="dash-btn gold-ghost" onClick={()=>load()} style={{fontSize:'.56rem',letterSpacing:'2px'}}>↻ Refresh</button>
             <button className="dash-btn gold-solid" onClick={()=>setShowForm(s=>!s)} style={{fontSize:'.56rem',letterSpacing:'2px'}}>
               {showForm?'✕ Cancel':'+ Log Debit'}
             </button>

@@ -15,14 +15,27 @@ async function getMember() {
   return m[0]||null;
 }
 
-export async function GET() {
+export async function GET(req) {
   const member = await getMember();
   if (!member) return NextResponse.json({error:'Unauthorized'},{status:401});
   if (member.frat_name !== 'Big Brother Cool Breeze') return NextResponse.json({error:'Forbidden'},{status:403});
 
+  const { searchParams } = new URL(req.url);
+  const month = searchParams.get('month'); // YYYY-MM
+
+  let debitUrl  = `${S}/rest/v1/bookkeeping_debits?order=created_at.desc`;
+  let incomeUrl = `${S}/rest/v1/treasury_transactions?order=created_at.desc&limit=500`;
+
+  if (month) {
+    const start = `${month}-01T00:00:00Z`;
+    const end   = new Date(new Date(start).setMonth(new Date(start).getMonth()+1)).toISOString();
+    debitUrl  += `&created_at=gte.${start}&created_at=lt.${end}`;
+    incomeUrl += `&created_at=gte.${start}&created_at=lt.${end}`;
+  }
+
   const [debits, income] = await Promise.all([
-    fetch(`${S}/rest/v1/bookkeeping_debits?order=created_at.desc`,{headers:h()}).then(r=>r.json()),
-    fetch(`${S}/rest/v1/treasury_transactions?order=created_at.desc`,{headers:h()}).then(r=>r.json()),
+    fetch(debitUrl,  {headers:h()}).then(r=>r.json()),
+    fetch(incomeUrl, {headers:h()}).then(r=>r.json()),
   ]);
 
   const debitList  = Array.isArray(debits) ? debits : [];
