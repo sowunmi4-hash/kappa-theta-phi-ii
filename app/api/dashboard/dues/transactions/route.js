@@ -29,7 +29,7 @@ export async function GET(req) {
   const periods = await fetch(`${S}/rest/v1/dues_periods?order=year.desc,month.desc&select=*`, { headers: h() }).then(r => r.json());
 
   // Get payments — filter by period if specified, otherwise get all terminal payments
-  let url = `${S}/rest/v1/dues_payments?logged_by_name=eq.SL Dues Terminal&order=created_at.desc&select=*`;
+  let url = `${S}/rest/v1/dues_payments?order=created_at.desc&select=*`;
   if (period_id) url += `&period_id=eq.${period_id}`;
 
   const payments = await fetch(url, { headers: h() }).then(r => r.json());
