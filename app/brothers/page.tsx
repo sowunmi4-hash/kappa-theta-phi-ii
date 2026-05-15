@@ -532,6 +532,7 @@ function socialLink(platform: string, handle: string): string {
   const h = handle.replace('@', '');
   if (platform === 'Second Life') return handle;
   if (platform === 'Instagram') return `https://instagram.com/${h}`;
+  if (platform === 'Facebook') return h.startsWith('http') ? h : `https://facebook.com/${h}`;
   if (platform === 'Twitter/X') return `https://x.com/${h}`;
   if (platform === 'TikTok') return `https://tiktok.com/@${h}`;
   if (platform === 'YouTube') return `https://youtube.com/@${h}`;
@@ -539,7 +540,7 @@ function socialLink(platform: string, handle: string): string {
 }
 
 const SOCIAL_ICONS: Record<string, string> = {
-  Instagram: '📸', 'Twitter/X': '𝕏', TikTok: '🎵',
+  Instagram: '📸', Facebook: '📘', 'Twitter/X': '𝕏', TikTok: '🎵',
   YouTube: '▶', Discord: '💬', 'Second Life': '⚓',
 };
 

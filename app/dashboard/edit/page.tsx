@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation';
 import '../dash.css';
 import DashSidebar from '../DashSidebar';
 
-const SOCIALS = ['Instagram', 'Twitter/X', 'TikTok', 'YouTube', 'Discord', 'Second Life'];
+const SOCIALS = ['Instagram', 'Facebook', 'Twitter/X', 'TikTok', 'YouTube', 'Discord', 'Second Life'];
 
 export default function EditPage() {
   const [member, setMember]   = useState<any>(null);
