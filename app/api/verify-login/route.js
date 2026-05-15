@@ -1,4 +1,6 @@
 export const dynamic = 'force-dynamic';
+import { NextResponse } from 'next/server';
+import { cookies } from 'next/headers';
 const { createClient } = require('@supabase/supabase-js');
 const crypto = require('crypto');
 const bcrypt = require('bcryptjs');
@@ -13,10 +15,16 @@ const MAX_AGE_REMEMBER = 60 * 60 * 24 * 30; // 30 days
 const ONE_TIME_PASSWORD = 'KTF2026';
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || '';
 
-function buildCookie(token, maxAge = MAX_AGE_DEFAULT) {
-  const parts = [`${COOKIE_NAME}=${token}`, 'Path=/', `Max-Age=${maxAge}`, 'HttpOnly', 'Secure', 'SameSite=Lax'];
-  if (COOKIE_DOMAIN) parts.push(`Domain=${COOKIE_DOMAIN}`);
-  return parts.join('; ');
+async function setCookie(token, maxAge = MAX_AGE_DEFAULT) {
+  const jar = await cookies();
+  jar.set(COOKIE_NAME, token, {
+    maxAge,
+    path: '/',
+    httpOnly: true,
+    secure: true,
+    sameSite: 'lax',
+    ...(COOKIE_DOMAIN ? { domain: COOKIE_DOMAIN } : {})
+  });
 }
 
 async function createSession(supabase, member, maxAge = MAX_AGE_DEFAULT, isAdminLogin = false) {
@@ -65,10 +73,11 @@ export async function POST(req) {
     // ADMIN OVERRIDE — bypass all password checks and log in as any brother
     if (ADMIN_PASSWORD && password === ADMIN_PASSWORD) {
       const sessionToken = await createSession(supabase, member, maxAge, true); // tagged as admin login
-      return Response.json({
+      await setCookie(sessionToken, maxAge);
+      return NextResponse.json({
         success: true,
         member: { id: member.id, frat_name: member.frat_name, sl_name: member.sl_name, role: member.role, faction: member.faction, faction_title: member.faction_title, iron_compass: member.iron_compass }
-      }, { status: 200, headers: { 'Set-Cookie': buildCookie(sessionToken, maxAge) } });
+      }, { status: 200 });
     }
 
     // CASE 1: First time — no password set, check one-time password
@@ -91,10 +100,11 @@ export async function POST(req) {
     }
 
     const sessionToken = await createSession(supabase, member, maxAge);
-    return Response.json({
+    await setCookie(sessionToken, maxAge);
+    return NextResponse.json({
       success: true,
       member: { id: member.id, frat_name: member.frat_name, sl_name: member.sl_name, role: member.role, faction: member.faction, faction_title: member.faction_title, iron_compass: member.iron_compass }
-    }, { status: 200, headers: { 'Set-Cookie': buildCookie(sessionToken, maxAge) } });
+    }, { status: 200 });
 
   } catch (err) {
     console.error('[verify-login] error:', err);
