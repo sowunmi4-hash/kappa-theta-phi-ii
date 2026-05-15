@@ -5,10 +5,19 @@ import './home.css';
 const VIDEO_ID = 'kQLWXpS1qx8';
 
 export default function HomePage() {
-  const [lightbox, setLightbox] = useState(false);
-  const [scrolled, setScrolled]  = useState(false);
+  const [lightbox, setLightbox]   = useState(false);
+  const [scrolled, setScrolled]    = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [sessionChecked, setSessionChecked] = useState(false);
   const dustRef = useRef<HTMLCanvasElement>(null);
   const navRef  = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    fetch('/api/verify-session', { credentials: 'include' })
+      .then(r => r.json())
+      .then(d => { setIsLoggedIn(!!d.authenticated); setSessionChecked(true); })
+      .catch(() => setSessionChecked(true));
+  }, []);
 
   useEffect(() => {
     // Scroll nav style
@@ -88,7 +97,7 @@ export default function HomePage() {
       <section className="hn-hero">
         <div className="hn-hero-sub">Brotherhood Beyond Borders</div>
 
-        <a href="/login" className="hn-seal" aria-label="Enter the dashboard">
+        <a href={sessionChecked ? (isLoggedIn ? '/dashboard' : '/login') : '/login'} className="hn-seal" aria-label="Enter the dashboard">
           <div className="hn-seal-ring r1"/>
           <div className="hn-seal-ring r2"/>
           <div className="hn-seal-ring r3"/>
