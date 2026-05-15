@@ -49,9 +49,21 @@ export async function GET(req) {
     await supabase.from('website_sessions').update({ last_seen_at: new Date().toISOString() }).eq('id', session.id);
 
     const m = session.roster;
-    return Response.json({
+
+    // Rolling cookie — refresh Max-Age on every verified request so active users stay logged in
+    const remaining = Math.floor((new Date(session.expires_at).getTime() - Date.now()) / 1000);
+    const COOKIE_NAME_VAL = process.env.SESSION_COOKIE_NAME || 'ktf_session';
+    const refreshCookie = `${COOKIE_NAME_VAL}=${token}; Path=/; Max-Age=${remaining}; HttpOnly; Secure; SameSite=Lax`;
+
+    return new Response(JSON.stringify({
       success: true, authenticated: true,
       member: { id: m.id, frat_name: m.frat_name, sl_name: m.sl_name, role: m.role, faction: m.faction, faction_title: m.faction_title, iron_compass: m.iron_compass }
+    }), {
+      status: 200,
+      headers: {
+        'Content-Type': 'application/json',
+        'Set-Cookie': refreshCookie
+      }
     });
 
   } catch (err) {

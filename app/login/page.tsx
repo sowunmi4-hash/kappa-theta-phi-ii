@@ -5,7 +5,7 @@ import '../public.css';
 import PublicNav from '../components/PublicNav';
 
 export default function LoginPage() {
-  const [step, setStep] = useState<'login' | 'create-password' | 'logged-in'>('login');
+  const [step, setStep] = useState<'login' | 'create-password' | 'logged-in' | 'checking'>('checking');
   const [fratName, setFratName] = useState('');
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
@@ -60,6 +60,7 @@ export default function LoginPage() {
       const d = await r.json();
       if (r.ok && d.authenticated) { window.location.href = '/dashboard'; return; }
     } catch {}
+    setStep('login'); // Show login form only after session check completes
   }
 
   async function handleLogin(e: React.FormEvent) {
@@ -172,7 +173,13 @@ export default function LoginPage() {
                   />
                 </div>
 
-                <label className={`remember${rememberMe ? ' checked' : ''}`} onClick={() => setRememberMe(r => !r)}>
+                <label className={`remember${rememberMe ? ' checked' : ''}`}>
+                  <input
+                    type="checkbox"
+                    checked={rememberMe}
+                    onChange={e => setRememberMe(e.target.checked)}
+                    style={{position:'absolute',opacity:0,width:0,height:0}}
+                  />
                   <span className="remember-box"><span>✓</span></span>
                   <span className="remember-text">Remember me for 30 days</span>
                 </label>
