@@ -8,7 +8,6 @@ const LINKS = [
   { href: '/brothers',     label: 'Brothers' },
   { href: '/gallery',      label: 'Gallery' },
   { href: '/philanthropy', label: 'Philanthropy' },
-  { href: '/apply',        label: 'Apply' },
 ];
 
 export default function PublicNav() {
