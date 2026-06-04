@@ -1,15 +1,5 @@
 {
   "buildCommand": "next build",
   "outputDirectory": ".next",
-  "framework": "nextjs",
-  "crons": [
-    {
-      "path": "/api/cron/event-reminders",
-      "schedule": "*/10 * * * *"
-    },
-    {
-      "path": "/api/cron/open-dues-period",
-      "schedule": "0 8 1 * *"
-    }
-  ]
+  "framework": "nextjs"
 }

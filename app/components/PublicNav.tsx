@@ -15,21 +15,16 @@ export default function PublicNav() {
   const pathname = usePathname();
   const [scrolled, setScrolled]     = useState(false);
   const [open, setOpen]             = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
     const fn = () => setScrolled(window.scrollY > 40);
     window.addEventListener('scroll', fn, { passive: true });
-    fetch('/api/verify-session', { credentials: 'include' })
-      .then(r => r.json())
-      .then(d => setIsLoggedIn(!!d.authenticated))
-      .catch(() => {});
     return () => window.removeEventListener('scroll', fn);
   }, []);
 
   return (
     <nav className={`pub-nav${scrolled ? ' scrolled' : ''}`}>
-      <a href={isLoggedIn ? "/dashboard" : "/"} className="pub-nav-brand">KΘΦ II</a>
+      <a href="/" className="pub-nav-brand">KΘΦ II</a>
       <ul className="pub-nav-links">
         {LINKS.map(l => (
           <li key={l.href}>
